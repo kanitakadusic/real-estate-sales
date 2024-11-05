@@ -1,9 +1,21 @@
-==============
-|   Dnevnik izmjena   |
-==============
+-------------------
+|   KOMENTARI   |
+-------------------
+----------------
+|   Zadatak 1   |
+----------------
+=> Pozitivne strane postojećeg projekta:
+1) Kod nije redundantan.
+2) Funkcionalnost postignuta bez komplikacija.
 
----------------
-|  Zadatak 1  |
----------------
+=> Negativne strane postojećeg projekta:
+/
+
+---------------------------
+|   DNEVNIK IZMJENA   |
+---------------------------
+----------------
+|   Zadatak 1   |
+----------------
 1) promjena iz __href="../Style/meni.css"__ u __href="../css/meni.css"__
 2) uklanjanje __type="text/css"__ (nije potrebno navoditi u HTML5)

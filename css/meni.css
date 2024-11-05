@@ -28,3 +28,8 @@ li a {
 li a:hover {
     color: #ff9900;
 }
+
+li a:hover img {
+    transition: transform 1s ease;
+    transform: translateY(-20%) scale(1.4);
+}
