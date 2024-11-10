@@ -28,7 +28,7 @@
       - max-width: 300px;
    maksimalna širina kutije nije 300px, već 364px.
    Međutim, zbog deklaracije __grid-template-columns: repeat(auto-fit, 300px);__
-   dobijamo širinu kutije od 300px, a efektivnu maksimalnu širinu sadržaja od 236px.
+   dobijamo širinu kutije od 300px, a efektivnu širinu sadržaja od 236px.
    Ipak, ako je navedeni efekat postignut s namjerom, onda se ne može govoriti o mani.
 
 =======================
