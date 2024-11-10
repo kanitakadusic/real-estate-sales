@@ -35,7 +35,10 @@
 |   Zadatak 3   |
 -----------------
 => Pozitivne strane postojećeg projekta:
+/
+
 => Negativne strane postojećeg projekta:
+/
 
 =======================
 |   DNEVNIK IZMJENA   |
@@ -57,3 +60,4 @@
 |   Zadatak 3   |
 -----------------
 1), 2) i 3) analogno prethodnom zadatku
+4) dodano još par upita radi testiranja

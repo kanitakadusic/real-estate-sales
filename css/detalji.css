@@ -61,14 +61,54 @@ iframe {
 
 /* Stil za div #upiti */
 #upiti {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
     border: 1px solid #000;
-    padding: 20px;
+    padding: 10px;
     margin: 20px;
 }
 
 .upit {
+    flex: 1 1 100%;
+    box-sizing: border-box;
     border: 1px solid #000;
     padding: 10px;
-    margin-bottom: 10px;
+    margin: 10px;
     background-color: white;
+}
+
+.carousel-button {
+    display: none;
+    align-self: center;
+    height: 30px;
+    width: 30px;
+}
+
+#carousel-prev {
+    order: -1;
+}
+
+#carousel-next {
+    order: 1;
+}
+
+@media (max-width: 599px) {
+    .upit {
+        flex-basis: 50%;
+    }
+
+    .upit:not(:first-child) {
+        display: none;
+    }
+
+    #upiti .carousel-button {
+        display: inline-block;
+    }
+}
+
+@media (min-width: 801px) {
+    .upit {
+        flex-basis: calc(50% - 20px);
+    }
 }
