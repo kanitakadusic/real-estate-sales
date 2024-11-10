@@ -1,0 +1,80 @@
+html {
+    font-size: 62.5%
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.paketi {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.paket {
+    box-sizing: border-box;
+    flex: 0 0 calc(50% - 5px);
+    aspect-ratio: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.visoka {
+    grid-area: span 2 / span 1;
+}
+
+.kvadratna {
+    grid-area: span 1 / span 1;
+}
+
+.visoka,
+.kvadratna {
+    overflow-y: auto;
+    border: 2px solid #ccc;
+}
+
+.naslov {
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.tekst {
+    font-size: 2rem;
+}
+
+.naslov,
+.tekst {
+    margin: 10px 0;
+}
+
+.paketi,
+.visoka,
+.kvadratna,
+.naslov,
+.tekst {
+    padding: 10px;
+}
+
+@media (max-width: 800px) {
+    .paket {
+        flex: 0 0 100%;
+    }
+}
+
+.paket ::-webkit-scrollbar {
+    width: 5px;
+}
+
+.paket ::-webkit-scrollbar-thumb {
+    background: #ccc;
+}
+
+.paket ::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
