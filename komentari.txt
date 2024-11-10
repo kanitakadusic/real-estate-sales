@@ -16,8 +16,20 @@
 |   Zadatak 2   |
 -----------------
 => Pozitivne strane postojećeg projekta:
-=> Negativne strane postojećeg projekta:
+1) Praktična hijerarhija/ugniježdenost elemenata.
+2) Željeni efekat postignut bez komplikacija.
 
+=> Negativne strane postojećeg projekta:
+1) Pošto svojstvo __box-sizing__ nije navedeno, podrazumijeva se vrijednost __content-box__.
+   Mana toga se ogleda u kombinaciji klasa __grid-lista-nekretnina__ i __nekretnina__.
+   Kako vrijednost nije __border-box__, uzimajući u obzir sljedeće deklaracije:
+      - border: 2px solid #000;
+      - padding: 30px;
+      - max-width: 300px;
+   maksimalna širina kutije nije 300px, već 364px.
+   Međutim, zbog deklaracije __grid-template-columns: repeat(auto-fit, 300px);__
+   dobijamo širinu kutije od 300px, a efektivnu maksimalnu širinu sadržaja od 236px.
+   Ipak, ako je navedeni efekat postignut s namjerom, onda se ne može govoriti o mani.
 
 =======================
 |   DNEVNIK IZMJENA   |

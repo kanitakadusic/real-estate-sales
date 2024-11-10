@@ -19,8 +19,9 @@ iframe {
 }
 
 .grid-lista-nekretnina {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, 300px);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
     gap: 20px;
     padding: 20px;
     justify-content: center;
@@ -34,8 +35,9 @@ iframe {
     padding: 30px;
     background-color: white;
     text-align: center;
-    max-width: 300px;
+    max-width: 236px;
     height: 400px;
+    flex-basis: 100%;
 }
 
 .nekretnina.kuca {
