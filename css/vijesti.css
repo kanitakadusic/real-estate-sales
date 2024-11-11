@@ -15,7 +15,7 @@ body {
     gap: 10px;
 }
 
-.paket {
+.paket-M {
     box-sizing: border-box;
     flex: 0 0 calc(50% - 5px);
     aspect-ratio: 1;
@@ -62,19 +62,19 @@ body {
 }
 
 @media (max-width: 800px) {
-    .paket {
+    .paket-M {
         flex: 0 0 100%;
     }
 }
 
-.paket ::-webkit-scrollbar {
+.paketi ::-webkit-scrollbar {
     width: 5px;
 }
 
-.paket ::-webkit-scrollbar-thumb {
+.paketi ::-webkit-scrollbar-thumb {
     background: #ccc;
 }
 
-.paket ::-webkit-scrollbar-thumb:hover {
+.paketi ::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
 }
