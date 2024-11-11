@@ -54,7 +54,7 @@ body {
 .visoka,
 .kvadratna {
     overflow-y: auto;
-    border: 2px solid #ccc;
+    border: 2px solid #e0e0e0;
 }
 
 .glavna {
@@ -96,9 +96,9 @@ body {
 }
 
 .paketi ::-webkit-scrollbar-thumb {
-    background: #ccc;
+    background: #e0e0e0;
 }
 
 .paketi ::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
+    background: #ccc;
 }
