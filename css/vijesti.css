@@ -8,6 +8,15 @@ body {
     padding: 0;
 }
 
+.paketi,
+.glavna,
+.visoka,
+.kvadratna,
+.naslov,
+.tekst {
+    padding: 10px;
+}
+
 .paketi {
     display: flex;
     flex-direction: row;
@@ -15,14 +24,42 @@ body {
     gap: 10px;
 }
 
+.paket-L,
+.paket-M {
+    display: grid;
+    grid-template: repeat(2, 1fr) / repeat(2, 1fr);
+    gap: 10px;
+}
+
+.paket-L {
+    flex: 0 0 100%;
+    aspect-ratio: 2 / 1;
+}
+
 .paket-M {
     box-sizing: border-box;
     flex: 0 0 calc(50% - 5px);
     aspect-ratio: 1;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 10px;
+}
+
+.paket-L img {
+    grid-area: span 2 / span 1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.glavna,
+.visoka,
+.kvadratna {
+    overflow-y: auto;
+    border: 2px solid #ccc;
+}
+
+.glavna {
+    grid-area: span 2 / span 1;
+    border-left: none;
 }
 
 .visoka {
@@ -33,35 +70,22 @@ body {
     grid-area: span 1 / span 1;
 }
 
-.visoka,
-.kvadratna {
-    overflow-y: auto;
-    border: 2px solid #ccc;
-}
-
-.naslov {
+.paketi .naslov {
     font-size: 3rem;
     font-weight: bold;
-}
-
-.tekst {
-    font-size: 2rem;
-}
-
-.naslov,
-.tekst {
     margin: 10px 0;
 }
 
-.paketi,
-.visoka,
-.kvadratna,
-.naslov,
-.tekst {
-    padding: 10px;
+.paketi .tekst {
+    font-size: 2rem;
+    margin: 10px 0;
 }
 
 @media (max-width: 800px) {
+    .paket-L {
+        aspect-ratio: 1;
+    }
+
     .paket-M {
         flex: 0 0 100%;
     }
