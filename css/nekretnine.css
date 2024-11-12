@@ -28,6 +28,7 @@ iframe {
     /* Centriranje po horizontali */
     align-content: center;
     /* Centriranje po vertikali */
+    margin: 0 auto;
 }
 
 .nekretnina {
@@ -79,4 +80,34 @@ iframe {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+}
+
+@media only screen and (max-width: 1955px) {
+    #stan .grid-lista-nekretnina {
+        justify-content: flex-start;
+        max-width: 1580px;
+    }
+}
+
+@media only screen and (max-width: 1635px) {
+    #stan .grid-lista-nekretnina,
+    #kuca .grid-lista-nekretnina {
+        justify-content: flex-start;
+        max-width: 1260px;
+    }
+}
+
+@media only screen and (max-width: 1315px) {
+    #stan .grid-lista-nekretnina,
+    #kuca .grid-lista-nekretnina {
+        justify-content: flex-start;
+        max-width: 940px;
+    }
+}
+
+@media only screen and (max-width: 995px) {
+    #stan .grid-lista-nekretnina,
+    #kuca .grid-lista-nekretnina {
+        justify-content: center;
+    }
 }
