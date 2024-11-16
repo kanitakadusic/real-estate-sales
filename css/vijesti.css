@@ -8,97 +8,118 @@ body {
     padding: 0;
 }
 
-.paketi,
+.vijesti {
+    display: grid;
+    grid-template-areas: 
+        'v1 v1 v1 v1'
+        'v1 v1 v1 v1'
+        'v2 v3 v5 v7'
+        'v2 v4 v6 v7'
+        'v8 v10 v12 v13'
+        'v9 v11 v12 v13';
+}
+
 .glavna,
 .visoka,
-.kvadratna,
-.naslov,
-.tekst {
+.kvadratna {
+    box-sizing: border-box;
+    overflow-y: auto;
+    border: 1px solid black;
     padding: 10px;
 }
 
-.paketi {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.paket-L,
-.paket-M {
-    display: grid;
-    grid-template: repeat(2, 1fr) / repeat(2, 1fr);
-    gap: 10px;
-}
-
-.paket-L {
-    flex: 0 0 100%;
+.glavna {
+    background-color: #c8d9f7;
     aspect-ratio: 2 / 1;
 }
 
-.paket-M {
-    box-sizing: border-box;
-    flex: 0 0 calc(50% - 5px);
+.visoka {
+    background-color: #fff1cc;
+    aspect-ratio: 1 / 2;
+}
+
+.kvadratna {
+    background-color: #f4cccc;
     aspect-ratio: 1;
 }
 
-.paket-L img {
-    grid-area: span 2 / span 1;
-    width: 100%;
+.naslov,
+.tekst {
+    margin: 10px 0;
+    padding: 10px;
+}
+
+.naslov {
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.tekst {
+    font-size: 2rem;
+}
+
+img {
+    float: left;
+    width: 50%;
     height: 100%;
+    margin: 0 20px 0 0;
     object-fit: cover;
     object-position: center;
 }
 
-.glavna,
-.visoka,
-.kvadratna {
-    overflow-y: auto;
-    border: 2px solid #e0e0e0;
-}
-
-.glavna {
-    grid-area: span 2 / span 1;
-    border-left: none;
-}
-
-.visoka {
-    grid-area: span 2 / span 1;
-}
-
-.kvadratna {
-    grid-area: span 1 / span 1;
-}
-
-.paketi .naslov {
-    font-size: 3rem;
-    font-weight: bold;
-    margin: 10px 0;
-}
-
-.paketi .tekst {
-    font-size: 2rem;
-    margin: 10px 0;
-}
-
 @media (max-width: 800px) {
-    .paket-L {
+    .vijesti {
+        grid-template-areas: 
+            'v1 v1'
+            'v1 v1'
+            'v2 v3'
+            'v2 v4'
+            'v5 v7'
+            'v6 v7'
+            'v8 v10'
+            'v9 v11'
+            'v12 v13'
+            'v12 v13';
+    }
+
+    .glavna {
         aspect-ratio: 1;
     }
 
-    .paket-M {
-        flex: 0 0 100%;
+    img {
+        float: none;
+        width: 100%;
+        height: 50%;
+        margin: 0 0 10px 0;
     }
 }
 
-.paketi ::-webkit-scrollbar {
-    width: 5px;
+#v1 { grid-area: v1; }
+#v2 { grid-area: v2; }
+#v3 { grid-area: v3; }
+#v4 { grid-area: v4; }
+#v5 { grid-area: v5; }
+#v6 { grid-area: v6; }
+#v7 { grid-area: v7; }
+#v8 { grid-area: v8; }
+#v9 { grid-area: v9; }
+#v10 { grid-area: v10; }
+#v11 { grid-area: v11; }
+#v12 { grid-area: v12; }
+#v13 { grid-area: v13; }
+
+.vijesti ::-webkit-scrollbar {
+    width: 8px;
 }
 
-.paketi ::-webkit-scrollbar-thumb {
-    background: #e0e0e0;
+.vijesti ::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
 }
 
-.paketi ::-webkit-scrollbar-thumb:hover {
-    background: #ccc;
+.vijesti ::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+.vijesti ::-webkit-scrollbar-thumb:active {
+    background: #787878;
 }
