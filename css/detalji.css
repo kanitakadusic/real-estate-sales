@@ -69,6 +69,7 @@ iframe {
     margin: 20px;
 }
 
+#carousel-placeholder,
 .upit {
     flex: 1 1 100%;
     box-sizing: border-box;
@@ -76,6 +77,10 @@ iframe {
     padding: 10px;
     margin: 10px;
     background-color: white;
+}
+
+#carousel-placeholder {
+    display: none;
 }
 
 .carousel-button {
@@ -94,15 +99,16 @@ iframe {
 }
 
 @media (max-width: 599px) {
-    .upit {
+    #carousel-placeholder {
         flex-basis: 50%;
+        display: block;
     }
 
-    .upit:not(:first-child) {
+    .upit {
         display: none;
     }
 
-    #upiti .carousel-button {
+    .carousel-button {
         display: inline-block;
     }
 }
