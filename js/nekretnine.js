@@ -1,16 +1,15 @@
 function spojiNekretnine(divReferenca, instancaModula, tip_nekretnine) {
 
-    // pozivanje metode za filtriranje
     const filtriraneNekretnine = instancaModula.filtrirajNekretnine({ tip_nekretnine: tip_nekretnine });
 
-    // iscrtavanje elemenata u divReferenca element
-
-    // ciscenje svih elemenata liste
-    divReferenca.innerHTML = '';
+    divReferenca.innerHTML = `<h1>${tip_nekretnine}</h1>`;
 
     if (filtriraneNekretnine.length === 0) {
-        divReferenca.innerHTML = '<p>Trenutno nema dostupnih nekretnina ovoga tipa.</p>';
+        divReferenca.innerHTML += '<p>Trenutno nema dostupnih nekretnina ovog tipa.</p>';
     } else {
+        const nekretnineKontejner = document.createElement('div');
+        nekretnineKontejner.classList.add('grid-lista-nekretnina');
+
         filtriraneNekretnine.forEach(nekretnina => {
             const nekretninaElement = document.createElement('div');
 
@@ -24,7 +23,7 @@ function spojiNekretnine(divReferenca, instancaModula, tip_nekretnine) {
 
             const slikaElement = document.createElement('img');
             slikaElement.classList.add('slika-nekretnine');
-            slikaElement.src = `../resources/images/${nekretnina.id}.jpg`;
+            slikaElement.src = `../resources/images/placeholder.jpg`;
             slikaElement.alt = nekretnina.naziv;
             nekretninaElement.appendChild(slikaElement);
 
@@ -42,23 +41,24 @@ function spojiNekretnine(divReferenca, instancaModula, tip_nekretnine) {
             nekretninaElement.appendChild(cijenaElement);
 
             const detaljiDugme = document.createElement('a');
-            detaljiDugme.href = '../html/detalji.html'; // hardkodiran html
+            detaljiDugme.href = '../html/detalji.html';
             detaljiDugme.classList.add('detalji-dugme');
             detaljiDugme.textContent = 'Detalji';
             nekretninaElement.appendChild(detaljiDugme);
 
-            // dodavanje kreiranog elementa u divReferenci
-            divReferenca.appendChild(nekretninaElement);
+            nekretnineKontejner.appendChild(nekretninaElement);
         });
+
+        divReferenca.appendChild(nekretnineKontejner);
     }
 }
 
 const listaNekretnina = [
     {
-        id: 1,
+        id: 100001,
         tip_nekretnine: "Stan",
         naziv: "Useljiv stan Sarajevo",
-        kvadratura: 58,
+        kvadratura: 55,
         cijena: 232000,
         tip_grijanja: "plin",
         lokacija: "Novo Sarajevo",
@@ -77,10 +77,10 @@ const listaNekretnina = [
         ]
     },
     {
-        id: 1,
+        id: 100002,
         tip_nekretnine: "Stan",
         naziv: "Useljiv stan Sarajevo",
-        kvadratura: 58,
+        kvadratura: 57,
         cijena: 32000,
         tip_grijanja: "plin",
         lokacija: "Novo Sarajevo",
@@ -95,14 +95,18 @@ const listaNekretnina = [
             {
                 korisnik_id: 2,
                 tekst_upita: "Phasellus viverra nulla."
+            },
+            {
+                korisnik_id: 2,
+                tekst_upita: "Phasellus viverra nulla."
             }
         ]
     },
     {
-        id: 1,
+        id: 100003,
         tip_nekretnine: "Stan",
         naziv: "Useljiv stan Sarajevo",
-        kvadratura: 58,
+        kvadratura: 59,
         cijena: 232000,
         tip_grijanja: "plin",
         lokacija: "Novo Sarajevo",
@@ -121,10 +125,62 @@ const listaNekretnina = [
         ]
     },
     {
-        id: 2,
-        tip_nekretnine: "KuÄ‡a",
+        id: 100004,
+        tip_nekretnine: "Stan",
+        naziv: "Useljiv stan Sarajevo",
+        kvadratura: 61,
+        cijena: 232000,
+        tip_grijanja: "plin",
+        lokacija: "Novo Sarajevo",
+        godina_izgradnje: 2019,
+        datum_objave: "01.10.2003.",
+        opis: "Sociis natoque penatibus.",
+        upiti: [
+            {
+                korisnik_id: 1,
+                tekst_upita: "Nullam eu pede mollis pretium."
+            },
+            {
+                korisnik_id: 2,
+                tekst_upita: "Phasellus viverra nulla."
+            }
+        ]
+    },
+    {
+        id: 200001,
+        tip_nekretnine: "Poslovni prostor",
         naziv: "Mali poslovni prostor",
-        kvadratura: 20,
+        kvadratura: 85,
+        cijena: 70000,
+        tip_grijanja: "struja",
+        lokacija: "Centar",
+        godina_izgradnje: 2005,
+        datum_objave: "20.08.2023.",
+        opis: "Magnis dis parturient montes.",
+        upiti: [
+            {
+                korisnik_id: 1,
+                tekst_upita: "Nullam eu pede mollis pretium."
+            },
+            {
+                korisnik_id: 2,
+                tekst_upita: "Integer tincidunt."
+            },
+            {
+                korisnik_id: 2,
+                tekst_upita: "Integer tincidunt."
+            },
+            {
+                korisnik_id: 2,
+                tekst_upita: "Integer tincidunt."
+            }
+        ]
+    },
+    {
+        id: 200002,
+        tip_nekretnine: "Poslovni prostor",
+        naziv: "Mali poslovni prostor",
+        kvadratura: 330,
         cijena: 70000,
         tip_grijanja: "struja",
         lokacija: "Centar",
@@ -139,28 +195,10 @@ const listaNekretnina = [
         ]
     },
     {
-        id: 3,
-        tip_nekretnine: "KuÄ‡a",
+        id: 200003,
+        tip_nekretnine: "Poslovni prostor",
         naziv: "Mali poslovni prostor",
-        kvadratura: 20,
-        cijena: 70000,
-        tip_grijanja: "struja",
-        lokacija: "Centar",
-        godina_izgradnje: 2005,
-        datum_objave: "20.08.2023.",
-        opis: "Magnis dis parturient montes.",
-        upiti: [
-            {
-                korisnik_id: 2,
-                tekst_upita: "Integer tincidunt."
-            }
-        ]
-    },
-    {
-        id: 4,
-        tip_nekretnine: "KuÄ‡a",
-        naziv: "Mali poslovni prostor",
-        kvadratura: 20,
+        kvadratura: 105,
         cijena: 70000,
         tip_grijanja: "struja",
         lokacija: "Centar",
@@ -195,11 +233,9 @@ const divStan = document.getElementById("stan");
 const divKuca = document.getElementById("kuca");
 const divPp = document.getElementById("pp");
 
-// instanciranje modula
 let nekretnine = SpisakNekretnina();
 nekretnine.init(listaNekretnina, listaKorisnika);
 
-// pozivanje funkcije
 spojiNekretnine(divStan, nekretnine, "Stan");
 spojiNekretnine(divKuca, nekretnine, "Kuća");
 spojiNekretnine(divPp, nekretnine, "Poslovni prostor");

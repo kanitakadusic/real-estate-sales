@@ -1,48 +1,41 @@
 let StatistikaNekretnina = function() {
 
-    let spisakNekretnina = SpisakNekretnina(); // ?
+    let properties = [];
+    let users = [];
 
-    let nekretnine = []; // ?
-    let korisnici = []; // ?
+    let propertyListing = SpisakNekretnina();
 
-    let prosjek = {
-        kvadratura,
-        cijena,
-        godina_izgradnje
+    let init = function(propertiesList, usersList) {
+        properties = propertiesList;
+        users = usersList;
+
+        propertyListing.init(propertiesList, usersList);
     }
 
-    const init = function() {
-        this.prosjek.kvadratura = this.nekretnine.reduce((s, n) => s + n.kvadratura, 0) / this.nekretnine.length;
-        this.prosjek.cijena = this.nekretnine.reduce((s, n) => s + n.cijena, 0) / this.nekretnine.length;
-        this.prosjek.godina_izgradnje = this.nekretnine.reduce((s, n) => s + n.godina_izgradnje, 0) / this.nekretnine.length;
-
-        // poziv init
+    let getAverageByProperty = function(arr, prop) {
+        return arr.length === 0 ? null : arr.reduce((sum, elem) => sum + elem[prop], 0) / arr.length;
     }
 
-    // kriterij filter -> prosjek kvadrature || nan
-    const prosjecnaKvadratura = function(kriterij) {
-        let f = spisakNekretnina.filtrirajNekretnine(kriterij);
-        return f.reduce((s, n) => s + n.kvadratura, 0) / f.length;
+    let prosjecnaKvadratura = function(kriterij) {
+        return getAverageByProperty(propertyListing.filtrirajNekretnine(kriterij), "kvadratura");
     }
 
-    // kriterij filter -> max abs odstupanje svojstva od prosjeka
-    const outlier = function(kriterij, nazivSvojstva) {
-        let f = spisakNekretnina.filtrirajNekretnine(kriterij);
-        return f.length === 0 ? null : f.reduce((maxElem, currElem) => {
-            const maxDiff = Math.abs(maxElem[nazivSvojstva] - prosjek[nazivSvojstva]);
-            const currDiff = Math.abs(currElem[nazivSvojstva] - prosjek[nazivSvojstva]);
-            return currDiff > maxDiff ? currElem : maxElem;
-        });
+    let outlier = function(kriterij, nazivSvojstva) {
+        let filteredProperties = propertyListing.filtrirajNekretnine(kriterij);
+        let average = getAverageByProperty(filteredProperties, nazivSvojstva);
+
+        return filteredProperties.reduce((max, curr) => {
+            return Math.abs(curr[nazivSvojstva] - average) > Math.abs(max[nazivSvojstva] - average) ? curr : max;
+        }, filteredProperties[0]) || null;
     }
 
-    // bar jedan upit + sort po broju upita
-    const mojeNekretnine = function(korisnik) {
-        return nekretnine
-            .filter(n => n.upiti.some(u => u.korisnik_id === korisnik.korisnik_id))
+    let mojeNekretnine = function(korisnik) {
+        return properties
+            .filter(property => property.upiti.some(inquiry => inquiry.korisnik_id === korisnik.id))
             .sort((a, b) => b.upiti.length - a.upiti.length);
     }
 
-    const histogramCijena = function(periodi, rasponiCijena) {
+    let histogramCijena = function(periodi, rasponiCijena) {
 
     }
 
