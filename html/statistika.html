@@ -10,6 +10,30 @@
         <title>Statistika</title>
     </head>
     <body>
+        <div id="year-ranges">
+            <h2>Year ranges</h2>
+            
+            <input name="from" type="number" placeholder="Begin">
+            <input name="to" type="number" placeholder="End">
+            
+            <button onclick="addRange(this)">Add</button>
+            <div id="year-ranges-container"></div>
+        </div>
+
+        <div id="price-ranges">
+            <h2>Price ranges</h2>
+
+            <input name="from" type="number" placeholder="Bottom">
+            <input name="to" type="number" placeholder="Top">
+            
+            <button onclick="addRange(this)">Add</button>
+            <div id="price-ranges-container"></div>
+        </div>
+
+        <button id="generate-statistics" onclick="iscrtajHistogram()">Generate statistics</button>
+        <div id="charts-container"></div>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
         <script src="../js/SpisakNekretnina.js"></script>
         <script src="../js/sampleData.js"></script>

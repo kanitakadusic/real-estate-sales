@@ -1,0 +1,56 @@
+html {
+    font-size: 62.5%
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 10px;
+}
+
+h2 {
+    font-size: 2rem;
+    margin: 18px 6px;
+}
+
+input[type=number],
+button,
+.range {
+    font-size: 1.6rem;
+    padding: 12px 20px;
+    margin: 6px;
+    border-radius: 6px;
+}
+
+input[type=number]:focus,
+.range {
+    border: 2px solid rgba(0, 123, 255, 0.5);
+}
+
+input[type=number] {
+    width: 140px;
+    outline: none;
+    border: 2px solid #ccc;
+    transition: 0.5s;
+}
+
+button {
+    background-color: rgba(0, 123, 255, 0.8);
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.range {
+    text-align: center;
+    width: auto;
+    display: inline-block;
+}
+
+#generate-statistics {
+    margin: 24px 6px;
+}
+
+.chart {
+    margin: 60px 80px;
+}
