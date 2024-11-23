@@ -35,8 +35,43 @@ let StatistikaNekretnina = function() {
             .sort((a, b) => b.upiti.length - a.upiti.length);
     }
 
-    let histogramCijena = function(periodi, rasponiCijena) {
+    let isInSegment = function(x, a, b) {
+        return x >= a && x <= b;
+    }
 
+    // required format: "dd.mm.yyyy."
+    let getYear = function(dateString) {
+        if (!(/^\d{2}\.\d{2}\.\d{4}\.$/).test(dateString)) return undefined;
+        return Number(dateString.substring(6, 10));
+    }
+
+    // {od: a, do: b} <=> [a, b]
+    let histogramCijena = function(periodi, rasponiCijena) {
+        let histogram = [];
+
+        for (let i = 0; i < periodi.length; i++) {
+            if (periodi[i].od > periodi[i].do) continue;
+
+            for (let j = 0; j < rasponiCijena.length; j++) {
+                if (rasponiCijena[j].od > rasponiCijena[j].do) continue;
+
+                let counter = 0;
+                properties.forEach(property => {
+                    if (
+                        isInSegment(getYear(property.datum_objave), periodi[i].od, periodi[i].do) &&
+                        isInSegment(property.cijena, rasponiCijena[j].od, rasponiCijena[j].do)
+                    ) counter++;
+                });
+
+                histogram.push({
+                    indeksPerioda: i,
+                    indeksRasponaCijena: j,
+                    brojNekretnina: counter
+                });
+            }
+        }
+
+        return histogram;
     }
 
     return {
@@ -44,6 +79,7 @@ let StatistikaNekretnina = function() {
         prosjecnaKvadratura,
         outlier,
         mojeNekretnine,
-        histogramCijena
+        histogramCijena,
+        getYear
     }
 }

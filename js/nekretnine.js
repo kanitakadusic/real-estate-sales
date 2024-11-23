@@ -55,10 +55,10 @@ function spojiNekretnine(divReferenca, instancaModula, tip_nekretnine) {
 
 const listaNekretnina = [
     {
-        id: 100001,
+        id: 1,
         tip_nekretnine: "Stan",
         naziv: "Useljiv stan Sarajevo",
-        kvadratura: 55,
+        kvadratura: 58,
         cijena: 232000,
         tip_grijanja: "plin",
         lokacija: "Novo Sarajevo",
@@ -77,10 +77,10 @@ const listaNekretnina = [
         ]
     },
     {
-        id: 100002,
+        id: 1,
         tip_nekretnine: "Stan",
         naziv: "Useljiv stan Sarajevo",
-        kvadratura: 57,
+        kvadratura: 58,
         cijena: 32000,
         tip_grijanja: "plin",
         lokacija: "Novo Sarajevo",
@@ -95,18 +95,14 @@ const listaNekretnina = [
             {
                 korisnik_id: 2,
                 tekst_upita: "Phasellus viverra nulla."
-            },
-            {
-                korisnik_id: 2,
-                tekst_upita: "Phasellus viverra nulla."
             }
         ]
     },
     {
-        id: 100003,
+        id: 1,
         tip_nekretnine: "Stan",
         naziv: "Useljiv stan Sarajevo",
-        kvadratura: 59,
+        kvadratura: 58,
         cijena: 232000,
         tip_grijanja: "plin",
         lokacija: "Novo Sarajevo",
@@ -125,62 +121,10 @@ const listaNekretnina = [
         ]
     },
     {
-        id: 100004,
-        tip_nekretnine: "Stan",
-        naziv: "Useljiv stan Sarajevo",
-        kvadratura: 61,
-        cijena: 232000,
-        tip_grijanja: "plin",
-        lokacija: "Novo Sarajevo",
-        godina_izgradnje: 2019,
-        datum_objave: "01.10.2003.",
-        opis: "Sociis natoque penatibus.",
-        upiti: [
-            {
-                korisnik_id: 1,
-                tekst_upita: "Nullam eu pede mollis pretium."
-            },
-            {
-                korisnik_id: 2,
-                tekst_upita: "Phasellus viverra nulla."
-            }
-        ]
-    },
-    {
-        id: 200001,
-        tip_nekretnine: "Poslovni prostor",
+        id: 2,
+        tip_nekretnine: "Kuća",
         naziv: "Mali poslovni prostor",
-        kvadratura: 85,
-        cijena: 70000,
-        tip_grijanja: "struja",
-        lokacija: "Centar",
-        godina_izgradnje: 2005,
-        datum_objave: "20.08.2023.",
-        opis: "Magnis dis parturient montes.",
-        upiti: [
-            {
-                korisnik_id: 1,
-                tekst_upita: "Nullam eu pede mollis pretium."
-            },
-            {
-                korisnik_id: 2,
-                tekst_upita: "Integer tincidunt."
-            },
-            {
-                korisnik_id: 2,
-                tekst_upita: "Integer tincidunt."
-            },
-            {
-                korisnik_id: 2,
-                tekst_upita: "Integer tincidunt."
-            }
-        ]
-    },
-    {
-        id: 200002,
-        tip_nekretnine: "Poslovni prostor",
-        naziv: "Mali poslovni prostor",
-        kvadratura: 330,
+        kvadratura: 20,
         cijena: 70000,
         tip_grijanja: "struja",
         lokacija: "Centar",
@@ -195,10 +139,28 @@ const listaNekretnina = [
         ]
     },
     {
-        id: 200003,
-        tip_nekretnine: "Poslovni prostor",
+        id: 3,
+        tip_nekretnine: "Kuća",
         naziv: "Mali poslovni prostor",
-        kvadratura: 105,
+        kvadratura: 20,
+        cijena: 70000,
+        tip_grijanja: "struja",
+        lokacija: "Centar",
+        godina_izgradnje: 2005,
+        datum_objave: "20.08.2023.",
+        opis: "Magnis dis parturient montes.",
+        upiti: [
+            {
+                korisnik_id: 2,
+                tekst_upita: "Integer tincidunt."
+            }
+        ]
+    },
+    {
+        id: 4,
+        tip_nekretnine: "Kuća",
+        naziv: "Mali poslovni prostor",
+        kvadratura: 20,
         cijena: 70000,
         tip_grijanja: "struja",
         lokacija: "Centar",
