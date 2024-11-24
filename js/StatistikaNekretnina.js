@@ -6,20 +6,33 @@ let StatistikaNekretnina = function() {
         propertyListing.init(propertiesList, usersList);
     }
 
-    let getAverageByProperty = function(arr, prop) {
-        return arr.length === 0 ? null : arr.reduce((sum, elem) => sum + elem[prop], 0) / arr.length;
+    let isValidObject = function(o) {
+        return typeof o === 'object' && !Array.isArray(o) && o !== null && o !== undefined;
+    }
+
+    let hasAllowedKeys = function(check, allowed) {
+        return Object.keys(check).every(key => key in allowed && typeof check[key] === typeof allowed[key]);
+    }
+
+    let getAverage = function(array, mapper) {
+        if (array.length === 0) return null;
+        return array.reduce((sum, element) => sum + mapper(element), 0) / array.length;
     }
 
     let prosjecnaKvadratura = function(kriterij) {
-        return getAverageByProperty(propertyListing.filtrirajNekretnine(kriterij), "kvadratura");
+        if (!isValidObject(kriterij)) return null;
+        let filteredProperties = propertyListing.filtrirajNekretnine(kriterij);
+        if (filteredProperties.length !== 0 && !hasAllowedKeys(kriterij, filteredProperties[0])) return null;
+        return getAverage(filteredProperties, (element) => element["kvadratura"]);
     }
 
     let outlier = function(kriterij, nazivSvojstva) {
+        if (!isValidObject(kriterij) || typeof nazivSvojstva !== 'string') return null;
         let filteredProperties = propertyListing.filtrirajNekretnine(kriterij);
-        let average = getAverageByProperty(filteredProperties, nazivSvojstva);
-
-        return filteredProperties.reduce((max, curr) => {
-            return Math.abs(curr[nazivSvojstva] - average) > Math.abs(max[nazivSvojstva] - average) ? curr : max;
+        if (filteredProperties.length !== 0 && !hasAllowedKeys({ [nazivSvojstva]: Number() }, filteredProperties[0])) return null;
+        let average = getAverage(filteredProperties, (element) => element[nazivSvojstva]);
+        return filteredProperties.reduce((max, current) => {
+            return Math.abs(current[nazivSvojstva] - average) > Math.abs(max[nazivSvojstva] - average) ? current : max;
         }, filteredProperties[0]) || null;
     }
 
