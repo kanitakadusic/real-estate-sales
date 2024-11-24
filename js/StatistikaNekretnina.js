@@ -1,14 +1,8 @@
 let StatistikaNekretnina = function() {
 
-    let properties = [];
-    let users = [];
-
     let propertyListing = SpisakNekretnina();
 
     let init = function(propertiesList, usersList) {
-        properties = propertiesList;
-        users = usersList;
-
         propertyListing.init(propertiesList, usersList);
     }
 
@@ -30,6 +24,7 @@ let StatistikaNekretnina = function() {
     }
 
     let mojeNekretnine = function(korisnik) {
+        let properties = propertyListing.filtrirajNekretnine({});
         return properties
             .filter(property => property.upiti.some(inquiry => inquiry.korisnik_id === korisnik.id))
             .sort((a, b) => b.upiti.length - a.upiti.length);
@@ -47,6 +42,7 @@ let StatistikaNekretnina = function() {
 
     // {od: a, do: b} <=> [a, b]
     let histogramCijena = function(periodi, rasponiCijena) {
+        let properties = propertyListing.filtrirajNekretnine({});
         let histogram = [];
 
         for (let i = 0; i < periodi.length; i++) {
@@ -79,7 +75,6 @@ let StatistikaNekretnina = function() {
         prosjecnaKvadratura,
         outlier,
         mojeNekretnine,
-        histogramCijena,
-        getYear
+        histogramCijena
     }
 }
