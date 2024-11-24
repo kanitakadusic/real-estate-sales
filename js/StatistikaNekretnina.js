@@ -20,9 +20,20 @@ let StatistikaNekretnina = function() {
     }
 
     let prosjecnaKvadratura = function(kriterij) {
-        if (!isValidObject(kriterij)) return null;
+        if (!isValidObject(kriterij)) {
+            throw new Error("Criteria format is not valid.");
+        }
+
         let filteredProperties = propertyListing.filtrirajNekretnine(kriterij);
-        if (filteredProperties.length !== 0 && !hasAllowedKeys(kriterij, filteredProperties[0])) return null;
+
+        if (filteredProperties.length === 0) {
+            throw new Error("Not a single property meets the given criteria.");
+        }
+
+        if (!hasAllowedKeys(kriterij, filteredProperties[0])) {
+            throw new Error("Filtering by the given criteria is not allowed.");
+        }
+
         return getAverage(filteredProperties, (element) => element["kvadratura"]);
     }
 

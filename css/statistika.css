@@ -13,7 +13,7 @@ h2 {
     margin: 18px 6px;
 }
 
-input[type=number],
+input,
 button,
 .range {
     font-size: 1.6rem;
@@ -22,12 +22,12 @@ button,
     border-radius: 6px;
 }
 
-input[type=number]:focus,
+input:focus,
 .range {
     border: 2px solid rgba(0, 123, 255, 0.6);
 }
 
-input[type=number] {
+input {
     width: 140px;
     outline: none;
     border: 2px solid #ccc;
@@ -45,6 +45,12 @@ button {
     text-align: center;
     width: auto;
     display: inline-block;
+}
+
+.error-message {
+    font-size: 1.6rem;
+    color: tomato;
+    margin: 6px;
 }
 
 #generate-charts {

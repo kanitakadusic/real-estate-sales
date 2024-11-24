@@ -1,10 +1,33 @@
 Chart.defaults.font.size = 16;
 
 let statistics = StatistikaNekretnina();
-statistics.init(listaNekretnina, listaKorisnika);
+statistics.init(propertiesList, usersList);
 
 let yearRanges = [];
 let priceRanges = [];
+
+function parseInput(input) {
+    if (!isNaN(input) && input.trim() !== "") return Number(input);
+    return input;
+}
+
+function calculateASF(button) {
+    const key = String(button.parentElement.querySelector('input[name="key"]').value);
+    const value = parseInput(button.parentElement.querySelector('input[name="value"]').value);
+
+    const resultElement = button.parentElement.querySelector('input[name="result"]');
+    const errorElement = button.parentElement.querySelector('.error-message');
+
+    try {
+        let asf = statistics.prosjecnaKvadratura({ [key]: value });
+
+        resultElement.value = asf;
+        errorElement.textContent = "";
+    } catch (error) {
+        resultElement.value = "";
+        errorElement.textContent = error.message;
+    }
+}
 
 function addRange(button) {
     const fromElement = button.parentElement.querySelector('input[name="from"]');

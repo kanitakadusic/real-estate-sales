@@ -10,6 +10,18 @@
         <title>Statistika</title>
     </head>
     <body>
+        <div id="square-footage">
+            <h2>Average square footage</h2>
+
+            <input name="key" type="text" placeholder="Key">
+            <input name="value" type="text" placeholder="Value">
+
+            <button onclick="calculateASF(this)">Calculate</button><br>
+
+            <input name="result" type="text" placeholder="Result" readonly>
+            <span class="error-message"></span>
+        </div>
+
         <div id="year-ranges">
             <h2>Year ranges</h2>
             
