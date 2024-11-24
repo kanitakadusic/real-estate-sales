@@ -13,10 +13,23 @@
         <div id="square-footage">
             <h2>Average square footage</h2>
 
-            <input name="key" type="text" placeholder="Key">
-            <input name="value" type="text" placeholder="Value">
+            <input name="filter-key" type="text" placeholder="Filter key">
+            <input name="filter-value" type="text" placeholder="Filter value">
 
             <button onclick="calculateASF(this)">Calculate</button><br>
+
+            <input name="result" type="text" placeholder="Result" readonly>
+            <span class="error-message"></span>
+        </div>
+
+        <div id="outlier">
+            <h2>Outlier</h2>
+
+            <input name="filter-key" type="text" placeholder="Filter key">
+            <input name="filter-value" type="text" placeholder="Filter value">
+            <input name="deviation-key" type="text" placeholder="Deviation key">
+
+            <button onclick="findOutlier(this)">Find</button><br>
 
             <input name="result" type="text" placeholder="Result" readonly>
             <span class="error-message"></span>

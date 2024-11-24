@@ -38,13 +38,29 @@ let StatistikaNekretnina = function() {
     }
 
     let outlier = function(kriterij, nazivSvojstva) {
-        if (!isValidObject(kriterij) || typeof nazivSvojstva !== 'string') return null;
+        if (!isValidObject(kriterij)) {
+            throw new Error("Criteria format is not valid.");
+        }
+
+        if (typeof nazivSvojstva !== 'string') {
+            throw new Error("Key format is not valid.");
+        }
+
         let filteredProperties = propertyListing.filtrirajNekretnine(kriterij);
-        if (filteredProperties.length !== 0 && !hasAllowedKeys({ [nazivSvojstva]: Number() }, filteredProperties[0])) return null;
+
+        if (filteredProperties.length === 0) {
+            throw new Error("Not a single property meets the given criteria.");
+        }
+
+        if (!hasAllowedKeys({ [nazivSvojstva]: Number() }, filteredProperties[0])) {
+            throw new Error("Filtering by the given criteria is not allowed.");
+        }
+
         let average = getAverage(filteredProperties, (element) => element[nazivSvojstva]);
+
         return filteredProperties.reduce((max, current) => {
             return Math.abs(current[nazivSvojstva] - average) > Math.abs(max[nazivSvojstva] - average) ? current : max;
-        }, filteredProperties[0]) || null;
+        }, filteredProperties[0]);
     }
 
     let mojeNekretnine = function(korisnik) {

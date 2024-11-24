@@ -12,8 +12,8 @@ function parseInput(input) {
 }
 
 function calculateASF(button) {
-    const key = String(button.parentElement.querySelector('input[name="key"]').value);
-    const value = parseInput(button.parentElement.querySelector('input[name="value"]').value);
+    const key = String(button.parentElement.querySelector('input[name="filter-key"]').value);
+    const value = parseInput(button.parentElement.querySelector('input[name="filter-value"]').value);
 
     const resultElement = button.parentElement.querySelector('input[name="result"]');
     const errorElement = button.parentElement.querySelector('.error-message');
@@ -22,6 +22,25 @@ function calculateASF(button) {
         let asf = statistics.prosjecnaKvadratura({ [key]: value });
 
         resultElement.value = asf;
+        errorElement.textContent = "";
+    } catch (error) {
+        resultElement.value = "";
+        errorElement.textContent = error.message;
+    }
+}
+
+function findOutlier(button) {
+    const key = String(button.parentElement.querySelector('input[name="filter-key"]').value);
+    const value = parseInput(button.parentElement.querySelector('input[name="filter-value"]').value);
+    const deviation = String(button.parentElement.querySelector('input[name="deviation-key"]').value);
+
+    const resultElement = button.parentElement.querySelector('input[name="result"]');
+    const errorElement = button.parentElement.querySelector('.error-message');
+
+    try {
+        let property = statistics.outlier({ [key]: value }, deviation);
+
+        resultElement.value = property.id;
         errorElement.textContent = "";
     } catch (error) {
         resultElement.value = "";
