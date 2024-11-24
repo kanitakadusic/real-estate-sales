@@ -16,7 +16,7 @@
             <input name="filter-key" type="text" placeholder="Filter key">
             <input name="filter-value" type="text" placeholder="Filter value">
 
-            <button onclick="calculateASF(this)">Calculate</button><br>
+            <button onclick="calculatePropertyASF(this)">Calculate</button><br>
 
             <input name="result" type="text" placeholder="Result" readonly>
             <span class="error-message"></span>
@@ -29,9 +29,20 @@
             <input name="filter-value" type="text" placeholder="Filter value">
             <input name="deviation-key" type="text" placeholder="Deviation key">
 
-            <button onclick="findOutlier(this)">Find</button><br>
+            <button onclick="findPropertyOutlier(this)">Find</button><br>
 
-            <input name="result" type="text" placeholder="Result" readonly>
+            <input name="result" type="text" placeholder="Property" readonly>
+            <span class="error-message"></span>
+        </div>
+
+        <div id="my-properties">
+            <h2>My properties</h2>
+
+            <input name="user-id" type="number" placeholder="User ID">
+
+            <button onclick="extractMyProperties(this)">Extract</button><br>
+
+            <input name="result" type="text" placeholder="Properties" readonly>
             <span class="error-message"></span>
         </div>
 

@@ -64,10 +64,27 @@ let StatistikaNekretnina = function() {
     }
 
     let mojeNekretnine = function(korisnik) {
+        if (!isValidObject(korisnik)) {
+            throw new Error("User format is not valid.");
+        }
+
         let properties = propertyListing.filtrirajNekretnine({});
-        return properties
-            .filter(property => property.upiti.some(inquiry => inquiry.korisnik_id === korisnik.id))
-            .sort((a, b) => b.upiti.length - a.upiti.length);
+
+        if (properties.length === 0) {
+            throw new Error("No properties are available.");
+        }
+
+        if (!("id" in korisnik && typeof korisnik.id === 'number')) {
+            throw new Error("User ID must be defined (as a whole number).");
+        }
+
+        let filteredProperties = properties.filter(property => property.upiti.some(inquiry => inquiry.korisnik_id === korisnik.id));
+
+        if (filteredProperties.length === 0) {
+            throw new Error("The given user is not interested in any real estate.");
+        }
+
+        return filteredProperties.sort((a, b) => b.upiti.length - a.upiti.length);
     }
 
     let isInSegment = function(x, a, b) {

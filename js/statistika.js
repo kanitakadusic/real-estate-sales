@@ -11,7 +11,7 @@ function parseInput(input) {
     return input;
 }
 
-function calculateASF(button) {
+function calculatePropertyASF(button) {
     const key = String(button.parentElement.querySelector('input[name="filter-key"]').value);
     const value = parseInput(button.parentElement.querySelector('input[name="filter-value"]').value);
 
@@ -29,7 +29,7 @@ function calculateASF(button) {
     }
 }
 
-function findOutlier(button) {
+function findPropertyOutlier(button) {
     const key = String(button.parentElement.querySelector('input[name="filter-key"]').value);
     const value = parseInput(button.parentElement.querySelector('input[name="filter-value"]').value);
     const deviation = String(button.parentElement.querySelector('input[name="deviation-key"]').value);
@@ -41,6 +41,23 @@ function findOutlier(button) {
         let property = statistics.outlier({ [key]: value }, deviation);
 
         resultElement.value = property.id;
+        errorElement.textContent = "";
+    } catch (error) {
+        resultElement.value = "";
+        errorElement.textContent = error.message;
+    }
+}
+
+function extractMyProperties(button) {
+    const id = parseInt(button.parentElement.querySelector('input[name="user-id"]').value);
+
+    const resultElement = button.parentElement.querySelector('input[name="result"]');
+    const errorElement = button.parentElement.querySelector('.error-message');
+
+    try {
+        let properties = statistics.mojeNekretnine({ id: id });
+
+        resultElement.value = properties.length;
         errorElement.textContent = "";
     } catch (error) {
         resultElement.value = "";
