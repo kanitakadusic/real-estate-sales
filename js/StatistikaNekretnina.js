@@ -48,6 +48,10 @@ let StatistikaNekretnina = function() {
             throw new Error("Criteria format is not valid.");
         }
 
+        if (!hasAllowedKeys(kriterij, genericProperty)) {
+            throw new Error("Filtering by the given criteria is not possible.");
+        }
+
         if (typeof nazivSvojstva !== 'string') {
             throw new Error("Key format is not valid.");
         }
