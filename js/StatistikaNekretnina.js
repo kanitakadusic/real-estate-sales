@@ -32,26 +32,39 @@ let StatistikaNekretnina = function() {
     let init = function(properties, users) {
         propertyListing.init(properties, users);
 
-        if (properties.length !== 0) genericProperty = extractKeys(properties[0]);
-        if (users.length !== 0) genericUser = extractKeys(users[0]);
+        if (properties.length !== 0) {
+            genericProperty = extractKeys(properties[0]);
+        }
+
+        if (users.length !== 0) {
+            genericUser = extractKeys(users[0]);
+        }
     }
 
-    let isValidObject = function(o) {
-        return typeof o === 'object' && !Array.isArray(o) && o !== null && o !== undefined;
+    let isObject = function(o) {
+        return typeof o === 'object' && !Array.isArray(o) && o !== null;
     }
 
-    let hasAllowedKeys = function(check, allowed) {
-        return Object.keys(check).every(key => key in allowed && typeof check[key] === typeof allowed[key]);
+    let hasAllowedKeys = function(check, reference) {
+        return Object.keys(check).every(key => key in reference && typeof check[key] === typeof reference[key]);
     }
 
-    let getAverage = function(array, mapper) {
+    let getAverage = function(array, mapper = (e) => e) {
         if (array.length === 0) return null;
         return array.reduce((sum, element) => sum + mapper(element), 0) / array.length;
     }
 
     let prosjecnaKvadratura = function(kriterij) {
-        if (!isValidObject(kriterij)) {
+        if (genericProperty === null) {
+            throw new Error("No properties are available.");
+        }
+
+        if (!isObject(kriterij)) {
             throw new Error("Criteria format is not valid.");
+        }
+
+        if (!hasAllowedKeys(kriterij, genericProperty)) {
+            throw new Error("Filtering by the given criteria is not possible.");
         }
 
         let filteredProperties = propertyListing.filtrirajNekretnine(kriterij);
@@ -60,15 +73,19 @@ let StatistikaNekretnina = function() {
             throw new Error("Not a single property meets the given criteria.");
         }
 
-        if (!hasAllowedKeys(kriterij, filteredProperties[0])) {
-            throw new Error("Filtering by the given criteria is not allowed.");
-        }
+        return getAverage(filteredProperties, (e) => e["kvadratura"]);
+    }
 
-        return getAverage(filteredProperties, (element) => element["kvadratura"]);
+    let largerOutlier = function(x, y, reference, mapper = (e) => e) {
+        return Math.abs(mapper(x) - reference) > Math.abs(mapper(y) - reference) ? x : y;
     }
 
     let outlier = function(kriterij, nazivSvojstva) {
-        if (!isValidObject(kriterij)) {
+        if (genericProperty === null) {
+            throw new Error("No properties are available.");
+        }
+
+        if (!isObject(kriterij)) {
             throw new Error("Criteria format is not valid.");
         }
 
@@ -76,39 +93,37 @@ let StatistikaNekretnina = function() {
             throw new Error("Key format is not valid.");
         }
 
+        if (!hasAllowedKeys({ [nazivSvojstva]: Number() }, genericProperty)) {
+            throw new Error("Filtering by the given criteria is not possible.");
+        }
+
         let filteredProperties = propertyListing.filtrirajNekretnine(kriterij);
 
         if (filteredProperties.length === 0) {
             throw new Error("Not a single property meets the given criteria.");
         }
 
-        if (!hasAllowedKeys({ [nazivSvojstva]: Number() }, filteredProperties[0])) {
-            throw new Error("Filtering by the given criteria is not allowed.");
-        }
+        let average = getAverage(filteredProperties, (e) => e[nazivSvojstva]);
 
-        let average = getAverage(filteredProperties, (element) => element[nazivSvojstva]);
-
-        return filteredProperties.reduce((max, current) => {
-            return Math.abs(current[nazivSvojstva] - average) > Math.abs(max[nazivSvojstva] - average) ? current : max;
-        }, filteredProperties[0]);
+        return filteredProperties.reduce((max, current) => 
+            largerOutlier(max, current, average, (e) => e[nazivSvojstva]), filteredProperties[0]);
     }
 
     let mojeNekretnine = function(korisnik) {
-        if (!isValidObject(korisnik)) {
+        if (genericProperty === null) {
+            throw new Error("No properties are available.");
+        }
+        
+        if (!isObject(korisnik)) {
             throw new Error("User format is not valid.");
         }
 
-        let properties = propertyListing.filtrirajNekretnine({});
-
-        if (properties.length === 0) {
-            throw new Error("No properties are available.");
+        if (!("id" in korisnik && Number.isInteger(korisnik.id))) {
+            throw new Error("User ID must be defined (as an integer).");
         }
 
-        if (!("id" in korisnik && typeof korisnik.id === 'number')) {
-            throw new Error("User ID must be defined (as a whole number).");
-        }
-
-        let filteredProperties = properties.filter(property => property.upiti.some(inquiry => inquiry.korisnik_id === korisnik.id));
+        let filteredProperties = propertyListing.filtrirajNekretnine({})
+            .filter(property => property.upiti.some(inquiry => inquiry.korisnik_id === korisnik.id));
 
         if (filteredProperties.length === 0) {
             throw new Error("The given user is not interested in any real estate.");
