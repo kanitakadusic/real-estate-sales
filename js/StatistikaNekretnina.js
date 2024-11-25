@@ -57,7 +57,7 @@ let StatistikaNekretnina = function() {
         }
 
         if (!hasAllowedKeys({ [nazivSvojstva]: Number() }, genericProperty)) {
-            throw new Error("Filtering by the given criteria is not possible.");
+            throw new Error("Finding outlier for the given deviation key is not possible.");
         }
 
         let filteredProperties = propertyListing.filtrirajNekretnine(kriterij);

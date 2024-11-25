@@ -10,41 +10,41 @@
         <title>Statistika</title>
     </head>
     <body>
-        <div id="square-footage">
+        <form name="average-square-footage">
             <h2>Average square footage</h2>
 
             <input name="filter-key" type="text" placeholder="Filter key">
             <input name="filter-value" type="text" placeholder="Filter value">
 
-            <button onclick="calculatePropertyASF(this)">Calculate</button><br>
+            <button onclick="calculateASF(event)">Calculate</button><br>
 
             <input name="result" type="text" placeholder="Result" readonly>
             <span class="error-message"></span>
-        </div>
+        </form>
 
-        <div id="outlier">
+        <form name="outlier">
             <h2>Outlier</h2>
 
             <input name="filter-key" type="text" placeholder="Filter key">
             <input name="filter-value" type="text" placeholder="Filter value">
             <input name="deviation-key" type="text" placeholder="Deviation key">
 
-            <button onclick="findPropertyOutlier(this)">Find</button><br>
+            <button onclick="findOutlier(event)">Find</button><br>
 
             <input name="result" type="text" placeholder="Property" readonly>
             <span class="error-message"></span>
-        </div>
+        </form>
 
-        <div id="my-properties">
+        <form name="my-properties">
             <h2>My properties</h2>
 
             <input name="user-id" type="number" placeholder="User ID">
 
-            <button onclick="extractMyProperties(this)">Extract</button><br>
+            <button onclick="extractMy(event)">Extract</button><br>
 
             <input name="result" type="text" placeholder="Properties" readonly>
             <span class="error-message"></span>
-        </div>
+        </form>
 
         <div id="year-ranges">
             <h2>Year ranges</h2>
