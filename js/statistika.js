@@ -68,37 +68,42 @@ function extractMy(event) {
     }
 }
 
-function addRange(button) {
-    const fromElement = button.parentElement.querySelector('input[name="from"]');
-    const toElement = button.parentElement.querySelector('input[name="to"]');
+function addRange(event, input) {
+    event.preventDefault();
+    const form = document.forms['years-prices'];
 
-    const from = parseInt(fromElement.value);
-    const to = parseInt(toElement.value);
+    const startElement = form[`start-${input}`];
+    const endElement = form[`end-${input}`];
 
-    if (from <= to && from >= 0) {
-        if (button.parentElement.id === "year-ranges") {
-            yearRanges.push({ od: from, do: to });
-            showRange("year-ranges-container", from, to);
+    const start = Number(startElement.value);
+    const end = Number(endElement.value);
+
+    if (start <= end) {
+        if (input === 'year') {
+            yearRanges.push({ od: start, do: end });
         } else {
-            priceRanges.push({ od: from, do: to });
-            showRange("price-ranges-container", from, to);
+            priceRanges.push({ od: start, do: end });
         }
 
-        fromElement.value = "";
-        toElement.value = "";
+        showRange(`${input}-ranges-container`, start, end);
+
+        startElement.value = "";
+        endElement.value = "";
     } else {
-        alert("The entry is not valid.");
+        alert("Start must be less than or equal to End.");
     }
 }
 
-function showRange(containerId, from, to) {
-    let rangeElement = document.createElement("div");
-    rangeElement.textContent = `${from} - ${to}`;
-    rangeElement.classList.add("range");
+function showRange(containerId, start, end) {
+    let rangeElement = document.createElement('div');
+    rangeElement.textContent = `${start} - ${end}`;
+    rangeElement.classList.add('range');
+
     document.getElementById(containerId).appendChild(rangeElement);
 }
 
-function iscrtajHistogram() {
+function iscrtajHistogram(event) {
+    event.preventDefault();
     const histogram = statistics.histogramCijena(yearRanges, priceRanges);
 
     const chartsContainer = document.getElementById("charts-container");

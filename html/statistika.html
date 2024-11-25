@@ -46,28 +46,26 @@
             <span class="error-message"></span>
         </form>
 
-        <div id="year-ranges">
+        <form id="years-prices">
             <h2>Year ranges</h2>
             
-            <input name="from" type="number" placeholder="Begin">
-            <input name="to" type="number" placeholder="End">
+            <input name="start-year" type="number" placeholder="Start year">
+            <input name="end-year" type="number" placeholder="End year">
             
-            <button onclick="addRange(this)">Add</button>
+            <button onclick="addRange(event, 'year')">Add</button>
             <div id="year-ranges-container"></div>
-        </div>
 
-        <div id="price-ranges">
             <h2>Price ranges</h2>
 
-            <input name="from" type="number" placeholder="Bottom">
-            <input name="to" type="number" placeholder="Top">
+            <input name="start-price" type="number" placeholder="Start price">
+            <input name="end-price" type="number" placeholder="End price">
             
-            <button onclick="addRange(this)">Add</button>
+            <button onclick="addRange(event, 'price')">Add</button>
             <div id="price-ranges-container"></div>
-        </div>
 
-        <button id="generate-charts" onclick="iscrtajHistogram()">Generate charts</button>
-        <div id="charts-container"></div>
+            <button onclick="iscrtajHistogram(event)">Generate charts</button>
+            <div id="charts-container"></div>
+        </form>
 
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
