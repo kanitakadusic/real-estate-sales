@@ -2,8 +2,38 @@ let StatistikaNekretnina = function() {
 
     let propertyListing = SpisakNekretnina();
 
-    let init = function(propertiesList, usersList) {
-        propertyListing.init(propertiesList, usersList);
+    let genericProperty = null;
+    let genericUser = null;
+
+    let getDefaultValue = function(value) {
+        if (value === null || value === undefined) return value;
+
+        if (typeof(value) === 'number') return 0;
+        if (typeof(value) === 'string') return "";
+        if (typeof(value) === 'boolean') return false;
+
+        if (Array.isArray(value)) return [];
+        if (typeof(value) === 'object') return {};
+        if (typeof(value) === 'function') return () => {};
+
+        if (typeof(value) === 'bigint') return 0n;
+        if (typeof(value) === 'symbol') return Symbol();
+
+        throw new Error("Unknown type.");
+    }
+
+    let extractKeys = function(reference) {
+        return Object.keys(reference).reduce((object, key) => {
+            object[key] = getDefaultValue(reference[key]);
+            return object;
+        }, {});
+    }
+
+    let init = function(properties, users) {
+        propertyListing.init(properties, users);
+
+        if (properties.length !== 0) genericProperty = extractKeys(properties[0]);
+        if (users.length !== 0) genericUser = extractKeys(users[0]);
     }
 
     let isValidObject = function(o) {
