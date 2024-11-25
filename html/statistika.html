@@ -16,9 +16,9 @@
             <input name="filter-key" type="text" placeholder="Filter key">
             <input name="filter-value" type="text" placeholder="Filter value">
 
-            <button onclick="calculateASF(event)">Calculate</button><br>
+            <button onclick="calculateASF(event)">Calculate</button>
 
-            <input name="result" type="text" placeholder="Result" readonly>
+            <div id="asf-container"></div>
             <span class="error-message"></span>
         </form>
 
@@ -29,9 +29,9 @@
             <input name="filter-value" type="text" placeholder="Filter value">
             <input name="deviation-key" type="text" placeholder="Deviation key">
 
-            <button onclick="findOutlier(event)">Find</button><br>
+            <button onclick="findOutlier(event)">Find</button>
 
-            <input name="result" type="text" placeholder="Property" readonly>
+            <div id="outlier-container"></div>
             <span class="error-message"></span>
         </form>
 
@@ -40,9 +40,9 @@
 
             <input name="user-id" type="number" placeholder="User ID">
 
-            <button onclick="extractMy(event)">Extract</button><br>
+            <button onclick="extractMy(event)">Extract</button>
 
-            <input name="result" type="text" placeholder="Properties" readonly>
+            <div id="my-properties-container"></div>
             <span class="error-message"></span>
         </form>
 

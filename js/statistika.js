@@ -11,6 +11,14 @@ function parseInput(input) {
     return input;
 }
 
+function insertBlock(container, content) {
+    let block = document.createElement('div');
+    block.textContent = content;
+    block.classList.add('block');
+
+    container.appendChild(block);
+}
+
 function calculateASF(event) {
     event.preventDefault();
     const form = document.forms['average-square-footage'];
@@ -18,14 +26,19 @@ function calculateASF(event) {
     const key = String(form['filter-key'].value);
     const value = parseInput(form['filter-value'].value);
 
-    const resultElement = form['result'];
+    let container = form.querySelector(`#asf-container`);
+    container.innerHTML = "";
     const errorElement = form.querySelector('.error-message');
 
     try {
-        resultElement.value = statistics.prosjecnaKvadratura({ [key]: value });
+        let asf = statistics.prosjecnaKvadratura({ [key]: value });
+        insertBlock(
+            container,
+            asf
+        )
+
         errorElement.textContent = "";
     } catch (error) {
-        resultElement.value = "";
         errorElement.textContent = error.message;
     }
 }
@@ -38,14 +51,19 @@ function findOutlier(event) {
     const value = parseInput(form['filter-value'].value);
     const deviation = String(form['deviation-key'].value);
 
-    const resultElement = form['result'];
+    let container = form.querySelector(`#outlier-container`);
+    container.innerHTML = "";
     const errorElement = form.querySelector('.error-message');
 
     try {
-        resultElement.value = statistics.outlier({ [key]: value }, deviation).id;
+        let outlier = statistics.outlier({ [key]: value }, deviation);
+        insertBlock(
+            container,
+            `${outlier.naziv} [${outlier.datum_objave}]`
+        )
+
         errorElement.textContent = "";
     } catch (error) {
-        resultElement.value = "";
         errorElement.textContent = error.message;
     }
 }
@@ -56,14 +74,19 @@ function extractMy(event) {
 
     const id = parseInt(form['user-id'].value);
 
-    const resultElement = form['result'];
+    let container = form.querySelector(`#my-properties-container`);
+    container.innerHTML = "";
     const errorElement = form.querySelector('.error-message');
 
     try {
-        resultElement.value = statistics.mojeNekretnine({ id: id }).length;
+        let myProperties = statistics.mojeNekretnine({ id: id });
+        myProperties.forEach(property => insertBlock(
+            container,
+            `${property.naziv} [${property.datum_objave}] (${property.upiti.length})`
+        ));
+
         errorElement.textContent = "";
     } catch (error) {
-        resultElement.value = "";
         errorElement.textContent = error.message;
     }
 }
@@ -80,26 +103,23 @@ function addRange(event, input) {
 
     if (start <= end) {
         if (input === 'year') {
+            if (yearRanges.some(e => e.od === start && e.do === end)) return;
             yearRanges.push({ od: start, do: end });
         } else {
+            if (priceRanges.some(e => e.od === start && e.do === end)) return;
             priceRanges.push({ od: start, do: end });
         }
 
-        showRange(`${input}-ranges-container`, start, end);
+        insertBlock(
+            form.querySelector(`#${input}-ranges-container`),
+            `${start} - ${end}`
+        );
 
         startElement.value = "";
         endElement.value = "";
     } else {
         alert("Start must be less than or equal to End.");
     }
-}
-
-function showRange(containerId, start, end) {
-    let rangeElement = document.createElement('div');
-    rangeElement.textContent = `${start} - ${end}`;
-    rangeElement.classList.add('range');
-
-    document.getElementById(containerId).appendChild(rangeElement);
 }
 
 function iscrtajHistogram(event) {
