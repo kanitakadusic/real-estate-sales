@@ -1,12 +1,23 @@
-let carouselControl = postaviCarousel(
-    document.getElementById("carousel-placeholder"),
-    document.getElementsByClassName("upit")
+let upiti_originalContent = document.getElementById('upiti').innerHTML;
+let mediaQuery = window.matchMedia('(min-width: 600px)');
+
+let carousel = postaviCarousel(
+    document.getElementById('upiti'),
+    document.querySelectorAll('.upit')
 )
 
-document.getElementById("carousel-prev").addEventListener("click", () => {
-    carouselControl.fnLijevo();
-});
+function handleWidthChange(event) {
+    if (event.matches) {
+        document.getElementById('upiti').innerHTML = upiti_originalContent;
+    } else {
+        carousel.fnDesno();
+        carousel.fnLijevo();
+    }
+}
 
-document.getElementById("carousel-next").addEventListener("click", () => {
-    carouselControl.fnDesno();
-});
+handleWidthChange(mediaQuery);
+
+document.getElementById('carousel-prev').addEventListener('click', () => carousel.fnLijevo());
+document.getElementById('carousel-next').addEventListener('click', () => carousel.fnDesno());
+
+mediaQuery.addEventListener('change', handleWidthChange);

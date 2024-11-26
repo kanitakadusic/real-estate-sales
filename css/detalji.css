@@ -69,7 +69,6 @@ iframe {
     margin: 20px;
 }
 
-#carousel-placeholder,
 .upit {
     flex: 1 1 100%;
     box-sizing: border-box;
@@ -79,37 +78,15 @@ iframe {
     background-color: white;
 }
 
-#carousel-placeholder {
+#carousel-buttons {
     display: none;
-}
-
-.carousel-button {
-    display: none;
-    align-self: center;
-    height: 30px;
-    width: 30px;
-}
-
-#carousel-prev {
-    order: -1;
-}
-
-#carousel-next {
-    order: 1;
+    margin: 0 auto 20px auto;
+    width: fit-content;
 }
 
 @media (max-width: 599px) {
-    #carousel-placeholder {
-        flex-basis: 50%;
+    #carousel-buttons {
         display: block;
-    }
-
-    .upit {
-        display: none;
-    }
-
-    .carousel-button {
-        display: inline-block;
     }
 }
 
