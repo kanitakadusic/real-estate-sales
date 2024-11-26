@@ -66,10 +66,15 @@ let StatistikaNekretnina = function() {
             throw new Error("Not a single property meets the given criteria.");
         }
 
-        let average = getAverage(filteredProperties, (e) => e[nazivSvojstva]);
+        let average = getAverage(
+            propertyListing.filtrirajNekretnine({}),
+            (e) => e[nazivSvojstva]
+        );
 
-        return filteredProperties.reduce((max, current) => 
-            largerOutlier(max, current, average, (e) => e[nazivSvojstva]), filteredProperties[0]);
+        return filteredProperties.reduce(
+            (max, current) => largerOutlier(max, current, average, (e) => e[nazivSvojstva]),
+            filteredProperties[0]
+        );
     }
 
     let mojeNekretnine = function(korisnik) {
