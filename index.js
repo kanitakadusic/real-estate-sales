@@ -27,7 +27,7 @@ async function serveHTMLFile(req, res, fileName) {
         const content = await fs.readFile(htmlPath, 'utf-8');
         res.send(content);
     } catch (error) {
-        console.error('Error serving HTML file:', error);
+        console.error(`Error serving HTML file ${fileName}.html:`, error);
         res.status(500).json({ greska: 'Internal Server Error' });
     }
 }
@@ -54,33 +54,35 @@ routes.forEach(({ route, file }) => {
 /* ----------- SERVING OTHER ROUTES --------------- */
 
 // Async function for reading json data from 'data' folder
-async function readJsonFile(filename) {
-    const filePath = path.join(__dirname, 'data', `${filename}.json`);
+async function readJsonFile(fileName) {
+    const filePath = path.join(__dirname, 'data', `${fileName}.json`);
     try {
         const rawdata = await fs.readFile(filePath, 'utf-8');
         return JSON.parse(rawdata);
     } catch (error) {
+        console.error(`Error reading JSON file ${fileName}.json:`, error);
         throw error;
     }
 }
 
 // Async function for saving json data in 'data' folder
-async function saveJsonFile(filename, data) {
-    const filePath = path.join(__dirname, 'data', `${filename}.json`);
+async function saveJsonFile(fileName, data) {
+    const filePath = path.join(__dirname, 'data', `${fileName}.json`);
     try {
         await fs.writeFile(filePath, JSON.stringify(data, null, 2), 'utf-8');
     } catch (error) {
+        console.error(`Error writing JSON file ${fileName}.json:`, error);
         throw error;
     }
 }
 
 // Async function for adding data in txt file in 'logs' folder
-async function addInTxtFile(filename, data) {
-    const filePath = path.join(__dirname, 'logs', `${filename}.txt`);
+async function addInTxtFile(fileName, data) {
+    const filePath = path.join(__dirname, 'logs', `${fileName}.txt`);
     try {
         await fs.appendFile(filePath, data, 'utf-8');
     } catch (error) {
-        console.error('Error while adding in file:', error);
+        console.error(`Error appending TXT file ${fileName}.txt:`, error);
         throw error;
     }
 }
@@ -96,15 +98,16 @@ async function logLoginAttempt(username, success) {
     try {
         await addInTxtFile('prijave', log);
     } catch (error) {
-        console.error('Error while logging attempt:', error);
+        console.error(`Error logging login attempt for ${username}:`, error);
         throw error;
     }
 }
 
 /*
-Checks if the user exists and if the password is correct based on korisnici.json data. 
+Checks if the user exists and if the password is correct based on 'korisnici.json' data. 
 If the data is correct, the username is saved in the session and a success message is sent.
 User can make a maximum of 3 failed login attempts, otherwise he will be blocked for one minute.
+Every login attempt is logged.
 */
 app.post('/login', async (req, res) => {
     const jsonObj = req.body;
@@ -114,11 +117,12 @@ app.post('/login', async (req, res) => {
 
         for (let user of users) {
             if (user.username == jsonObj.username) {
+
                 if (user.loginAttempts >= 3) {
                     if (new Date() < new Date(user.blockedUntil)) {
                         await logLoginAttempt(user.username, false);
+
                         return res.status(429).json({
-                            poruka: 'Neuspješna prijava',
                             greska: 'Previše neuspješnih pokušaja. Pokušajte ponovo za 1 minutu.'
                         });
                     } else {
@@ -132,10 +136,13 @@ app.post('/login', async (req, res) => {
                 if (isPasswordMatched) {
                     req.session.username = user.username;
                     user.loginAttempts = 0;
+
                     res.json({ poruka: 'Uspješna prijava' });
                 } else {
-                    if (++(user.loginAttempts) >= 3)
+                    if (++(user.loginAttempts) >= 3) {
                         user.blockedUntil = new Date(new Date().getTime() + 1 * 60 * 1000);
+                    }
+
                     res.json({ poruka: 'Neuspješna prijava' });
                 }
 
@@ -146,6 +153,7 @@ app.post('/login', async (req, res) => {
         }
         
         await logLoginAttempt(jsonObj.username, false);
+
         res.json({ poruka: 'Neuspješna prijava' });
     } catch (error) {
         console.error('Error during login:', error);
@@ -233,6 +241,7 @@ app.post('/upit', async (req, res) => {
 
         const properties = await readJsonFile('nekretnine');
         const property = properties.find((p) => p.id === nekretnina_id);
+
         if (!property) {
             return res.status(400).json({ greska: `Nekretnina sa id-em ${nekretnina_id} ne postoji` });
         }
@@ -246,6 +255,7 @@ app.post('/upit', async (req, res) => {
             korisnik_id: user.id,
             tekst_upita: tekst_upita
         });
+        
         await saveJsonFile('nekretnine', properties);
 
         res.status(200).json({ poruka: 'Upit je uspješno dodan' });
@@ -333,12 +343,12 @@ app.get('/nekretnine/top5', async (req, res) => {
     try {
         const properties = await readJsonFile('nekretnine');
 
-        const filteredProperties = properties
+        const processedProperties = properties
             .filter((p) => p.lokacija === lokacija)
             .sort((a, b) => parseDate(b.datum_objave) - parseDate(a.datum_objave))
             .slice(0, 5);
 
-        res.status(200).json(filteredProperties);
+        res.status(200).json(processedProperties);
     } catch (error) {
         console.error('Error fetching top 5 properties:', error);
         res.status(500).json({ greska: 'Internal Server Error' });
@@ -394,7 +404,7 @@ app.get('/nekretnina/:id', async (req, res) => {
         const property = properties.find((p) => p.id === Number(id));
 
         if (!property) {
-            return res.status(404).json();
+            return res.status(400).json({ greska: `Nekretnina sa id-em ${id} ne postoji` });
         }
         
         property.upiti = property.upiti.slice(-3);
@@ -414,7 +424,7 @@ app.get('/next/upiti/nekretnina/:id', async (req, res) => {
     const { page } = req.query;
 
     if (page < 1) {
-        return res.status(400).json({ greska: 'Invalid page number' });
+        return res.status(400).json({ greska: `Broj ${page} nije validan broj stranice` });
     }
 
     try {
@@ -422,7 +432,7 @@ app.get('/next/upiti/nekretnina/:id', async (req, res) => {
         const property = properties.find((p) => p.id === Number(id));
 
         if (!property) {
-            return res.status(404).json();
+            return res.status(400).json({ greska: `Nekretnina sa id-em ${id} ne postoji` });
         }
 
         const endIndex = -page * 3;
