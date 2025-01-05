@@ -192,7 +192,19 @@ const PoziviAjax = (() => {
     }
 
     function impl_getNekretnina(nekretnina_id, fnCallback) {
+        const url = `http://localhost:3000/nekretnina/${encodeURIComponent(nekretnina_id)}`;
 
+        ajaxRequest('GET', url, null, (error, response) => {
+            if (error) {
+                fnCallback(error, null);
+            } else {
+                try {
+                    fnCallback(null, JSON.parse(response));
+                } catch (parseError) {
+                    fnCallback(parseError, null);
+                }
+            }
+        });
     }
 
     function impl_getNextUpiti(nekretnina_id, page, fnCallback) {
