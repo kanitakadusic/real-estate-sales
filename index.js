@@ -312,6 +312,39 @@ app.get('/nekretnine', async (req, res) => {
     }
 });
 
+// Function for parsing a date in the "DD.MM.YYYY." format.
+function parseDate(date) {
+    const [day, month, year] = date.trim().split('.');
+
+    if (!day || !month || !year) {
+        throw new Error('Invalid date format');
+    }
+    
+    return new Date(`${year.trim()}-${month.trim()}-${day.trim()}`);
+}
+
+/*
+Returns the 5 most recently listed properties
+located at the given location from the file 'nekretnine.json'.
+*/
+app.get('/nekretnine/top5', async (req, res) => {
+    const { lokacija } = req.query;
+
+    try {
+        const properties = await readJsonFile('nekretnine');
+
+        const filteredProperties = properties
+            .filter((p) => p.lokacija === lokacija)
+            .sort((a, b) => parseDate(b.datum_objave) - parseDate(a.datum_objave))
+            .slice(0, 5);
+
+        res.status(200).json(filteredProperties);
+    } catch (error) {
+        console.error('Error fetching top 5 properties:', error);
+        res.status(500).json({ greska: 'Internal Server Error' });
+    }
+});
+
 /* ----------------- MARKETING ROUTES ----------------- */
 
 // Route that increments value of pretrage for one based on list of ids in nizNekretnina
