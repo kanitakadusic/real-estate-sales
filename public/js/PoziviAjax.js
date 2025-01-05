@@ -8,9 +8,6 @@ const PoziviAjax = (() => {
     function ajaxRequest(method, url, data, callback) {
         const ajax = new XMLHttpRequest();
 
-        ajax.open(method, url, true);
-        ajax.setRequestHeader('Content-Type', 'application/json');
-
         ajax.onreadystatechange = () => {
             if (ajax.readyState === 4) {
                 if (ajax.status === 200) {
@@ -21,6 +18,8 @@ const PoziviAjax = (() => {
             }
         };
 
+        ajax.open(method, url, true);
+        ajax.setRequestHeader('Content-Type', 'application/json');
         ajax.send(data ? JSON.stringify(data) : null);
     }
 
@@ -161,7 +160,19 @@ const PoziviAjax = (() => {
     }
 
     function impl_getTop5Nekretnina(lokacija, fnCallback) {
+        const url = `http://localhost:3000/nekretnine/top5?lokacija=${encodeURIComponent(lokacija)}`;
 
+        ajaxRequest('GET', url, null, (error, response) => {
+            if (error) {
+                fnCallback(error, null);
+            } else {
+                try {
+                    fnCallback(null, JSON.parse(response));
+                } catch (parseError) {
+                    fnCallback(parseError, null);
+                }
+            }
+        });
     }
 
     function impl_getMojiUpiti(fnCallback) {
