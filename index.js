@@ -382,6 +382,30 @@ app.get('/upiti/moji', async (req, res) => {
     }
 });
 
+/*
+Returns details of property with specified ID in JSON format.
+List of queries within the property is shortened to return only the last 3 queries.
+*/
+app.get('/nekretnina/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const properties = await readJsonFile('nekretnine');
+        const property = properties.find((p) => p.id === Number(id));
+
+        if (!property) {
+            return res.status(404).json();
+        }
+        
+        property.upiti = property.upiti.slice(-3);
+
+        res.status(200).json(property);
+    } catch (error) {
+        console.error('Error fetching property details:', error);
+        res.status(500).json({ greska: 'Internal Server Error' });
+    }
+});
+
 /* ----------------- MARKETING ROUTES ----------------- */
 
 // Route that increments value of pretrage for one based on list of ids in nizNekretnina
