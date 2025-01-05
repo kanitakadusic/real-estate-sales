@@ -406,6 +406,39 @@ app.get('/nekretnina/:id', async (req, res) => {
     }
 });
 
+/*
+Returns the next 3 queries for the property based on the page number.
+*/
+app.get('/next/upiti/nekretnina/:id', async (req, res) => {
+    const { id } = req.params;
+    const { page } = req.query;
+
+    if (page < 1) {
+        return res.status(400).json({ greska: 'Invalid page number' });
+    }
+
+    try {
+        const properties = await readJsonFile('nekretnine');
+        const property = properties.find((p) => p.id === Number(id));
+
+        if (!property) {
+            return res.status(404).json();
+        }
+
+        const endIndex = -page * 3;
+        const nextQueries = property.upiti.slice(endIndex - 3, endIndex);
+
+        if (nextQueries.length === 0) {
+            return res.status(404).json([]);
+        }
+
+        res.status(200).json(nextQueries);
+    } catch (error) {
+        console.error('Error fetching next queries for property:', error);
+        res.status(500).json({ greska: 'Internal Server Error' });
+    }
+});
+
 /* ----------------- MARKETING ROUTES ----------------- */
 
 // Route that increments value of pretrage for one based on list of ids in nizNekretnina

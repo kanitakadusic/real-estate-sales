@@ -20,6 +20,26 @@
         "tekst_upita": "Phasellus viverra nulla."
       },
       {
+        "korisnik_id": 123,
+        "tekst_upita": "Nullam eu pede mollis pretium."
+      },
+      {
+        "korisnik_id": 333,
+        "tekst_upita": "Nullam eu pede mollis pretium."
+      },
+      {
+        "korisnik_id": 444,
+        "tekst_upita": "Phasellus viverra nulla."
+      },
+      {
+        "korisnik_id": 555,
+        "tekst_upita": "Nullam eu pede mollis pretium."
+      },
+      {
+        "korisnik_id": 666,
+        "tekst_upita": "Phasellus viverra nulla."
+      },
+      {
         "korisnik_id": 999999,
         "tekst_upita": "Cijena?"
       },
