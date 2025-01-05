@@ -217,44 +217,36 @@ app.get('/korisnik', async (req, res) => {
 });
 
 /*
-Allows logged user to make a request for a property
+Allows logged user to make a request for a property.
+User can make a maximum of 3 queries for one property.
 */
 app.post('/upit', async (req, res) => {
-    // Check if the user is authenticated
-    if (!req.session.user) {
-        // User is not logged in
+    if (!req.session.username) {
         return res.status(401).json({ greska: 'Neautorizovan pristup' });
     }
 
-    // Get data from the request body
     const { nekretnina_id, tekst_upita } = req.body;
 
     try {
-        // Read user data from the JSON file
         const users = await readJsonFile('korisnici');
+        const user = users.find((u) => u.username === req.session.username);
 
-        // Read properties data from the JSON file
-        const nekretnine = await readJsonFile('nekretnine');
-
-        // Find the user by username
-        const loggedInUser = users.find((user) => user.username === req.session.user.username);
-
-        // Check if the property with nekretnina_id exists
-        const nekretnina = nekretnine.find((property) => property.id === nekretnina_id);
-
-        if (!nekretnina) {
-            // Property not found
+        const properties = await readJsonFile('nekretnine');
+        const property = properties.find((p) => p.id === nekretnina_id);
+        if (!property) {
             return res.status(400).json({ greska: `Nekretnina sa id-em ${nekretnina_id} ne postoji` });
         }
 
-        // Add a new query to the property's queries array
-        nekretnina.upiti.push({
-            korisnik_id: loggedInUser.id,
+        const userQueries = property.upiti.filter((q) => q.korisnik_id === user.id);
+        if (userQueries.length >= 3) {
+            return res.status(429).json({ greska: 'Previše upita za istu nekretninu.' });
+        }
+
+        property.upiti.push({
+            korisnik_id: user.id,
             tekst_upita: tekst_upita
         });
-
-        // Save the updated properties data back to the JSON file
-        await saveJsonFile('nekretnine', nekretnine);
+        await saveJsonFile('nekretnine', properties);
 
         res.status(200).json({ poruka: 'Upit je uspješno dodan' });
     } catch (error) {
