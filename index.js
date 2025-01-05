@@ -34,11 +34,13 @@ async function serveHTMLFile(req, res, fileName) {
 
 // Array of HTML files and their routes
 const routes = [
-    { route: '/nekretnine.html', file: 'nekretnine.html' },
     { route: '/detalji.html', file: 'detalji.html' },
     { route: '/meni.html', file: 'meni.html' },
+    { route: '/nekretnine.html', file: 'nekretnine.html' },
     { route: '/prijava.html', file: 'prijava.html' },
     { route: '/profil.html', file: 'profil.html' },
+    { route: '/statistika.html', file: 'statistika.html' }, // Dodano u odnosu na početni projekat
+    { route: '/vijesti.html', file: 'vijesti.html' }, // Dodano u odnosu na početni projekat
     // Practical for adding more .html files as the project grows
 ];
 
