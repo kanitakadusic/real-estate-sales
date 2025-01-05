@@ -208,7 +208,19 @@ const PoziviAjax = (() => {
     }
 
     function impl_getNextUpiti(nekretnina_id, page, fnCallback) {
+        const url = `http://localhost:3000/next/upiti/nekretnina/${encodeURIComponent(nekretnina_id)}?page=${encodeURIComponent(page)}`;
 
+        ajaxRequest('GET', url, null, (error, response) => {
+            if (error) {
+                fnCallback(error, null);
+            } else {
+                try {
+                    fnCallback(null, JSON.parse(response));
+                } catch (parseError) {
+                    fnCallback(parseError, null);
+                }
+            }
+        });
     }
 
     return {
