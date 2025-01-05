@@ -176,7 +176,19 @@ const PoziviAjax = (() => {
     }
 
     function impl_getMojiUpiti(fnCallback) {
+        const url = 'http://localhost:3000/upiti/moji';
 
+        ajaxRequest('GET', url, null, (error, response) => {
+            if (error) {
+                fnCallback(error, null);
+            } else {
+                try {
+                    fnCallback(null, JSON.parse(response));
+                } catch (parseError) {
+                    fnCallback(parseError, null);
+                }
+            }
+        });
     }
 
     function impl_getNekretnina(nekretnina_id, fnCallback) {
