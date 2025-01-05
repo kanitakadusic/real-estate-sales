@@ -175,8 +175,8 @@ app.post('/logout', (req, res) => {
 });
 
 /*
-Returns currently logged user data. First takes the username from the session and grabs other data
-from the .json file.
+Returns currently logged user data.
+First takes the username from the session and grabs other data from the .json file.
 */
 app.get('/korisnik', async (req, res) => {
     // Check if the username is present in the session
@@ -300,7 +300,7 @@ app.put('/korisnik', async (req, res) => {
 
         // Save the updated user data back to the JSON file
         await saveJsonFile('korisnici', users);
-        res.status(200).json({ poruka: 'Podaci su uspjeÅ¡no aÅ¾urirani' });
+        res.status(200).json({ poruka: 'Podaci su uspješno ažurirani' });
     } catch (error) {
         console.error('Error updating user data:', error);
         res.status(500).json({ greska: 'Internal Server Error' });
@@ -356,7 +356,7 @@ app.post('/marketing/nekretnine', async (req, res) => {
 
         res.status(200).json({});
     } catch (error) {
-        console.error('GreÅ¡ka prilikom Äitanja ili pisanja JSON datoteke:', error);
+        console.error('Greška prilikom čitanja ili pisanja JSON datoteke:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
