@@ -319,7 +319,7 @@ function parseDate(date) {
     if (!day || !month || !year) {
         throw new Error('Invalid date format');
     }
-    
+
     return new Date(`${year.trim()}-${month.trim()}-${day.trim()}`);
 }
 
@@ -341,6 +341,43 @@ app.get('/nekretnine/top5', async (req, res) => {
         res.status(200).json(filteredProperties);
     } catch (error) {
         console.error('Error fetching top 5 properties:', error);
+        res.status(500).json({ greska: 'Internal Server Error' });
+    }
+});
+
+/*
+Returns all queries made by the logged-in user.
+*/
+app.get('/upiti/moji', async (req, res) => {
+    if (!req.session.username) {
+        return res.status(401).json({ greska: 'Neautorizovan pristup' });
+    }
+
+    try {
+        const users = await readJsonFile('korisnici');
+        const user = users.find((u) => u.username === req.session.username);
+
+        const properties = await readJsonFile('nekretnine');
+        const userQueries = [];
+
+        properties.forEach((property) => {
+            property.upiti.forEach((query) => {
+                if (query.korisnik_id === user.id) {
+                    userQueries.push({
+                        id_nekretnine: property.id,
+                        tekst_upita: query.tekst_upita
+                    });
+                }
+            });
+        });
+
+        if (userQueries.length === 0) {
+            return res.status(404).json([]);
+        }
+
+        res.status(200).json(userQueries);
+    } catch (error) {
+        console.error('Error fetching user queries:', error);
         res.status(500).json({ greska: 'Internal Server Error' });
     }
 });
