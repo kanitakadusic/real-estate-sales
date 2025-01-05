@@ -125,7 +125,7 @@ app.post('/logout', (req, res) => {
             console.error('Error during logout:', err);
             res.status(500).json({ greska: 'Internal Server Error' });
         } else {
-            res.status(200).json({ poruka: 'UspjeÅ¡no ste se odjavili' });
+            res.status(200).json({ poruka: 'Uspješno ste se odjavili' });
         }
     });
 });
