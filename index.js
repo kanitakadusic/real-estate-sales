@@ -53,7 +53,7 @@ routes.forEach(({ route, file }) => {
 
 /* ----------- SERVING OTHER ROUTES --------------- */
 
-// Async function for reading json data from data folder
+// Async function for reading json data from 'data' folder
 async function readJsonFile(filename) {
     const filePath = path.join(__dirname, 'data', `${filename}.json`);
     try {
@@ -64,7 +64,7 @@ async function readJsonFile(filename) {
     }
 }
 
-// Async function for saving json data in data folder
+// Async function for saving json data in 'data' folder
 async function saveJsonFile(filename, data) {
     const filePath = path.join(__dirname, 'data', `${filename}.json`);
     try {
@@ -74,35 +74,79 @@ async function saveJsonFile(filename, data) {
     }
 }
 
+// Async function for adding data in txt file in 'logs' folder
+async function addInTxtFile(filename, data) {
+    const filePath = path.join(__dirname, 'logs', `${filename}.txt`);
+    try {
+        await fs.appendFile(filePath, data, 'utf-8');
+    } catch (error) {
+        console.error('Error while adding in file:', error);
+        throw error;
+    }
+}
+
+/*
+Logs user's login attempt with timestamp, username and status
+into 'prijave.txt' file in 'logs' folder.
+*/
+async function logLoginAttempt(username, success) {
+    const currently = new Date().toISOString();
+    const status = success ? 'uspješno' : 'neuspješno';
+    const log = `[${currently}]-username:\"${username}\"-status:\"${status}\"\n`;
+    try {
+        await addInTxtFile('prijave', log);
+    } catch (error) {
+        console.error('Error while logging attempt:', error);
+        throw error;
+    }
+}
+
 /*
 Checks if the user exists and if the password is correct based on korisnici.json data. 
 If the data is correct, the username is saved in the session and a success message is sent.
+User can make a maximum of 3 failed login attempts, otherwise he will be blocked for one minute.
 */
 app.post('/login', async (req, res) => {
     const jsonObj = req.body;
 
     try {
-        const data = await fs.readFile(path.join(__dirname, 'data', 'korisnici.json'), 'utf-8');
-        const korisnici = JSON.parse(data);
-        let found = false;
+        const users = await readJsonFile('korisnici');
 
-        for (const korisnik of korisnici) {
-            if (korisnik.username == jsonObj.username) {
-                const isPasswordMatched = await bcrypt.compare(jsonObj.password, korisnik.password);
+        for (let user of users) {
+            if (user.username == jsonObj.username) {
+                if (user.loginAttempts >= 3) {
+                    if (new Date() < new Date(user.blockedUntil)) {
+                        await logLoginAttempt(user.username, false);
+                        return res.status(429).json({
+                            poruka: 'Neuspješna prijava',
+                            greska: 'Previše neuspješnih pokušaja. Pokušajte ponovo za 1 minutu.'
+                        });
+                    } else {
+                        user.loginAttempts = 0;
+                        user.blockedUntil = null;
+                    }
+                }
+
+                const isPasswordMatched = await bcrypt.compare(jsonObj.password, user.password);
 
                 if (isPasswordMatched) {
-                    req.session.username = korisnik.username;
-                    found = true;
-                    break;
+                    req.session.username = user.username;
+                    user.loginAttempts = 0;
+                    res.json({ poruka: 'Uspješna prijava' });
+                } else {
+                    if (++(user.loginAttempts) >= 3)
+                        user.blockedUntil = new Date(new Date().getTime() + 1 * 60 * 1000);
+                    res.json({ poruka: 'Neuspješna prijava' });
                 }
+
+                await logLoginAttempt(user.username, isPasswordMatched);
+                await saveJsonFile('korisnici', users);
+                return;
             }
         }
-
-        if (found) {
-            res.json({ poruka: 'Uspješna prijava' });
-        } else {
-            res.json({ poruka: 'Neuspješna prijava' });
-        }
+        
+        await logLoginAttempt(jsonObj.username, false);
+        res.json({ poruka: 'Neuspješna prijava' });
     } catch (error) {
         console.error('Error during login:', error);
         res.status(500).json({ greska: 'Internal Server Error' });
