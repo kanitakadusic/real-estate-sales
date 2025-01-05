@@ -8,7 +8,19 @@ body {
 iframe {
     border: none; 
     width: 100%;
-    height: 50px;
+    height: 106px;
+}
+
+#search-container {
+    margin-top: 70px;
+    margin-bottom: 30px;
+}
+
+h1 {
+    text-align: center;
+    font-weight: bold;
+    font-size: 24px;
+    margin: 20px 0;
 }
 
 .tip-nekretnine {
@@ -47,6 +59,7 @@ iframe {
 .slika-nekretnine {
     max-width: 100%;
     height: 50%;
+    margin-top: 20px;
 }
 
 .detalji-nekretnine {
@@ -64,10 +77,10 @@ iframe {
 
 .cijena-nekretnine {
     text-align: right;
+    margin-bottom: 40px;
 }
 
 .detalji-dugme {
-    margin: 20px auto;
     background-color: #ff9900;
     color: white;
     padding: 10px 20px;
@@ -75,4 +88,14 @@ iframe {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    place-items: center;
+}
+
+#dugmePretraga {
+    grid-column: span 2;
 }

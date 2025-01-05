@@ -5,48 +5,57 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <link rel="stylesheet" href="../css/meni.css">
-
         <title>Meni</title>
+
+        <link rel="stylesheet" href="../css/meni.css">
     </head>
     <body>
-        <ul>
+        <ul id="navMenu">
             <li>
-                <a href="#">
+                <a id="profilLink" href="profil.html">
                     <p>Profil</p>
                     <img src="../resources/icons/user.svg" alt="Profil ikona">
                 </a>
             </li>
             <li>
-                <a href="nekretnine.html">
+                <a id="nekretnineLink" href="nekretnine.html">
                     <p>Nekretnine</p>
                     <img src="../resources/icons/home.svg" alt="Nekretnine ikona">
                 </a>
             </li>
             <li>
-                <a href="detalji.html">
+                <a id="detaljiLink" href="detalji.html">
                     <p>Detalji</p>
                     <img src="../resources/icons/layers.svg" alt="Detalji ikona">
                 </a>
             </li>
             <li>
-                <a href="vijesti.html">
+                <a id="vijestiLink" href="vijesti.html">
                     <p>Vijesti</p>
                     <img src="../resources/icons/globe.svg" alt="Vijesti ikona">
                 </a>
             </li>
             <li>
-                <a href="statistika.html">
+                <a id="statistikaLink" href="statistika.html">
                     <p>Statistika</p>
                     <img src="../resources/icons/chart.svg" alt="Statistika ikona">
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a id="prijavaLink" href="prijava.html">
                     <p>Prijava</p>
                     <img src="../resources/icons/login.svg" alt="Prijava ikona">
                 </a>
             </li>
+            <li>
+                <a id="odjavaLink" href="#">
+                    <p>Odjava</p>
+                    <img src="../resources/icons/logout.svg" alt="Odjava ikona">
+                </a>
+            </li>
         </ul>
+
+        <script src="../js/PoziviAjax.js"></script>
+        <script src="../js/meni.js"></script>
     </body>
 </html>
