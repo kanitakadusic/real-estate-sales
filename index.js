@@ -53,7 +53,7 @@ routes.forEach(({ route, file }) => {
 
 /* ----------- SERVING OTHER ROUTES --------------- */
 
-// Async function for reading json data from data folder 
+// Async function for reading json data from data folder
 async function readJsonFile(filename) {
     const filePath = path.join(__dirname, 'data', `${filename}.json`);
     try {
@@ -64,7 +64,7 @@ async function readJsonFile(filename) {
     }
 }
 
-// Async function for reading json data from data folder 
+// Async function for saving json data in data folder
 async function saveJsonFile(filename, data) {
     const filePath = path.join(__dirname, 'data', `${filename}.json`);
     try {
