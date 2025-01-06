@@ -164,12 +164,12 @@ const PoziviAjax = (() => {
 
         ajaxRequest('GET', url, null, (error, response) => {
             if (error) {
-                fnCallback(error, null);
+                fnCallback(error.statusText, null);
             } else {
                 try {
                     fnCallback(null, JSON.parse(response));
                 } catch (parseError) {
-                    fnCallback(parseError, null);
+                    fnCallback(parseError.message, null);
                 }
             }
         });
@@ -180,12 +180,12 @@ const PoziviAjax = (() => {
 
         ajaxRequest('GET', url, null, (error, response) => {
             if (error) {
-                fnCallback(error, null);
+                fnCallback(error.statusText, null);
             } else {
                 try {
                     fnCallback(null, JSON.parse(response));
                 } catch (parseError) {
-                    fnCallback(parseError, null);
+                    fnCallback(parseError.message, null);
                 }
             }
         });
@@ -196,12 +196,12 @@ const PoziviAjax = (() => {
 
         ajaxRequest('GET', url, null, (error, response) => {
             if (error) {
-                fnCallback(error, null);
+                fnCallback(error.statusText, null);
             } else {
                 try {
                     fnCallback(null, JSON.parse(response));
                 } catch (parseError) {
-                    fnCallback(parseError, null);
+                    fnCallback(parseError.message, null);
                 }
             }
         });
@@ -212,12 +212,12 @@ const PoziviAjax = (() => {
 
         ajaxRequest('GET', url, null, (error, response) => {
             if (error) {
-                fnCallback(error, null);
+                fnCallback(error.statusText, null);
             } else {
                 try {
                     fnCallback(null, JSON.parse(response));
                 } catch (parseError) {
-                    fnCallback(parseError, null);
+                    fnCallback(parseError.message, null);
                 }
             }
         });

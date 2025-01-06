@@ -3,7 +3,7 @@ function showUserQueries() {
 
     PoziviAjax.getMojiUpiti((error, queries) => {
         if (error) {
-            window.alert(`${error.status}: ${error.statusText}`);
+            window.alert(error);
             return;
         }
 
@@ -12,7 +12,7 @@ function showUserQueries() {
 
             PoziviAjax.getNekretnina(id_nekretnine, (error, property) => {
                 if (error) {
-                    window.alert(`${error.status}: ${error.statusText}`);
+                    window.alert(error);
                     return;
                 }
 
