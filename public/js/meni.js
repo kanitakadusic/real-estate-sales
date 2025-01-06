@@ -1,50 +1,50 @@
-window.onload = function () {
+window.onload = () => {
+
     // Funkcija za ažuriranje menija na osnovu statusa prijave
     function updateMenuForLoginStatus(loggedIn) {
-        // Pronađite HTML elemente menija koje želite ažurirati
-        const profilLink = document.getElementById('profilLink');
+        const vijestiLink = document.getElementById('vijestiLink');
+        const statistikaLink = document.getElementById('statistikaLink');
         const nekretnineLink = document.getElementById('nekretnineLink');
         const detaljiLink = document.getElementById('detaljiLink');
+        const profilLink = document.getElementById('profilLink');
+        const mojiUpitiLink = document.getElementById('mojiUpitiLink');
         const prijavaLink = document.getElementById('prijavaLink');
         const odjavaLink = document.getElementById('odjavaLink');
     
-        // Ako je korisnik prijavljen, pokažite opciju "Profil", inače pokažite opcije "Nekretnine", "Detalji" i "Prijava"
         if (loggedIn) {
-            profilLink.style.display = 'block';
+            vijestiLink.style.display = 'block';
+            statistikaLink.style.display = 'block';
             nekretnineLink.style.display = 'block';
             detaljiLink.style.display = 'block';
+            profilLink.style.display = 'block';
+            mojiUpitiLink.style.display = 'block';
             prijavaLink.style.display = 'none';
             odjavaLink.style.display = 'block';
         } else {
-            profilLink.style.display = 'none';
+            vijestiLink.style.display = 'block';
+            statistikaLink.style.display = 'block';
             nekretnineLink.style.display = 'block';
             detaljiLink.style.display = 'block';
+            profilLink.style.display = 'none';
+            mojiUpitiLink.style.display = 'none';
             prijavaLink.style.display = 'block';
             odjavaLink.style.display = 'none';
         }
     }
     
-    // Pozivajte metodu za dobijanje korisnika kad se stranica učita
-    PoziviAjax.getKorisnik(function (err, data) {
-        // Ako postoji greška prilikom dobijanja korisnika, postavite loggedIn na false
-        const loggedIn = !(err || !data || !data.username);
-
-        // Ažurirajte meni na osnovu statusa prijave korisnika
+    PoziviAjax.getKorisnik((error, data) => {
+        const loggedIn = !(error || !data || !data.username);
         updateMenuForLoginStatus(loggedIn);
     });
 
-    // Dodajte event listener za opciju "Odjava"
     const odjavaLink = document.getElementById('odjavaLink');
-    odjavaLink.addEventListener('click', function () {
-        PoziviAjax.postLogout(function (err, data) {
-            if (err != null) {
-              window.alert(err);
+    odjavaLink.addEventListener('click', () => {
+        PoziviAjax.postLogout((error, data) => {
+            if (error) {
+                window.alert(error);
             } else {
-                // Redirektujem se nazad na pocetnu stranicu prijava.html
-                window.location.href = "http://localhost:3000/prijava.html";
+                window.location.href = 'http://localhost:3000/prijava.html';
             }
-
-            // Update menu for login status inside the callback
             updateMenuForLoginStatus(false);
         });
     });

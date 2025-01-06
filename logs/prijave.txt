@@ -45,3 +45,7 @@
 [2025-01-05T14:54:50.400Z]-username:"kkadusic2"-status:"uspješno"
 [2025-01-05T15:55:01.615Z]-username:"kkadusic2"-status:"uspješno"
 [2025-01-05T15:56:16.538Z]-username:"kkadusic2"-status:"uspješno"
+[2025-01-06T10:18:40.011Z]-username:"kkadusic2"-status:"neuspješno"
+[2025-01-06T10:18:58.577Z]-username:"kkadusic2"-status:"uspješno"
+[2025-01-06T10:24:10.207Z]-username:"kkadusic2"-status:"neuspješno"
+[2025-01-06T10:24:15.375Z]-username:"kkadusic2"-status:"uspješno"

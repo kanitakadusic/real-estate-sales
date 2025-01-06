@@ -1,22 +1,21 @@
 window.onload = () => {
-    let username = document.getElementById("username");
-    let password = document.getElementById("password");
+    const username = document.getElementById('username');
+    const password = document.getElementById('password');
     
-    let dugme = document.getElementById("dugme");
+    const loginButton = document.getElementById('login-button');
     
-    dugme.onclick = () => {
-        PoziviAjax.postLogin(username.value, password.value, (err, data) => {
-            if (err != null) {
-                window.alert(err);
+    loginButton.onclick = () => {
+        PoziviAjax.postLogin(username.value, password.value, (error, data) => {
+            if (error) {
+                window.alert(error);
             } else {
-                let message = JSON.parse(data);
-                if (message.poruka == "Neuspješna prijava") {
-                    let divElement = document.getElementById("areaBelow");
-                    divElement.innerHTML = "<h2>Neispravni podaci</h2>";
+                if (JSON.parse(data).poruka == 'Neuspješna prijava') {
+                    let divElement = document.getElementById('message');
+                    divElement.innerHTML = '<p>Neispravni podaci</p>';
                 } else {
-                    window.location.href = "http://localhost:3000/nekretnine.html";
+                    window.location.href = 'http://localhost:3000/nekretnine.html';
                 }
             }
         });
     };
-}
+};
