@@ -1,22 +1,17 @@
 function spojiNekretnine(divReferenca, instancaModula, tip_nekretnine) {
-
     const filtriraneNekretnine = instancaModula.filtrirajNekretnine({ tip_nekretnine: tip_nekretnine });
-
     divReferenca.innerHTML = '';
 
     if (filtriraneNekretnine.length === 0) {
         divReferenca.innerHTML = '<p>Trenutno nema dostupnih nekretnina ovog tipa.</p>';
     } else {
-        const nekretnineKontejner = document.createElement('div');
-        nekretnineKontejner.classList.add('grid-lista-nekretnina');
-
         filtriraneNekretnine.forEach(nekretnina => {
             const nekretninaElement = document.createElement('div');
 
-            if (tip_nekretnine === "Stan") {
+            if (tip_nekretnine === 'Stan') {
                 nekretninaElement.classList.add('nekretnina', 'stan');
                 nekretninaElement.id = `${nekretnina.id}`;
-            } else if (tip_nekretnine === "Kuća") {
+            } else if (tip_nekretnine === 'Kuća') {
                 nekretninaElement.classList.add('nekretnina', 'kuca');
                 nekretninaElement.id = `${nekretnina.id}`;
             } else {
@@ -24,7 +19,6 @@ function spojiNekretnine(divReferenca, instancaModula, tip_nekretnine) {
                 nekretninaElement.id = `${nekretnina.id}`;
             }
 
-            // Added search and click count divs
             const pretrageDiv = document.createElement('div');
             pretrageDiv.id = `pretrage-${nekretnina.id}`;
             pretrageDiv.textContent = `pretrage: ${nekretnina.pretrage || 0}`;
@@ -37,7 +31,7 @@ function spojiNekretnine(divReferenca, instancaModula, tip_nekretnine) {
 
             const slikaElement = document.createElement('img');
             slikaElement.classList.add('slika-nekretnine');
-            slikaElement.src = `../resources/${nekretnina.id}.jpg`;
+            slikaElement.src = `../resources/images/${nekretnina.id}.jpg`;
             slikaElement.alt = nekretnina.naziv;
             nekretninaElement.appendChild(slikaElement);
 
@@ -59,39 +53,33 @@ function spojiNekretnine(divReferenca, instancaModula, tip_nekretnine) {
             detaljiDugme.classList.add('detalji-dugme');
             detaljiDugme.textContent = 'Detalji';
             detaljiDugme.addEventListener('click', () => {
-                const idNekretnine = nekretnina.id;
-                MarketingAjax.klikNekretnina(idNekretnine);
+                MarketingAjax.klikNekretnina(nekretnina.id);
             });
             nekretninaElement.appendChild(detaljiDugme);
 
-            nekretnineKontejner.appendChild(nekretninaElement);
+            divReferenca.appendChild(nekretninaElement);
         });
-
-        divReferenca.appendChild(nekretnineKontejner);
     }
 }
 
 const listaNekretnina = []
 const listaKorisnika = []
 
-const divStan = document.getElementById("stan");
-const divKuca = document.getElementById("kuca");
-const divPp = document.getElementById("pp");
+const divStan = document.getElementById('stan');
+const divKuca = document.getElementById('kuca');
+const divPp = document.getElementById('pp');
 
 let nekretnine = SpisakNekretnina();
 
-// Pozivamo funkciju za dohvat nekretnina sa servera
 PoziviAjax.getNekretnine((error, listaNekretnina) => {
     if (error) {
-        console.error("Greška prilikom dohvatanja nekretnina sa servera:", error);
+        console.error('Greška prilikom dohvatanja nekretnina sa servera:', error);
     } else {
-        // Inicijalizacija modula sa dobavljenim podacima
         nekretnine.init(listaNekretnina, listaKorisnika);
 
-        // Pozivamo funkciju za prikaz nekretnina
-        spojiNekretnine(divStan, nekretnine, "Stan");
-        spojiNekretnine(divKuca, nekretnine, "Kuća");
-        spojiNekretnine(divPp, nekretnine, "Poslovni prostor");
+        spojiNekretnine(divStan, nekretnine, 'Stan');
+        spojiNekretnine(divKuca, nekretnine, 'Kuća');
+        spojiNekretnine(divPp, nekretnine, 'Poslovni prostor');
     }
 });
 
@@ -99,9 +87,9 @@ function filtrirajNekretnine(filtriraneNekretnine) {
     const filtriraneNekretnineInstance = SpisakNekretnina();
     filtriraneNekretnineInstance.init(filtriraneNekretnine, listaKorisnika);
 
-    spojiNekretnine(divStan, filtriraneNekretnineInstance, "Stan");
-    spojiNekretnine(divKuca, filtriraneNekretnineInstance, "Kuća");
-    spojiNekretnine(divPp, filtriraneNekretnineInstance, "Poslovni prostor");
+    spojiNekretnine(divStan, filtriraneNekretnineInstance, 'Stan');
+    spojiNekretnine(divKuca, filtriraneNekretnineInstance, 'Kuća');
+    spojiNekretnine(divPp, filtriraneNekretnineInstance, 'Poslovni prostor');
 }
 
 function filtrirajOnClick() {

@@ -12,18 +12,10 @@ iframe {
 }
 
 #search-container {
-    margin-top: 70px;
-    margin-bottom: 30px;
+    margin: 30px 0;
 }
 
 h1 {
-    text-align: center;
-    font-weight: bold;
-    font-size: 24px;
-    margin: 20px 0;
-}
-
-.tip-nekretnine {
     text-align: center;
     font-weight: bold;
     font-size: 24px;
