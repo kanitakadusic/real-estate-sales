@@ -141,18 +141,23 @@ const PoziviAjax = (() => {
     }
     
     function impl_postLogout(fnCallback) {
-        let ajax = new XMLHttpRequest();
+        const url = 'http://localhost:3000/logout';
 
-        ajax.onreadystatechange = () => {
-            if (ajax.readyState == 4 && ajax.status == 200) {
-                fnCallback(null, ajax.response);
-            } else if (ajax.readyState == 4) {
-                fnCallback(ajax.statusText, null);
+        ajaxRequest('POST', url, null, (error, response) => {
+            if (error) {
+                if (error.status === 401) {
+                    window.location.href = 'http://localhost:3000/prijava.html';
+                } else {
+                    fnCallback(error.statusText, null);
+                }
+            } else {
+                try {
+                    fnCallback(null, JSON.parse(response));
+                } catch (parseError) {
+                    fnCallback(parseError.message, null);
+                }
             }
-        };
-
-        ajax.open('POST', 'http://localhost:3000/logout', true);
-        ajax.send();
+        });
     }
 
     function impl_getTop5Nekretnina(lokacija, fnCallback) {

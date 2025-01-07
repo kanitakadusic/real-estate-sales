@@ -1,0 +1,38 @@
+ul
+    li
+        a#vijestiLink(href="vijesti.html")
+            p Vijesti
+            img(src="../resources/icons/globe.svg", alt="Vijesti ikona")
+    li
+        a#statistikaLink(href="statistika.html")
+            p Statistika
+            img(src="../resources/icons/chart.svg", alt="Statistika ikona")
+    li
+        a#nekretnineLink(href="nekretnine.html")
+            p Nekretnine
+            img(src="../resources/icons/home.svg", alt="Nekretnine ikona")
+    li
+        a#detaljiLink(href="detalji.html")
+            p Detalji
+            img(src="../resources/icons/layers.svg", alt="Detalji ikona")
+    if userLoggedIn
+        li
+            a#profilLink(href="profil.html")
+                p Profil
+                img(src="../resources/icons/user.svg", alt="Profil ikona")
+        li
+            a#mojiUpitiLink(href="mojiUpiti.html")
+                p Moji upiti
+                img(src="../resources/icons/archive.svg", alt="Moji upiti ikona")
+        li
+            a#odjavaLink(href="#")
+                p Odjava
+                img(src="../resources/icons/logout.svg", alt="Odjava ikona")
+    else
+        li
+            a#prijavaLink(href="prijava.html")
+                p Prijava
+                img(src="../resources/icons/login.svg", alt="Prijava ikona")
+
+script(src="/js/PoziviAjax.js")
+script(src="/js/odjava.js")

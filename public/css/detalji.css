@@ -9,12 +9,6 @@ body h3 {
     margin-left: 20px;
 }
 
-iframe {
-    border: none; 
-    width: 100%;
-    height: 106px;
-}
-
 /* Stil za div #osnovno */
 #osnovno {
     text-align: left;

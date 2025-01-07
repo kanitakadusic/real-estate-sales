@@ -3,6 +3,7 @@ const session = require('express-session');
 const path = require('path');
 const fs = require('fs').promises;
 const bcrypt = require('bcrypt');
+const pug = require('pug');
 
 const app = express();
 const PORT = 3000;
@@ -16,13 +17,21 @@ app.use(session({
 app.use(express.static(__dirname + '/public'));
 app.use(express.json());
 
+app.set('view engine', 'pug');
+
 /* ---------------- SERVING HTML -------------------- */
 
 async function serveHTMLFile(req, res, fileName) {
     const htmlPath = path.join(__dirname, 'public/html', fileName);
     try {
         const content = await fs.readFile(htmlPath, 'utf-8');
-        res.send(content);
+
+        const userLoggedIn = req.session.username ? true : false;
+        const navigationHtml = pug.renderFile(path.join(__dirname, 'views', 'meni.pug'), { userLoggedIn });
+        
+        const finalContent = content.replace('<!-- Navigation placeholder (DO NOT EDIT) -->', navigationHtml);
+
+        res.send(finalContent);
     } catch (error) {
         console.error(`Error serving HTML file ${fileName}.html:`, error);
         res.status(500).json({ greska: 'Internal Server Error' });
@@ -30,18 +39,17 @@ async function serveHTMLFile(req, res, fileName) {
 }
 
 const routes = [
-    { route: '/detalji.html', file: 'detalji.html', auth: false },
-    { route: '/meni.html', file: 'meni.html', auth: false },
-    { route: '/mojiUpiti.html', file: 'mojiUpiti.html', auth: true },
-    { route: '/nekretnine.html', file: 'nekretnine.html', auth: false },
-    { route: '/prijava.html', file: 'prijava.html', auth: false },
-    { route: '/profil.html', file: 'profil.html', auth: true },
-    { route: '/statistika.html', file: 'statistika.html', auth: false },
-    { route: '/vijesti.html', file: 'vijesti.html', auth: false }
+    { route: '/detalji.html', file: 'detalji.html', authRequired: false },
+    { route: '/mojiUpiti.html', file: 'mojiUpiti.html', authRequired: true },
+    { route: '/nekretnine.html', file: 'nekretnine.html', authRequired: false },
+    { route: '/prijava.html', file: 'prijava.html', authRequired: false },
+    { route: '/profil.html', file: 'profil.html', authRequired: true },
+    { route: '/statistika.html', file: 'statistika.html', authRequired: false },
+    { route: '/vijesti.html', file: 'vijesti.html', authRequired: false }
 ];
 
-routes.forEach(({ route, file, auth }) => {
-    if (auth) {
+routes.forEach(({ route, file, authRequired }) => {
+    if (authRequired) {
         app.get(route, isAuthenticated, async (req, res) => {
             await serveHTMLFile(req, res, file);
         });
@@ -174,16 +182,13 @@ app.post('/login', async (req, res) => {
 Delete everything from the session.
 */
 app.post('/logout', (req, res) => {
-    // Check if the user is authenticated
     if (!req.session.username) {
-        // User is not logged in
         return res.status(401).json({ greska: 'Neautorizovan pristup' });
     }
 
-    // Clear all information from the session
-    req.session.destroy((err) => {
-        if (err) {
-            console.error('Error during logout:', err);
+    req.session.destroy((error) => {
+        if (error) {
+            console.error('Error during logout:', error);
             res.status(500).json({ greska: 'Internal Server Error' });
         } else {
             res.status(200).json({ poruka: 'Uspješno ste se odjavili' });
