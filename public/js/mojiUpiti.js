@@ -3,7 +3,7 @@ function showUserQueries() {
 
     PoziviAjax.getMojiUpiti((error, queries) => {
         if (error) {
-            window.alert(error);
+            console.error('Greška prilikom dohvatanja korisničkih upita sa servera:', error);
             return;
         }
 
@@ -11,16 +11,17 @@ function showUserQueries() {
             const { id_nekretnine, tekst_upita } = query;
 
             PoziviAjax.getNekretnina(id_nekretnine, (error, property) => {
-                if (error) {
-                    window.alert(error);
-                    return;
-                }
-
                 const queryElement = document.createElement('li');
-                queryElement.innerHTML = `
-                    <strong>${property.naziv}</strong> [${property.datum_objave}] (${id_nekretnine})<br>
-                    ${tekst_upita}
-                `;
+
+                if (error) {
+                    console.error('Greška prilikom dohvatanja detalja nekretnine sa servera:', error);
+                    queryElement.innerHTML = `(${id_nekretnine})`;
+                } else {
+                    queryElement.innerHTML = `
+                        <strong>${property.naziv}</strong> [${property.datum_objave}] (${id_nekretnine})<br>
+                        ${tekst_upita}
+                    `;
+                }
 
                 queriesElement.appendChild(queryElement);
             });
