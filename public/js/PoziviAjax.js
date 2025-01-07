@@ -41,7 +41,7 @@ const PoziviAjax = (() => {
                 }
             }
         });
-    }    
+    }
 
     function impl_putKorisnik(noviPodaci, fnCallback) {
         const url = 'http://localhost:3000/korisnik';
@@ -175,7 +175,11 @@ const PoziviAjax = (() => {
 
         ajaxRequest('GET', url, null, (error, response) => {
             if (error) {
-                fnCallback(error.statusText, null);
+                if (error.status === 401) {
+                    window.location.href = '/prijava.html';
+                } else {
+                    fnCallback(error.statusText, null);
+                }
             } else {
                 try {
                     fnCallback(null, JSON.parse(response));
