@@ -112,14 +112,16 @@ const PoziviAjax = (() => {
     }
 
     function impl_getNekretnine(fnCallback) {
-        ajaxRequest('GET', '/nekretnine', null, (error, data) => {
+        const url = `http://localhost:3000/nekretnine`;
+
+        ajaxRequest('GET', url, null, (error, response) => {
             if (error) {
-                fnCallback(error, null);
+                fnCallback(error.statusText, null);
             } else {
                 try {
-                    fnCallback(null, JSON.parse(data));
+                    fnCallback(null, JSON.parse(response));
                 } catch (parseError) {
-                    fnCallback(parseError, null);
+                    fnCallback(parseError.message, null);
                 }
             }
         });

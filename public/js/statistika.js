@@ -1,10 +1,12 @@
-Chart.defaults.font.size = 16;
-
 let statistics = StatistikaNekretnina();
-statistics.init(listaNekretnina, listaKorisnika);
 
-let yearRanges = [];
-let priceRanges = [];
+PoziviAjax.getNekretnine((error, propertiesList) => {
+    if (error) {
+        console.error('Greška prilikom dohvatanja nekretnina sa servera:', error);
+    } else {
+        statistics.init(propertiesList, []);
+    }
+});
 
 function parseInput(input) {
     if (!isNaN(input) && input.trim() !== "") return Number(input);
@@ -32,10 +34,7 @@ function calculateASF(event) {
 
     try {
         let asf = statistics.prosjecnaKvadratura({ [key]: value });
-        insertBlock(
-            container,
-            asf
-        )
+        insertBlock(container, asf)
 
         errorElement.textContent = "";
     } catch (error) {
@@ -59,7 +58,7 @@ function findOutlier(event) {
         let outlier = statistics.outlier({ [key]: value }, deviation);
         insertBlock(
             container,
-            `${outlier.naziv} [${outlier.datum_objave}]`
+            `${outlier.naziv} [${outlier.datum_objave}] (${outlier.id})`
         )
 
         errorElement.textContent = "";
@@ -82,7 +81,7 @@ function extractMy(event) {
         let myProperties = statistics.mojeNekretnine({ id: id });
         myProperties.forEach(property => insertBlock(
             container,
-            `${property.naziv} [${property.datum_objave}] (${property.upiti.length})`
+            `${property.naziv} [${property.datum_objave}] (${property.id})`
         ));
 
         errorElement.textContent = "";
@@ -90,6 +89,9 @@ function extractMy(event) {
         errorElement.textContent = error.message;
     }
 }
+
+let yearRanges = [];
+let priceRanges = [];
 
 function addRange(event, input) {
     event.preventDefault();
@@ -122,6 +124,8 @@ function addRange(event, input) {
     }
 }
 
+Chart.defaults.font.size = 16;
+
 function iscrtajHistogram(event) {
     event.preventDefault();
     const histogram = statistics.histogramCijena(yearRanges, priceRanges);
@@ -152,7 +156,7 @@ function iscrtajHistogram(event) {
                         data: data_PropertyNumbers,
                         backgroundColor: function(context) {
                             const barHeight = context.dataset.data[context.dataIndex] / maxBarHeight || 0;
-                            return `rgba(0, 123, 255, ${barHeight})`;
+                            return `rgba(255, 153, 0, ${barHeight})`;
                         }
                     }
                 ]
