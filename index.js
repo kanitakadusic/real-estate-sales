@@ -210,6 +210,7 @@ app.get('/korisnik', async (req, res) => {
         }
 
         const userPublicData = {
+            id: user.id,
             ime: user.ime,
             prezime: user.prezime,
             username: user.username
