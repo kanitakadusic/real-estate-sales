@@ -12,18 +12,17 @@
     <body>
         <iframe src="meni.html"></iframe>
 
-        <div id="loginForm">
+        <div id="login-form">
             <form>
-                <label for="username">Username: </label>
+                <label for="username">Username:</label>
                 <input type="text" id="username" name="username"><br>
-                <label for="password">Password: </label>
+                <label for="password">Password:</label>
                 <input type="password" id="password" name="password"><br>
             </form>
 
-            <button id="login-button" type="button" aria-label="login">Login</button>
+            <button id="login-button">Login</button>
+            <div id="feedback"></div>
         </div>
-        
-        <div id="message"></div>
 
         <script src="../js/poziviAjax.js"></script>
         <script src="../js/prijava.js"></script>

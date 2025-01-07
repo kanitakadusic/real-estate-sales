@@ -119,13 +119,13 @@ User can make a maximum of 3 failed login attempts, otherwise he will be blocked
 Every login attempt is logged.
 */
 app.post('/login', async (req, res) => {
-    const jsonObj = req.body;
+    const { username, password } = req.body;
 
     try {
         const users = await readJsonFile('korisnici');
 
         for (let user of users) {
-            if (user.username == jsonObj.username) {
+            if (user.username == username) {
 
                 if (user.loginAttempts >= 3) {
                     if (new Date() < new Date(user.blockedUntil)) {
@@ -140,7 +140,7 @@ app.post('/login', async (req, res) => {
                     }
                 }
 
-                const isPasswordMatched = await bcrypt.compare(jsonObj.password, user.password);
+                const isPasswordMatched = await bcrypt.compare(password, user.password);
 
                 if (isPasswordMatched) {
                     req.session.username = user.username;
@@ -161,7 +161,7 @@ app.post('/login', async (req, res) => {
             }
         }
         
-        await logLoginAttempt(jsonObj.username, false);
+        await logLoginAttempt(username, false);
 
         res.json({ poruka: 'Neuspješna prijava' });
     } catch (error) {

@@ -29,7 +29,7 @@ const PoziviAjax = (() => {
         ajaxRequest('GET', url, null, (error, response) => {
             if (error) {
                 if (error.status === 401) {
-                    window.location.href = '/prijava.html';
+                    window.location.href = 'http://localhost:3000/prijava.html';
                 } else {
                     fnCallback(error.statusText, null);
                 }
@@ -49,7 +49,7 @@ const PoziviAjax = (() => {
         ajaxRequest('PUT', url, noviPodaci, (error, response) => {
             if (error) {
                 if (error.status === 401) {
-                    window.location.href = '/prijava.html';
+                    window.location.href = 'http://localhost:3000/prijava.html';
                 } else {
                     fnCallback(error.statusText, null);
                 }
@@ -121,24 +121,25 @@ const PoziviAjax = (() => {
     }
 
     function impl_postLogin(username, password, fnCallback) {
-        const ajax = new XMLHttpRequest();
-
-        ajax.onreadystatechange = () => {
-            if (ajax.readyState == 4 && ajax.status == 200) {
-                fnCallback(null, ajax.response);
-            } else if (ajax.readyState == 4) {
-                fnCallback(ajax.statusText, null);
-            }
+        const url = 'http://localhost:3000/login';
+        const data = {
+            username: username,
+            password: password
         };
-
-        ajax.open('POST', 'http://localhost:3000/login', true);
-        ajax.setRequestHeader('Content-Type', 'application/json');
-        ajax.send(JSON.stringify({
-            'username': username,
-            'password': password
-        }));
+    
+        ajaxRequest('POST', url, data, (error, response) => {
+            if (error) {
+                fnCallback(error.statusText, null);
+            } else {
+                try {
+                    fnCallback(null, JSON.parse(response));
+                } catch (parseError) {
+                    fnCallback(parseError.message, null);
+                }
+            }
+        });
     }
-
+    
     function impl_postLogout(fnCallback) {
         let ajax = new XMLHttpRequest();
 
@@ -176,7 +177,7 @@ const PoziviAjax = (() => {
         ajaxRequest('GET', url, null, (error, response) => {
             if (error) {
                 if (error.status === 401) {
-                    window.location.href = '/prijava.html';
+                    window.location.href = 'http://localhost:3000/prijava.html';
                 } else {
                     fnCallback(error.statusText, null);
                 }
