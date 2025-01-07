@@ -24,50 +24,43 @@ const PoziviAjax = (() => {
     }
 
     function impl_getKorisnik(fnCallback) {
-        let ajax = new XMLHttpRequest();
-
-        ajax.onreadystatechange = () => {
-            if (ajax.readyState == 4) {
-                if (ajax.status == 200) {
-                    console.log('Uspješan zahtjev, status 200');
-                    fnCallback(null, JSON.parse(ajax.responseText));
-                } else if (ajax.status == 401) {
-                    console.log('Neuspješan zahtjev, status 401');
-                    fnCallback('error', null);
+        const url = 'http://localhost:3000/korisnik';
+    
+        ajaxRequest('GET', url, null, (error, response) => {
+            if (error) {
+                if (error.status === 401) {
+                    window.location.href = '/prijava.html';
                 } else {
-                    console.log('Nepoznat status:', ajax.status);
+                    fnCallback(error.statusText, null);
+                }
+            } else {
+                try {
+                    fnCallback(null, JSON.parse(response));
+                } catch (parseError) {
+                    fnCallback(parseError.message, null);
                 }
             }
-        };
-
-        ajax.open('GET', 'http://localhost:3000/korisnik', true);
-        ajax.setRequestHeader('Content-Type', 'application/json');
-        ajax.send();
-    }
+        });
+    }    
 
     function impl_putKorisnik(noviPodaci, fnCallback) {
-        if (!req.session.username) {
-            return fnCallback({ status: 401, statusText: 'Neautorizovan pristup' }, null);
-        }
-
-        // Get data from request body
-        const { ime, prezime, username, password } = noviPodaci;
-
-        const users = readJsonFile('korisnici');
-        const user = users.find((u) => u.username === req.session.username);
-
-        if (!user) {
-            // User not found (should not happen if users are correctly managed)
-            return fnCallback({ status: 401, statusText: 'Neautorizovan pristup' }, null);
-        }
-
-        if (ime) user.ime = ime;
-        if (prezime) user.prezime = prezime;
-        if (username) user.username = username;
-        if (password) user.password = password;
-
-        saveJsonFile('korisnici', users);
-        fnCallback(null, { poruka: 'Podaci su uspješno ažurirani' });
+        const url = 'http://localhost:3000/korisnik';
+    
+        ajaxRequest('PUT', url, noviPodaci, (error, response) => {
+            if (error) {
+                if (error.status === 401) {
+                    window.location.href = '/prijava.html';
+                } else {
+                    fnCallback(error.statusText, null);
+                }
+            } else {
+                try {
+                    fnCallback(null, JSON.parse(response));
+                } catch (parseError) {
+                    fnCallback(parseError.message, null);
+                }
+            }
+        });
     }
 
     function impl_postUpit(nekretnina_id, tekst_upita, fnCallback) {

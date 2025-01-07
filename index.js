@@ -1,7 +1,7 @@
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
-const fs = require('fs').promises; // Using asynchronus API for file read and write
+const fs = require('fs').promises;
 const bcrypt = require('bcrypt');
 
 const app = express();
@@ -14,13 +14,10 @@ app.use(session({
 }));
 
 app.use(express.static(__dirname + '/public'));
-
-// Enable JSON parsing without body-parser
 app.use(express.json());
 
 /* ---------------- SERVING HTML -------------------- */
 
-// Async function for serving html files
 async function serveHTMLFile(req, res, fileName) {
     const htmlPath = path.join(__dirname, 'public/html', fileName);
     try {
@@ -32,25 +29,36 @@ async function serveHTMLFile(req, res, fileName) {
     }
 }
 
-// Array of HTML files and their routes
 const routes = [
-    { route: '/detalji.html', file: 'detalji.html' },
-    { route: '/meni.html', file: 'meni.html' },
-    { route: '/mojiUpiti.html', file: 'mojiUpiti.html' }, // Dodano u odnosu na početni projekat
-    { route: '/nekretnine.html', file: 'nekretnine.html' },
-    { route: '/prijava.html', file: 'prijava.html' },
-    { route: '/profil.html', file: 'profil.html' },
-    { route: '/statistika.html', file: 'statistika.html' }, // Dodano u odnosu na početni projekat
-    { route: '/vijesti.html', file: 'vijesti.html' }, // Dodano u odnosu na početni projekat
-    // Practical for adding more .html files as the project grows
+    { route: '/detalji.html', file: 'detalji.html', auth: false },
+    { route: '/meni.html', file: 'meni.html', auth: false },
+    { route: '/mojiUpiti.html', file: 'mojiUpiti.html', auth: true },
+    { route: '/nekretnine.html', file: 'nekretnine.html', auth: false },
+    { route: '/prijava.html', file: 'prijava.html', auth: false },
+    { route: '/profil.html', file: 'profil.html', auth: true },
+    { route: '/statistika.html', file: 'statistika.html', auth: false },
+    { route: '/vijesti.html', file: 'vijesti.html', auth: false }
 ];
 
-// Loop through the array so HTML can be served
-routes.forEach(({ route, file }) => {
-    app.get(route, async (req, res) => {
-        await serveHTMLFile(req, res, file);
-    });
+routes.forEach(({ route, file, auth }) => {
+    if (auth) {
+        app.get(route, isAuthenticated, async (req, res) => {
+            await serveHTMLFile(req, res, file);
+        });
+    } else {
+        app.get(route, async (req, res) => {
+            await serveHTMLFile(req, res, file);
+        });
+    }
 });
+
+function isAuthenticated(req, res, next) {
+    if (req.session.username) {
+        return next();
+    } else {
+        res.redirect('/prijava.html');
+    }
+}
 
 /* ----------- SERVING OTHER ROUTES --------------- */
 
@@ -188,37 +196,26 @@ Returns currently logged user data.
 First takes the username from the session and grabs other data from the .json file.
 */
 app.get('/korisnik', async (req, res) => {
-    // Check if the username is present in the session
     if (!req.session.username) {
-        // User is not logged in
         return res.status(401).json({ greska: 'Neautorizovan pristup' });
     }
 
-    // User is logged in, fetch additional user data
-    const username = req.session.username;
-
     try {
-        // Read user data from the JSON file
         const users = await readJsonFile('korisnici');
-
-        // Find the user by username
-        const user = users.find((u) => u.username === username);
+        const user = users.find((u) => u.username === req.session.username);
 
         if (!user) {
             // User not found (should not happen if users are correctly managed)
             return res.status(401).json({ greska: 'Neautorizovan pristup' });
         }
 
-        // Send user data
-        const userData = {
-            id: user.id,
+        const userPublicData = {
             ime: user.ime,
             prezime: user.prezime,
-            username: user.username,
-            password: user.password // Should exclude the password for security reasons
+            username: user.username
         };
 
-        res.status(200).json(userData);
+        res.status(200).json(userPublicData);
     } catch (error) {
         console.error('Error fetching user data:', error);
         res.status(500).json({ greska: 'Internal Server Error' });
@@ -267,41 +264,32 @@ app.post('/upit', async (req, res) => {
 });
 
 /*
-Updates any user field
+Updates any user field.
 */
 app.put('/korisnik', async (req, res) => {
-    // Check if the user is authenticated
     if (!req.session.username) {
-        // User is not logged in
         return res.status(401).json({ greska: 'Neautorizovan pristup' });
     }
 
-    // Get data from the request body
     const { ime, prezime, username, password } = req.body;
 
     try {
-        // Read user data from the JSON file
         const users = await readJsonFile('korisnici');
+        const user = users.find((u) => u.username === req.session.username);
 
-        // Find the user by username
-        const loggedInUser = users.find((user) => user.username === req.session.username);
-
-        if (!loggedInUser) {
+        if (!user) {
             // User not found (should not happen if users are correctly managed)
             return res.status(401).json({ greska: 'Neautorizovan pristup' });
         }
 
-        // Update user data with the provided values
-        if (ime) loggedInUser.ime = ime;
-        if (prezime) loggedInUser.prezime = prezime;
-        if (username) loggedInUser.username = username;
+        if (ime) user.ime = ime;
+        if (prezime) user.prezime = prezime;
+        if (username) user.username = username;
         if (password) {
-            // Hash the new password
             const hashedPassword = await bcrypt.hash(password, 10);
-            loggedInUser.password = hashedPassword;
+            user.password = hashedPassword;
         }
 
-        // Save the updated user data back to the JSON file
         await saveJsonFile('korisnici', users);
         res.status(200).json({ poruka: 'Podaci su uspješno ažurirani' });
     } catch (error) {
