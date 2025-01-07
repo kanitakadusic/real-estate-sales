@@ -21,8 +21,7 @@ function insertBlock(container, content) {
     container.appendChild(block);
 }
 
-function calculateASF(event) {
-    event.preventDefault();
+function calculateASF() {
     const form = document.forms['average-square-footage'];
 
     const key = String(form['filter-key'].value);
@@ -42,8 +41,7 @@ function calculateASF(event) {
     }
 }
 
-function findOutlier(event) {
-    event.preventDefault();
+function findOutlier() {
     const form = document.forms['outlier'];
 
     const key = String(form['filter-key'].value);
@@ -67,8 +65,7 @@ function findOutlier(event) {
     }
 }
 
-function extractMy(event) {
-    event.preventDefault();
+function extractMy() {
     const form = document.forms['my-properties'];
 
     const id = parseInt(form['user-id'].value);
@@ -93,8 +90,7 @@ function extractMy(event) {
 let yearRanges = [];
 let priceRanges = [];
 
-function addRange(event, input) {
-    event.preventDefault();
+function addRange(input) {
     const form = document.forms['years-prices'];
 
     const startElement = form[`start-${input}`];
@@ -126,8 +122,7 @@ function addRange(event, input) {
 
 Chart.defaults.font.size = 16;
 
-function iscrtajHistogram(event) {
-    event.preventDefault();
+function iscrtajHistogram() {
     const histogram = statistics.histogramCijena(yearRanges, priceRanges);
 
     const chartsContainer = document.getElementById("charts-container");
