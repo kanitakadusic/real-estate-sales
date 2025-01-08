@@ -446,38 +446,32 @@ app.get('/next/upiti/nekretnina/:id', async (req, res) => {
 
 /* ----------------- MARKETING ROUTES ----------------- */
 
-// Route that increments value of pretrage for one based on list of ids in nizNekretnina
+/*
+Increases the number of searches for each of the properties by one.
+*/
 app.post('/marketing/nekretnine', async (req, res) => {
-    const { nizNekretnina } = req.body;
+    const { propertyIDsList } = req.body;
 
     try {
-        // Load JSON data
-        let preferencije = await readJsonFile('preferencije');
+        let preferences = await readJsonFile('preferencije');
 
-        // Check format
-        if (!preferencije || !Array.isArray(preferencije)) {
-            console.error('Neispravan format podataka u preferencije.json.');
+        if (!preferences || !Array.isArray(preferences)) {
+            console.error('Neispravan format podataka u \'preferencije.json\'');
             res.status(500).json({ error: 'Internal Server Error' });
             return;
         }
 
-        // Init object for search
-        preferencije = preferencije.map((nekretnina) => {
-            nekretnina.pretrage = nekretnina.pretrage || 0;
-            return nekretnina;
+        preferences = preferences.map((preference) => {
+            preference.pretrage = preference.pretrage || 0;
+            return preference;
         });
 
-        // Update atribute pretraga
-        nizNekretnina.forEach((id) => {
-            const nekretnina = preferencije.find((item) => item.id === id);
-            if (nekretnina) {
-                nekretnina.pretrage += 1;
-            }
+        propertyIDsList.forEach((id) => {
+            const preference = preferences.find((p) => p.id === id);
+            if (preference) preference.pretrage += 1;
         });
 
-        // Save JSON file
-        await saveJsonFile('preferencije', preferencije);
-
+        await saveJsonFile('preferencije', preferences);
         res.status(200).json({});
     } catch (error) {
         console.error('Greška prilikom čitanja ili pisanja JSON datoteke:', error);
@@ -485,26 +479,23 @@ app.post('/marketing/nekretnine', async (req, res) => {
     }
 });
 
+/*
+Increases a property's click count by one.
+*/
 app.post('/marketing/nekretnina/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
-        // Read JSON 
-        const preferencije = await readJsonFile('preferencije');
+        const preferences = await readJsonFile('preferencije');
+        const preference = preferences.find((p) => p.id === parseInt(id, 10));
 
-        // Finding the needed objects based on id
-        const nekretninaData = preferencije.find((item) => item.id === parseInt(id, 10));
+        if (preference) {
+            preference.klikovi = (preference.klikovi || 0) + 1;
 
-        if (nekretninaData) {
-            // Update clicks
-            nekretninaData.klikovi = (nekretninaData.klikovi || 0) + 1;
-
-            // Save JSON file
-            await saveJsonFile('preferencije', preferencije);
-
-            res.status(200).json({ success: true, message: 'Broj klikova ažuriran.' });
+            await saveJsonFile('preferencije', preferences);
+            res.status(200).json({ success: true, message: 'Broj klikova ažuriran' });
         } else {
-            res.status(404).json({ error: 'Nekretnina nije pronađena.' });
+            res.status(404).json({ error: 'Nekretnina nije pronađena' });
         }
     } catch (error) {
         console.error('Greška prilikom čitanja ili pisanja JSON datoteke:', error);
@@ -512,47 +503,55 @@ app.post('/marketing/nekretnina/:id', async (req, res) => {
     }
 });
 
+/*
+Updates the number of searches.
+*/
 app.post('/marketing/osvjezi/pretrage', async (req, res) => {
-    const { nizNekretnina } = req.body || { nizNekretnina: [] };
+    const { propertyIDsList } = req.body || { propertyIDsList: [] };
 
     try {
-        // Read JSON 
-        const preferencije = await readJsonFile('preferencije');
+        const preferences = await readJsonFile('preferencije');
 
-        // Finding the needed objects based on id
-        const promjene = nizNekretnina.map((id) => {
-            const nekretninaData = preferencije.find((item) => item.id === id);
-            return { id, pretrage: nekretninaData ? nekretninaData.pretrage : 0 };
+        const newSearches = propertyIDsList.map((id) => {
+            const preference = preferences.find((p) => p.id === id);
+
+            return {
+                id: id,
+                searches: preference ? preference.pretrage : 0
+            };
         });
 
-        res.status(200).json({ nizNekretnina: promjene });
+        res.status(200).json({ preferenceList: newSearches });
     } catch (error) {
         console.error('Greška prilikom čitanja ili pisanja JSON datoteke:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-
+/*
+Updates the number of clicks.
+*/
 app.post('/marketing/osvjezi/klikovi', async (req, res) => {
-    const { nizNekretnina } = req.body || { nizNekretnina: [] };
+    const { propertyIDsList } = req.body || { propertyIDsList: [] };
 
     try {
-        // Read JSON 
-        const preferencije = await readJsonFile('preferencije');
+        const preferences = await readJsonFile('preferencije');
 
-        // Finding the needed objects based on id
-        const promjene = nizNekretnina.map((id) => {
-            const nekretninaData = preferencije.find((item) => item.id === id);
-            return { id, klikovi: nekretninaData ? nekretninaData.klikovi : 0 };
+        const newClicks = propertyIDsList.map((id) => {
+            const preference = preferences.find((p) => p.id === id);
+
+            return {
+                id: id,
+                clicks: preference ? preference.klikovi : 0
+            };
         });
 
-        res.status(200).json({ nizNekretnina: promjene });
+        res.status(200).json({ preferenceList: newClicks });
     } catch (error) {
         console.error('Greška prilikom čitanja ili pisanja JSON datoteke:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
-// Start server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });

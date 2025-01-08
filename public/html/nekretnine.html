@@ -15,36 +15,35 @@
             <!-- Navigation placeholder (DO NOT EDIT) -->
         </div>
 
-        <!-- Search criteria -->
-        <div id="search-container" class="grid-container">
-            <label for="minCijena">Min cijena:</label>
-            <input type="number" id="minCijena" name="minCijena">
+        <div id="filter-container">
+            Price:
+            <div class="input-container">
+                <input type="number" id="min-price" name="min-price" placeholder="From">
+                <input type="number" id="max-price" name="max-price" placeholder="To">
+            </div>
+            
+            Square footage:
+            <div class="input-container">
+                <input type="number" id="min-square-footage" name="min-square-footage" placeholder="From">
+                <input type="number" id="max-square-footage" name="max-square-footage" placeholder="To">
+            </div>
 
-            <label for="maxCijena">Max cijena:</label>
-            <input type="number" id="maxCijena" name="maxCijena">
-
-            <label for="minKvadratura">Min kvadratura:</label>
-            <input type="number" id="minKvadratura" name="minKvadratura">
-
-            <label for="maxKvadratura">Max kvadratura:</label>
-            <input type="number" id="maxKvadratura" name="maxKvadratura">
-
-            <button id="dugmePretraga">Pretraga</button>
+            <button id="filter-button">Filter</button>
         </div>
 
-        <div id="divNekretnine">
-            <h1>Stan</h1>
-            <div class="grid-lista-nekretnina" id="stan">
+        <div id="properties-container">
+            <div class="heading">Apartments</div>
+            <div id="apartments">
                 <!-- .js generated -->
             </div>
             
-            <h1>Kuća</h1>
-            <div class="grid-lista-nekretnina" id="kuca">
+            <div class="heading">Houses</div>
+            <div id="houses">
                 <!-- .js generated -->
             </div>
             
-            <h1>Poslovni prostor</h1>
-            <div class="grid-lista-nekretnina" id="pp">
+            <div class="heading">Workspaces</div>
+            <div id="workspaces">
                 <!-- .js generated -->
             </div>
         </div>

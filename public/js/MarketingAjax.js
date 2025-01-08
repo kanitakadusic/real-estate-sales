@@ -1,115 +1,120 @@
 const MarketingAjax = (() => {
 
     function ajaxRequest(method, url, data, callback) {
-        const xhr = new XMLHttpRequest();
-        xhr.open(method, url, true);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4) {
-                if (xhr.status === 200) {
-                    callback(null, xhr.responseText);
+        const ajax = new XMLHttpRequest();
+
+        ajax.onreadystatechange = () => {
+            if (ajax.readyState === 4) {
+                if (ajax.status === 200) {
+                    callback(null, ajax.responseText);
                 } else {
-                    callback({ status: xhr.status, statusText: xhr.statusText }, null);
+                    callback({ status: ajax.status, statusText: ajax.statusText }, null);
                 }
             }
         };
-        xhr.send(data ? JSON.stringify(data) : null);
+
+        ajax.open(method, url, true);
+        ajax.setRequestHeader('Content-Type', 'application/json');
+        ajax.send(data ? JSON.stringify(data) : null);
     }
 
-    function updateDivElements(nizNekretnina, tip) {
-        // Provjeri da li postoji svojstvo "nizNekretnina" u odgovoru
-        if (nizNekretnina && nizNekretnina.nizNekretnina && Array.isArray(nizNekretnina.nizNekretnina)) {
-            const praviNizNekretnina = nizNekretnina.nizNekretnina;
-            praviNizNekretnina.forEach(nekretnina => {
-                const id = nekretnina.id;
-                const divId = `${tip}-${id}`;
-                const divElement = document.getElementById(divId);
-                if (divElement) {
-                    divElement.textContent = `${tip}: ${nekretnina[tip] || 0}`;
+    function updateDivElements(newPreferenceList, preferenceType) {
+        if (
+            newPreferenceList && 
+            newPreferenceList.preferenceList && 
+            Array.isArray(newPreferenceList.preferenceList)
+        ) {
+            newPreferenceList.preferenceList.forEach(preference => {
+                const spanElement = document.getElementById(`${preferenceType}-${preference.id}`);
+
+                if (spanElement) {
+                    spanElement.textContent = `Total ${preferenceType}: ${preference[preferenceType] || 0}`;
                 }
             });
         } else {
-            console.error('Neispravan format odgovora.');
+            console.error('Neispravan format odgovora');
         }
     }
 
-    let globalniNizNekretninaPretrage = [-1];
-    let globalniNizNekretninaKlikovi = [-1];
+    let Global_PropertyIDsList_Searches = [-1];
+    let Global_PropertyIDsList_Clicks = [-1];
 
-    function impl_osvjeziPretrage(divNekretnine) {
-        // Izdvajamo sve brojevne vrednosti iz ID-eva div-ova u divNekretnine
-        let nizNekretnina = [];
-        divNekretnine.querySelectorAll('[id^="pretrage-"]').forEach((div) => {
-            const id = div.id.replace('pretrage-', '');
-            nizNekretnina.push(parseInt(id, 10));
+    function impl_osvjeziPretrage(propertiesContainer) {
+        let propertyIDsList = [];
+
+        propertiesContainer.querySelectorAll('[id^="searches-"]').forEach((span) => {
+            const id = span.id.replace('searches-', '');
+            propertyIDsList.push(parseInt(id, 10));
         });
 
-        if (globalniNizNekretninaPretrage.includes(-1)) {
-            // Ako globalniNizNekretninaPretrage sadrži -1, zamijeni ga sa svim elementima iz nizNekretnina
-            globalniNizNekretninaPretrage = nizNekretnina;
+        if (Global_PropertyIDsList_Searches.includes(-1)) {
+            Global_PropertyIDsList_Searches = propertyIDsList;
         } else {
-            // Ako globalniNizNekretninaPretrage ne sadrži -1, izbaci elemente iz nizNekretnina koji se nalaze u globalniNizNekretninaPretrage
-            nizNekretnina = nizNekretnina.filter(element => !globalniNizNekretninaPretrage.includes(element));            
+            propertyIDsList = propertyIDsList.filter(e => !Global_PropertyIDsList_Searches.includes(e));
         }
 
-        const requestBody = { nizNekretnina };
+        const url = 'http://localhost:3000/marketing/osvjezi/pretrage';
+        const data = {
+            propertyIDsList: propertyIDsList
+        };
 
-        ajaxRequest('POST', '/marketing/osvjezi/pretrage', requestBody, (error, data) => {
+        ajaxRequest('POST', url, data, (error, response) => {
             if (!error) {
-                const nizNekretnina = JSON.parse(data);
-                updateDivElements(nizNekretnina, 'pretrage');
+                updateDivElements(JSON.parse(response), 'searches');
             }
         });
     }
 
-    function impl_osvjeziKlikove(divNekretnine) {
-        // Izdvajamo sve brojevne vrednosti iz ID-eva div-ova u divNekretnine
-        let nizNekretnina = [];
-        divNekretnine.querySelectorAll('[id^="klikovi-"]').forEach((div) => {
-            const id = div.id.replace('klikovi-', '');
-            nizNekretnina.push(parseInt(id, 10));
+    function impl_osvjeziKlikove(propertiesContainer) {
+        let propertyIDsList = [];
+
+        propertiesContainer.querySelectorAll('[id^="clicks-"]').forEach((span) => {
+            const id = span.id.replace('clicks-', '');
+            propertyIDsList.push(parseInt(id, 10));
         });
 
-        if (globalniNizNekretninaKlikovi.includes(-1)) {
-            // Ako globalniNizNekretninaPretrage sadrži -1, zamijeni ga sa svim elementima iz nizNekretnina
-            globalniNizNekretninaKlikovi = nizNekretnina;
+        if (Global_PropertyIDsList_Clicks.includes(-1)) {
+            Global_PropertyIDsList_Clicks = propertyIDsList;
         } else {
-            // Ako globalniNizNekretninaPretrage ne sadrži -1, izbaci elemente iz nizNekretnina koji se nalaze u globalniNizNekretninaPretrage
-            nizNekretnina = nizNekretnina.filter(element => !globalniNizNekretninaKlikovi.includes(element));            
+            propertyIDsList = propertyIDsList.filter(e => !Global_PropertyIDsList_Clicks.includes(e));
         }
 
-        const requestBody = { nizNekretnina };
+        const url = 'http://localhost:3000/marketing/osvjezi/klikovi';
+        const data = {
+            propertyIDsList: propertyIDsList
+        };
 
-        ajaxRequest('POST', '/marketing/osvjezi/klikovi', requestBody, (error, data) => {
+        ajaxRequest('POST', url, data, (error, response) => {
             if (!error) {
-                const nizNekretnina = JSON.parse(data);
-                updateDivElements(nizNekretnina, 'klikovi');
+                updateDivElements(JSON.parse(response), 'clicks');
             }
         });
     }
 
-    function impl_novoFiltriranje(listaFiltriranihNekretnina) {
-        const requestBody = { nizNekretnina: listaFiltriranihNekretnina };
-        console.log(listaFiltriranihNekretnina)
-        globalniNizNekretninaPretrage = [-1];
-        ajaxRequest('POST', '/marketing/nekretnine', requestBody, (error, data) => {
-            // Nema potrebe za pozivom fnCallback
-        });
+    function impl_novoFiltriranje(filteredPropertyIDsList) {
+        console.log(filteredPropertyIDsList);
+        Global_PropertyIDsList_Searches = [-1];
+
+        const url = 'http://localhost:3000/marketing/nekretnine';
+        const data = {
+            propertyIDsList: filteredPropertyIDsList
+        };
+
+        ajaxRequest('POST', url, data, (error, response) => {});
     }
     
-    function impl_klikNekretnina(idNekretnine) {
-        // Ažurirajte širinu nekretnine na 500px
-        const nekretninaElement = document.getElementById(`${idNekretnine}`);
-        globalniNizNekretninaKlikovi = [`${idNekretnine}`];
-        if (nekretninaElement) {
-            nekretninaElement.style.width = '500px';
+    function impl_klikNekretnina(propertyId) {
+        Global_PropertyIDsList_Clicks = [`${propertyId}`];
+        const propertyElement = document.getElementById(`${propertyId}`);
+
+        if (propertyElement) {
+            const url = `http://localhost:3000/marketing/nekretnina/${encodeURIComponent(propertyId)}`;
     
-            // Pošalji zahtjev na rutu POST /marketing/nekretnina/:id
-            ajaxRequest('POST', `/marketing/nekretnina/${idNekretnine}`, {}, (error, data) => {
+            ajaxRequest('POST', url, null, (error, response) => {
                 if (error) {
-                    console.error('GreÅ¡ka prilikom slanja zahtjeva:', error);
+                    console.error('Greška prilikom slanja zahtjeva:', error);
                 } else {
-                    console.log('Zahtjev uspjeÅ¡no poslan:', data);
+                    console.log('Zahtjev uspješno poslan:', response);
                 }
             });
         }
