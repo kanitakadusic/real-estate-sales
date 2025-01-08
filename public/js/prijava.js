@@ -12,7 +12,7 @@ window.onload = () => {
                 if (status.poruka === 'Neuspješna prijava') {
                     let feedbackElement = document.getElementById('feedback');
 
-                    feedbackElement.textContent = 'Neispravni podaci.';
+                    feedbackElement.textContent = 'Invalid data.';
                     feedbackElement.style.display = 'block';
                 } else {
                     window.location.href = 'http://localhost:3000/nekretnine.html';

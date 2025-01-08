@@ -33,15 +33,15 @@ confirmButton.addEventListener('click', () => {
         if (error) {
             console.error('Greška prilikom ažuriranja korisničkih podataka:', error);
 
-            feedbackElement.textContent = 'Došlo je do greške prilikom ažuriranja podataka.';
+            feedbackElement.textContent = 'An error occurred while updating data.';
             feedbackElement.style.display = 'block';
-            feedbackElement.style.color = '#ffc0c7';
+            feedbackElement.style.color = 'tomato';
         } else {
             console.log(status.poruka);
 
-            feedbackElement.textContent = 'Podaci su uspješno ažurirani.';
+            feedbackElement.textContent = 'The data was successfully updated.';
             feedbackElement.style.display = 'block';
-            feedbackElement.style.color = '#ddffdd';
+            feedbackElement.style.color = 'mediumseagreen';
 
             if (firstnameElement.value) firstnameElement.placeholder = firstnameElement.value;
             if (lastnameElement.value) lastnameElement.placeholder = lastnameElement.value;

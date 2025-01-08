@@ -5,115 +5,114 @@ body {
     padding: 0;
 }
 
-.user-form-container {
+#user-form-container {
+    background-color: white;
+    padding: 30px;
     margin: 20px auto;
+    border-radius: 10px;
     display: flex;
     flex-wrap: wrap;
-    background-color: #625a4e;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     max-width: 600px;
     width: 100%;
 }
 
-.user-image {
+#user-form-container .user-image {
     flex: 1 1 150px;
     margin-right: 20px;
 }
 
-.user-image img {
+#user-form-container .user-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 8px;
+    border-radius: 5px;
     aspect-ratio: 1;
     background-color: #ddd;
 }
 
-.user-form {
+#user-form-container .user-form {
     flex: 2 1 300px;
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
-.form-group {
+#user-form-container .form-group {
     margin-bottom: 15px;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-label {
-    color: #fff;
-    margin-right: 10px;
+#user-form-container label {
     flex: 1;
-    font-size: 1rem;
+    font-size: 16px;
+    margin-left: 10px;
 }
 
-input {
+#user-form-container input {
+    border-radius: 5px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    border: 2px solid #fdf1d3;
+    padding: 12px 16px;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
     flex: 2;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
 }
 
-input:focus {
-    border-color: #8a6d3b;
+#user-form-container input:focus {
+    border: 2px solid tomato;
     outline: none;
 }
 
-#confirm-button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #8a6d3b;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
+#user-form-container #confirm-button {
     cursor: pointer;
+    color: white;
+    font-size: 16px;
+    border: 0;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: tomato;
+    margin-top: 10px;
     align-self: flex-end;
 }
 
-#confirm-button:hover {
-    background-color: #725729;
-}
-
-#feedback {
+#user-form-container #feedback {
     display: none;
     margin-top: 20px;
 }
 
 @media screen and (max-width: 768px) {
-    .user-form-container {
+    #user-form-container {
         flex-direction: column;
         align-items: center;
         text-align: center;
         max-width: 240px;
     }
 
-    .user-image {
+    #user-form-container .user-image {
         margin: 0 0 20px 0;
         flex: none;
     }
 
-    .user-form {
+    #user-form-container .user-form {
         flex: none;
         width: 100%;
     }
 
-    .form-group {
+    #user-form-container .form-group {
         flex-direction: column;
         align-items: flex-start;
         text-align: left;
     }
 
-    label {
-        margin-bottom: 5px;
+    #user-form-container label {
+        margin: 15px 0;
     }
 
-    #confirm-button {
+    #user-form-container #confirm-button {
         align-self: center;
     }
 }
