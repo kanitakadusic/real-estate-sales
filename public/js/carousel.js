@@ -1,40 +1,40 @@
-function postaviCarousel(glavniElement, sviElementi, indeks = 0) {
+function setCarousel(containerElement, childElements, index = 0) {
     if (
-        glavniElement === null || glavniElement === undefined || 
-        sviElementi.length === 0 || 
-        indeks < 0 || indeks >= sviElementi.length
+        containerElement === null || containerElement === undefined || 
+        childElements.length === 0 || 
+        index < 0 || index >= childElements.length
     ) return null;
 
-    glavniElement.innerHTML = `
-        <div class="${sviElementi[indeks].className}">
-            ${sviElementi[indeks].innerHTML}
+    containerElement.innerHTML = `
+        <div class="${childElements[index].className}">
+            ${childElements[index].innerHTML}
         </div>
     `;
 
-    function fnLijevo() {
-        indeks--;
-        if (indeks < 0) indeks = sviElementi.length - 1;
+    function previous() {
+        index--;
+        if (index < 0) index = childElements.length - 1;
 
-        glavniElement.innerHTML = `
-            <div class="${sviElementi[indeks].className}">
-                ${sviElementi[indeks].innerHTML}
+        containerElement.innerHTML = `
+            <div class="${childElements[index].className}">
+                ${childElements[index].innerHTML}
             </div>
         `;
     }
 
-    function fnDesno() {
-        indeks++;
-        if (indeks >= sviElementi.length) indeks = 0;
+    function next() {
+        index++;
+        if (index >= childElements.length) index = 0;
 
-        glavniElement.innerHTML = `
-            <div class="${sviElementi[indeks].className}">
-                ${sviElementi[indeks].innerHTML}
+        containerElement.innerHTML = `
+            <div class="${childElements[index].className}">
+                ${childElements[index].innerHTML}
             </div>
         `;
     }
 
     return {
-        fnLijevo,
-        fnDesno
+        previous: previous,
+        next: next
     }
 }

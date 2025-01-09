@@ -5,87 +5,86 @@ body {
     padding: 0;
 }
 
-body h3 {
-    margin-left: 20px;
+.heading {
+    font-weight: bold;
+    font-size: 24px;
+    margin: 50px 30px 30px 30px;
 }
 
-/* Stil za div #osnovno */
-#osnovno {
-    text-align: left;
-    border: 1px solid #000;
-    padding: 20px;
-    margin: 20px;
+#basic-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    margin: 30px;
+    font-size: 17px;
 }
 
-#osnovno img {
-    max-width: 100%;
+#basic-container img {
+    width: 100%;
     height: auto;
+    border-radius: 5px;
+    margin-bottom: 25px;
 }
 
-/* Stil za div #detalji */
-#detalji {
+#details-container {
+    background-color: white;
+    padding: 30px;
+    margin: 30px;
+    border-radius: 10px;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: flex-start;
     align-content: flex-start;
     align-items: flex-start;
-    border: 1px solid #000;
-    padding: 20px;
-    margin: 20px;
+    font-size: 17px;
 }
 
-#kolona1 {
+#details-container #column-1 {
     order: 1;
     flex: 1 1 auto;
     align-self: auto;
 }
 
-#kolona2 {
+#details-container #column-2 {
     order: 2;
     flex: 1 1 auto;
     align-self: auto;
 }
 
-#opis {
+#details-container #description {
     order: 3;
     flex: 0 1 100%;
     align-self: auto;
 }
 
-/* Stil za div #upiti */
-#upiti {
+#queries-container {
+    background-color: white;
+    padding: 30px;
+    margin: 30px;
+    border-radius: 10px;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    border: 1px solid #000;
-    padding: 10px;
-    margin: 20px;
+    font-size: 17px;
 }
 
-.upit {
+#queries-container .query {
     flex: 1 1 100%;
-    box-sizing: border-box;
-    border: 1px solid #000;
-    padding: 10px;
-    margin: 10px;
-    background-color: white;
 }
 
 #carousel-buttons {
-    display: none;
-    margin: 0 auto 20px auto;
+    margin: 0 auto 30px auto;
     width: fit-content;
 }
 
-@media (max-width: 599px) {
-    #carousel-buttons {
-        display: block;
-    }
-}
-
-@media (min-width: 801px) {
-    .upit {
-        flex-basis: calc(50% - 20px);
-    }
+#carousel-buttons button {
+    cursor: pointer;
+    color: white;
+    font-size: 17px;
+    border: 0;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: tomato;
+    margin: 0 15px;
 }
