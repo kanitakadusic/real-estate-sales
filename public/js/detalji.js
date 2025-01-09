@@ -4,15 +4,27 @@ function getPropertyIdFromUrl() {
 }
 
 function mergePropertyDetails(property) {
-    document.getElementById('title').textContent = property.naziv;
-    document.getElementById('square-footage').textContent = property.kvadratura;
-    document.getElementById('price').textContent = property.cijena;
+    document.getElementById('property-title').textContent = property.naziv;
+    document.getElementById('property-square-footage').textContent = property.kvadratura;
+    document.getElementById('property-price').textContent = property.cijena;
 
-    document.getElementById('heating').textContent = property.tip_grijanja;
-    document.getElementById('location').textContent = property.lokacija;
-    document.getElementById('construction-year').textContent = property.godina_izgradnje;
-    document.getElementById('publication-date').textContent = property.datum_objave;
-    document.getElementById('description').textContent = property.opis;
+    document.getElementById('property-heating').textContent = property.tip_grijanja;
+    document.getElementById('property-construction-year').textContent = property.godina_izgradnje;
+    document.getElementById('property-publication-date').textContent = property.datum_objave;
+    document.getElementById('property-description').textContent = property.opis;
+
+    const location = document.getElementById('property-location');
+    //location.href = '#';
+    location.textContent = property.lokacija;
+    location.addEventListener('click', () => {
+        PoziviAjax.getTop5Nekretnina(property.lokacija, (error, properties) => {
+            if (error) {
+                console.error('Greška prilikom dohvatanja top 5 nekretnina sa servera:', error);
+            } else {
+                console.log(properties);
+            }
+        });
+    });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -32,8 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-
-
 
 const carousel = setCarousel(
     document.getElementById('queries-container'),

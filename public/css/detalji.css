@@ -5,10 +5,23 @@ body {
     padding: 0;
 }
 
-.heading {
+#content-container .heading {
     font-weight: bold;
     font-size: 24px;
     margin: 50px 30px 30px 30px;
+}
+
+#content-container a {
+    text-decoration: none;
+    color: tomato;
+}
+
+#content-container a:visited {
+    color: purple;
+}
+
+#content-container a:hover {
+    text-decoration: underline;
 }
 
 #basic-container {
