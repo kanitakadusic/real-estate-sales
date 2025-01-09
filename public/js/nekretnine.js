@@ -73,27 +73,34 @@ const apartmentsElement = document.getElementById('apartments');
 const housesElement = document.getElementById('houses');
 const workspacesElement = document.getElementById('workspaces');
 
-let propertyListing = SpisakNekretnina();
+function displayProperties(propertyListingInstance) {
+    mergeProperties(apartmentsElement, propertyListingInstance, 'Stan');
+    mergeProperties(housesElement, propertyListingInstance, 'Kuća');
+    mergeProperties(workspacesElement, propertyListingInstance, 'Poslovni prostor');
+}
 
-PoziviAjax.getNekretnine((error, propertiesList) => {
+const propertyListing = SpisakNekretnina();
+
+function fnCallback(error, propertiesList) {
     if (error) {
         console.error('Greška prilikom dohvatanja nekretnina sa servera:', error);
     } else {
         propertyListing.init(propertiesList, []);
-
-        mergeProperties(apartmentsElement, propertyListing, 'Stan');
-        mergeProperties(housesElement, propertyListing, 'Kuća');
-        mergeProperties(workspacesElement, propertyListing, 'Poslovni prostor');
+        displayProperties(propertyListing);
     }
-});
+}
 
-function displayFilteredProperties(filteredPropertiesList) {
-    const currentPropertyListing = SpisakNekretnina();
-    currentPropertyListing.init(filteredPropertiesList, []);
+function getPropertyLocationFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('location');
+}
 
-    mergeProperties(apartmentsElement, currentPropertyListing, 'Stan');
-    mergeProperties(housesElement, currentPropertyListing, 'Kuća');
-    mergeProperties(workspacesElement, currentPropertyListing, 'Poslovni prostor');
+const propertyLocation = getPropertyLocationFromUrl();
+
+if (!propertyLocation) {
+    PoziviAjax.getNekretnine(fnCallback);
+} else {
+    PoziviAjax.getTop5Nekretnina(propertyLocation, fnCallback);
 }
 
 document.getElementById('filter-button').addEventListener('click', () => {
@@ -108,8 +115,10 @@ document.getElementById('filter-button').addEventListener('click', () => {
 
     // Increases the number of searches for each of the filtered properties by one
     MarketingAjax.novoFiltriranje(filteredPropertiesList.map(property => property.id));
-    
-    displayFilteredProperties(filteredPropertiesList);
+
+    const temporaryPropertyListing = SpisakNekretnina();
+    temporaryPropertyListing.init(filteredPropertiesList, []);    
+    displayProperties(temporaryPropertyListing);
 });
 
 setInterval(() => {
