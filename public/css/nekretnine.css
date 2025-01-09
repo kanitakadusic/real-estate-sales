@@ -100,11 +100,6 @@ button {
 
 #properties-container .details {
     text-align: left;
-    display: none;
-}
-
-#properties-container .details div {
-    margin-bottom: 5px;
 }
 
 #properties-container .price {

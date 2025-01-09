@@ -15,69 +15,50 @@
             <!-- Navigation placeholder (DO NOT EDIT) -->
         </div>
 
-        <div id="basic-container">
-            <img src="../resources/images/2.jpg" alt="Nekretnina">
-            
-            <p><strong>Naziv:</strong> Useljiv stan, Sarajevo</p>
-            <p><strong>Kvadratura:</strong> 58 m²</p>
-            <p><strong>Cijena:</strong> 232.000 KM</p>
-        </div>
-
-        <div class="heading">Details</div>
-        <div id="details-container">
-            <div id="column-1">
-                <p><strong>Tip grijanja:</strong> plin</p>
-                <p><strong>Lokacija:</strong> Novo Sarajevo</p>
+        <div id="content-container">
+            <div id="basic-container">
+                <img src="../resources/images/2.jpg" alt="Nekretnina">
+                
+                <p><strong>Title:</strong> <span id="title"></span></p>
+                <p><strong>Square footage:</strong> <span id="square-footage"></span></p>
+                <p><strong>Price:</strong> <span id="price"></span></p>
             </div>
-            <div id="column-1">
-                <p><strong>Godina izgradnje:</strong> 2019</p>
-                <p><strong>Datum objave oglasa:</strong> 2022</p>
+    
+            <div class="heading">Details</div>
+            <div id="details-container">
+                <div id="column-1">
+                    <p><strong>Heating:</strong> <span id="heating"></span></p>
+                    <p><strong>Location:</strong> <span id="location"></span></p>
+                </div>
+                <div id="column-2">
+                    <p><strong>Construction year:</strong> <span id="construction-year"></span></p>
+                    <p><strong>Publication date:</strong> <span id="publication-date"></span></p>
+                </div>
+                <div id="row">
+                    <p><strong>Description:</strong> <span id="description"></span></p>
+                </div>
             </div>
-            <div id="description">
-                <p><strong>Opis:</strong> Lorem ipsum dolor sit amet consectetur adipisicing elit. 
-                    Dolore dignissimos eos tempore, mollitia doloribus vitae molestiae ullam ut repudiandae alias corrupti, 
-                    rem nisi officia at perferendis dolorum iusto dolores nobis!
-                </p>
+    
+            <div class="heading">Queries</div>
+            <div id="queries-container">
+                <div class="query">
+                    <p><strong>Username 1:</strong></p>
+                    <p></p>
+                </div>
+                <div class="query">
+                    <p><strong>Username 2:</strong></p>
+                    <p></p>
+                </div>
+                <div class="query">
+                    <p><strong>Username 3:</strong></p>
+                    <p></p>
+                </div>
             </div>
-        </div>
-
-        <div class="heading">Queries</div>
-        <div id="queries-container">
-            <div class="query">
-                <p><strong>Username 1:</strong></p>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. 
-                    Itaque et architecto maiores consequuntur soluta voluptas, 
-                    molestias libero illo minus obcaecati pariatur provident ipsum id dicta quod. 
-                    Eveniet ipsum iure ullam?
-                </p>
+    
+            <div id="carousel-buttons">
+                <button id="previous">Previous</button>
+                <button id="next">Next</button>
             </div>
-            <div class="query">
-                <p><strong>Username 2:</strong></p>
-                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. 
-                    Quae dolore perferendis dolor, aperiam voluptatibus neque explicabo qui, quam, illo 
-                    suscipit sint quo officia dolores consequatur voluptatem. Laborum dolor at placeat!
-                </p>
-            </div>
-            <div class="query">
-                <p><strong>Username 3:</strong></p>
-                <p>Lorem, ipsuluptaat placeat!</p>
-            </div>
-            <div class="query">
-                <p><strong>Username 4:</strong></p>
-                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. 
-                    Quae dolore perferendis dolor, aperiam voluptatibus neque explicabo qui, quam, illo 
-                    suscipit sint quo officia dolores consequatur voluptatem. Laborum dolor at placeat!
-                </p>
-            </div>
-            <div class="query">
-                <p><strong>Username 5:</strong></p>
-                <p>Loatem. Labplaceat!</p>
-            </div>
-        </div>
-
-        <div id="carousel-buttons">
-            <button id="previous">Previous</button>
-            <button id="next">Next</button>
         </div>
 
         <script src="../js/carousel.js"></script>

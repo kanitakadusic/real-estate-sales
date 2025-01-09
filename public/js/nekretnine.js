@@ -9,18 +9,16 @@ function mergeProperties(propertiesContainer, module, propertyType) {
         propertiesContainer.className = 'properties-list';
 
         propertiesList.forEach(property => {
+            const propertyClasses = {
+                'Stan': ['property', 'apartment'],
+                'Kuća': ['property', 'house'],
+                'Poslovni prostor': ['property', 'workspace'],
+            };
+            
             const propertyElement = document.createElement('div');
-
-            if (propertyType === 'Stan') {
-                propertyElement.classList.add('property', 'apartment');
-                propertyElement.id = `${property.id}`;
-            } else if (propertyType === 'Kuća') {
-                propertyElement.classList.add('property', 'house');
-                propertyElement.id = `${property.id}`;
-            } else if (propertyType === 'Poslovni prostor') {
-                propertyElement.classList.add('property', 'workspace');
-                propertyElement.id = `${property.id}`;
-            }
+            propertyElement.id = `${property.id}`;
+            const classes = propertyClasses[propertyType] || ['property'];
+            propertyElement.classList.add(...classes);
 
             const searchesElement = document.createElement('span');
             searchesElement.id = `searches-${property.id}`;
@@ -47,13 +45,7 @@ function mergeProperties(propertiesContainer, module, propertyType) {
 
             const detailsElement = document.createElement('div');
             detailsElement.classList.add('details');
-            detailsElement.innerHTML = `
-                <div>Location: ${property.lokacija}</div>
-                <div>Square footage: ${property.kvadratura} m²</div>
-                <div>Heating: ${property.tip_grijanja}</div>
-                <div>Year of construction: ${property.godina_izgradnje}</div>
-                <div>Description: ${property.opis}</div>
-            `;
+            detailsElement.innerHTML = `Square footage: ${property.kvadratura} m²`;
             propertyElement.appendChild(detailsElement);
 
             const priceElement = document.createElement('div');
@@ -64,14 +56,11 @@ function mergeProperties(propertiesContainer, module, propertyType) {
             const detailsButton = document.createElement('button');
             detailsButton.textContent = 'Details';
             detailsButton.addEventListener('click', () => {
-                if (detailsElement.style.display === 'block') {
-                    detailsElement.style.display = 'none';
-                } else {
-                    detailsElement.style.display = 'block';
-                }
-
                 // Increases a property's click count by one
                 MarketingAjax.klikNekretnina(property.id);
+
+                // Redirect to the details page with the property ID
+                window.location.href = `http://localhost:3000/detalji.html?id=${encodeURIComponent(property.id)}`;
             });
             propertyElement.appendChild(detailsButton);
 

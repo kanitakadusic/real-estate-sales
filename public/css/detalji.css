@@ -44,6 +44,7 @@ body {
     order: 1;
     flex: 1 1 auto;
     align-self: auto;
+    margin-right: 30px;
 }
 
 #details-container #column-2 {
@@ -52,7 +53,7 @@ body {
     align-self: auto;
 }
 
-#details-container #description {
+#details-container #row {
     order: 3;
     flex: 0 1 100%;
     align-self: auto;
