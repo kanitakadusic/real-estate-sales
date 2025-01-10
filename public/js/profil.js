@@ -43,9 +43,24 @@ confirmButton.addEventListener('click', () => {
             feedbackElement.style.display = 'block';
             feedbackElement.style.color = 'mediumseagreen';
 
-            if (firstnameElement.value) firstnameElement.placeholder = firstnameElement.value;
-            if (lastnameElement.value) lastnameElement.placeholder = lastnameElement.value;
-            if (usernameElement.value) usernameElement.placeholder = usernameElement.value;
+            if (firstnameElement.value) {
+                firstnameElement.placeholder = firstnameElement.value;
+                firstnameElement.value = '';
+            }
+            
+            if (lastnameElement.value) {
+                lastnameElement.placeholder = lastnameElement.value;
+                lastnameElement.value = '';
+            }
+
+            if (usernameElement.value) {
+                usernameElement.placeholder = usernameElement.value;
+                usernameElement.value = '';
+            }
+
+            if (passwordElement.value) {
+                passwordElement.value = '';
+            }
         }
     });
 });
