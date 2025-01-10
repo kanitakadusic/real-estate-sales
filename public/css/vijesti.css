@@ -1,4 +1,5 @@
-.vijesti {
+#news {
+    margin: 15px;
     display: grid;
     grid-template-areas: 
         'v1 v1 v1 v1'
@@ -9,56 +10,52 @@
         'v9 v11 v12 v13';
 }
 
-.vijesti .glavna,
-.vijesti .visoka,
-.vijesti .kvadratna {
+#news .glavna,
+#news .visoka,
+#news .kvadratna {
+    border-radius: 10px;
     box-sizing: border-box;
     overflow-y: auto;
-    border: 1px solid black;
-    padding: 10px;
+    margin: 15px;
+    padding: 30px;
+    background-color: white;
 }
 
-.vijesti .glavna {
-    background-color: #c8d9f7;
+#news .glavna {
     aspect-ratio: 2 / 1;
 }
 
-.vijesti .visoka {
-    background-color: #fff1cc;
+#news .visoka {
     aspect-ratio: 1 / 2;
 }
 
-.vijesti .kvadratna {
-    background-color: #f4cccc;
+#news .kvadratna {
     aspect-ratio: 1;
 }
 
-.vijesti .naslov,
-.vijesti .tekst {
-    margin: 10px 0;
-    padding: 10px;
-}
-
-.vijesti .naslov {
+#news .naslov {
+    margin-top: 15px;
     font-size: 24px;
     font-weight: bold;
 }
 
-.vijesti .tekst {
+#news .tekst {
+    margin-top: 30px;
     font-size: 18px;
 }
 
-.vijesti img {
+#news img {
     float: left;
     width: 50%;
     height: 100%;
-    margin: 0 20px 0 0;
+    margin-right: 30px;
     object-fit: cover;
     object-position: center;
+    border-radius: 5px;
 }
 
 @media (max-width: 800px) {
-    .vijesti {
+    #news {
         grid-template-areas: 
             'v1 v1'
             'v1 v1'
@@ -72,15 +69,15 @@
             'v12 v13';
     }
 
-    .vijesti .glavna {
+    #news .glavna {
         aspect-ratio: 1;
     }
 
-    .vijesti img {
+    #news img {
         float: none;
         width: 100%;
         height: 50%;
-        margin: 0 0 10px 0;
+        margin-bottom: 15px;
     }
 }
 
@@ -98,18 +95,18 @@
 #v12 { grid-area: v12; }
 #v13 { grid-area: v13; }
 
-.vijesti ::-webkit-scrollbar {
+#news ::-webkit-scrollbar {
     width: 8px;
 }
 
-.vijesti ::-webkit-scrollbar-thumb {
+#news ::-webkit-scrollbar-thumb {
     background: #c1c1c1;
 }
 
-.vijesti ::-webkit-scrollbar-thumb:hover {
+#news ::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
 }
 
-.vijesti ::-webkit-scrollbar-thumb:active {
+#news ::-webkit-scrollbar-thumb:active {
     background: #787878;
 }
