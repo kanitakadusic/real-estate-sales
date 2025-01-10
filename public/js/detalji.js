@@ -55,3 +55,25 @@ const carousel = setCarousel(
 
 document.getElementById('previous').addEventListener('click', () => carousel.previous());
 document.getElementById('next').addEventListener('click', () => carousel.next());
+
+document.getElementById('new-query-button').addEventListener('click', () => {
+    console.log(propertyId);
+    const newQueryTextElement = document.getElementById('new-query-text');
+    const feedbackElement = document.getElementById('feedback');
+
+    PoziviAjax.postUpit(Number(propertyId), newQueryTextElement.value, (error, status) => {
+        if (error) {
+            console.error('Greška prilikom postavljanja upita:', error);
+
+            feedbackElement.textContent = `Error: ${error}.`;
+            feedbackElement.style.display = 'block';
+            feedbackElement.style.color = 'tomato';
+        } else {
+            newQueryTextElement.value = '';
+
+            feedbackElement.textContent = 'The query was sent successfully.';
+            feedbackElement.style.display = 'block';
+            feedbackElement.style.color = 'mediumseagreen';
+        }
+    });
+});

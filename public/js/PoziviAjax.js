@@ -64,43 +64,26 @@ const PoziviAjax = (() => {
     }
 
     function impl_postUpit(nekretnina_id, tekst_upita, fnCallback) {
-        if (!req.session.username) {
-            return fnCallback({ status: 401, statusText: 'Neautorizovan pristup' }, null);
-        }
-
-        // Read user data from the JSON file asynchronously
-        readJsonFileAsync('korisnici', (err, users) => {
-            if (err) {
-                return fnCallback({ status: 500, statusText: 'Internal Server Error' }, null);
+        const url = 'http://localhost:3000/upit';
+        const data = {
+            nekretnina_id: nekretnina_id,
+            tekst_upita: tekst_upita
+        };
+    
+        ajaxRequest('POST', url, data, (error, response) => {
+            if (error) {
+                if (error.status === 401) {
+                    window.location.href = 'http://localhost:3000/prijava.html';
+                } else {
+                    fnCallback(error.statusText, null);
+                }
+            } else {
+                try {
+                    fnCallback(null, JSON.parse(response));
+                } catch (parseError) {
+                    fnCallback(parseError.message, null);
+                }
             }
-
-            // Read properties data from the JSON file asynchronously
-            readJsonFileAsync('nekretnine', (err, nekretnine) => {
-                if (err) {
-                    return fnCallback({ status: 500, statusText: 'Internal Server Error' }, null);
-                }
-
-                const user = users.find((u) => u.username === req.session.username);
-                const property = nekretnine.find((p) => p.id === nekretnina_id);
-
-                if (!property) {
-                    return fnCallback({ status: 400, statusText: `Nekretnina sa id-em ${nekretnina_id} ne postoji` }, null);
-                }
-
-                property.upiti.push({
-                    korisnik_id: user.id,
-                    tekst_upita: tekst_upita
-                });
-
-                // Save the updated properties data back to the JSON file asynchronously
-                saveJsonFileAsync('nekretnine', nekretnine, (err) => {
-                    if (err) {
-                        return fnCallback({ status: 500, statusText: 'Internal Server Error' }, null);
-                    }
-
-                    fnCallback(null, { poruka: 'Upit je uspješno dodan' });
-                });
-            });
         });
     }
 

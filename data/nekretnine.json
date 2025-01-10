@@ -72,6 +72,10 @@
       {
         "korisnik_id": 999999,
         "tekst_upita": "Cijena?"
+      },
+      {
+        "korisnik_id": 999999,
+        "tekst_upita": "Ovo je upit sa \"navodnicima\".\nIma i novi red.\n\nČak i poneki \\ karakter.\nA također i jednostruke 'navodnike'."
       }
     ]
   },
@@ -116,6 +120,14 @@
       {
         "korisnik_id": 999999,
         "tekst_upita": "Cijena?"
+      },
+      {
+        "korisnik_id": 999999,
+        "tekst_upita": "Na kojem spratu se nalazi prostor?"
+      },
+      {
+        "korisnik_id": 999999,
+        "tekst_upita": "Pozdrav!\nDa li objekat ima izlaz na balkon?"
       }
     ]
   }
