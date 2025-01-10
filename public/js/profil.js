@@ -17,7 +17,7 @@ PoziviAjax.getKorisnik((error, user) => {
     }
 });
 
-const confirmButton = document.querySelector('#confirm-button');
+const confirmButton = document.getElementById('confirm-button');
 
 confirmButton.addEventListener('click', () => {
     const user = {};

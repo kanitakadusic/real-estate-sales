@@ -1,32 +1,53 @@
-function showUserQueries() {
-    const queriesElement = document.getElementById('user-queries');
+PoziviAjax.getMojiUpiti((error, queries) => {
+    const queriesContainer = document.getElementById('queries-container');
 
-    PoziviAjax.getMojiUpiti((error, queries) => {
-        if (error) {
-            console.error('Greška prilikom dohvatanja korisničkih upita sa servera:', error);
-            return;
+    if (error) {
+        console.error('Greška prilikom dohvatanja korisničkih upita sa servera:', error);
+
+        queriesContainer.innerHTML = '';
+        queriesContainer.className = 'error';
+        const imageElement = document.createElement('img');
+
+        if (error === 'Not Found') {
+            imageElement.src = '../resources/images/404.svg';
+            imageElement.alt = '404';
+        } else {
+            imageElement.src = '../resources/images/500.svg';
+            imageElement.alt = '500';
         }
 
-        queries.forEach(query => {
-            const { id_nekretnine, tekst_upita } = query;
+        queriesContainer.appendChild(imageElement);
 
-            PoziviAjax.getNekretnina(id_nekretnine, (error, property) => {
-                const queryElement = document.createElement('li');
+        return;
+    }
 
-                if (error) {
-                    console.error('Greška prilikom dohvatanja detalja nekretnine sa servera:', error);
-                    queryElement.innerHTML = `(${id_nekretnine})`;
-                } else {
-                    queryElement.innerHTML = `
-                        <strong>${property.naziv}</strong> [${property.datum_objave}] (${id_nekretnine})<br>
-                        ${tekst_upita}
-                    `;
-                }
+    queries.forEach(query => {
+        const { id_nekretnine, tekst_upita } = query;
 
-                queriesElement.appendChild(queryElement);
-            });
+        const queryElement = document.createElement('div');
+        queryElement.classList.add('query-container');
+
+        PoziviAjax.getNekretnina(id_nekretnine, (error, property) => {
+            const titleElement = document.createElement('div');
+
+            if (error) {
+                console.error('Greška prilikom dohvatanja detalja nekretnine sa servera:', error);
+
+                titleElement.textContent = id_nekretnine;
+            } else {
+                const linkElement = document.createElement('a');
+                linkElement.textContent = property.naziv;
+                linkElement.href = `http://localhost:3000/detalji.html?id=${encodeURIComponent(id_nekretnine)}`;
+                titleElement.appendChild(linkElement);
+            }
+            
+            queryElement.appendChild(titleElement);
+
+            const textElement = document.createElement('p');
+            textElement.textContent = tekst_upita;
+            queryElement.appendChild(textElement);
+
+            queriesContainer.appendChild(queryElement);
         });
     });
-}
-
-showUserQueries();
+});

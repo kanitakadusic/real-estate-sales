@@ -1,6 +1,25 @@
-body {
-    background-color: #fdf1d3;
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
+#queries-container .query-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    margin: 30px;
+    font-size: 18px;
+}
+
+#queries-container a {
+    text-decoration: none;
+    color: tomato;
+}
+
+#queries-container a:visited {
+    color: purple;
+}
+
+#queries-container a:hover {
+    text-decoration: underline;
+}
+
+#queries-container p {
+    font-size: 17px;
+    margin: 20px 0 0 0;
 }

@@ -1,27 +1,7 @@
-body {
-    background-color: #fdf1d3;
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-}
-
 #content-container .heading {
     font-weight: bold;
     font-size: 24px;
     margin: 50px 30px 30px 30px;
-}
-
-#content-container a {
-    text-decoration: none;
-    color: tomato;
-}
-
-#content-container a:visited {
-    color: purple;
-}
-
-#content-container a:hover {
-    text-decoration: underline;
 }
 
 #basic-container {
@@ -70,6 +50,19 @@ body {
     order: 3;
     flex: 0 1 100%;
     align-self: auto;
+}
+
+#details-container a {
+    text-decoration: none;
+    color: tomato;
+}
+
+#details-container a:visited {
+    color: purple;
+}
+
+#details-container a:hover {
+    text-decoration: underline;
 }
 
 #queries-container {

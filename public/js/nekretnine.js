@@ -69,6 +69,8 @@ function mergeProperties(propertiesContainer, module, propertyType) {
     }
 }
 
+const overallPropertiesContainer = document.getElementById('properties-container');
+
 const apartmentsElement = document.getElementById('apartments');
 const housesElement = document.getElementById('houses');
 const workspacesElement = document.getElementById('workspaces');
@@ -84,6 +86,15 @@ const propertyListing = SpisakNekretnina();
 function fnCallback(error, propertiesList) {
     if (error) {
         console.error('Greška prilikom dohvatanja nekretnina sa servera:', error);
+
+        propertyListing.init([], []);
+
+        overallPropertiesContainer.innerHTML = '';
+        overallPropertiesContainer.className = 'error';
+        const imageElement = document.createElement('img');
+        imageElement.src = '../resources/images/500.svg';
+        imageElement.alt = '500';
+        overallPropertiesContainer.appendChild(imageElement);
     } else {
         propertyListing.init(propertiesList, []);
         displayProperties(propertyListing);
@@ -122,6 +133,6 @@ document.getElementById('filter-button').addEventListener('click', () => {
 });
 
 setInterval(() => {
-    MarketingAjax.osvjeziPretrage(document.getElementById('properties-container'));
-    MarketingAjax.osvjeziKlikove(document.getElementById('properties-container'));
+    MarketingAjax.osvjeziPretrage(overallPropertiesContainer);
+    MarketingAjax.osvjeziKlikove(overallPropertiesContainer);
 }, 500);
