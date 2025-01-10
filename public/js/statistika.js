@@ -1,94 +1,35 @@
-let statistics = StatistikaNekretnina();
+Chart.defaults.font.size = 16;
+
+const yearRanges = [];
+const priceRanges = [];
+
+const statistics = StatistikaNekretnina();
 
 PoziviAjax.getNekretnine((error, propertiesList) => {
     if (error) {
         console.error('Greška prilikom dohvatanja nekretnina sa servera:', error);
+
+        statistics.init([], []);
+
+        const statisticsContainer = document.getElementById('statistics-container');
+        statisticsContainer.innerHTML = '';
+        statisticsContainer.className = 'error';
+        const imageElement = document.createElement('img');
+        imageElement.src = '../resources/images/500.svg';
+        imageElement.alt = '500';
+        statisticsContainer.appendChild(imageElement);
     } else {
         statistics.init(propertiesList, []);
     }
 });
 
 function parseInput(input) {
-    if (!isNaN(input) && input.trim() !== "") return Number(input);
+    if (!isNaN(input) && input.trim() !== '') {
+        return Number(input);
+    }
+
     return input;
 }
-
-function insertBlock(container, content) {
-    let block = document.createElement('div');
-    block.textContent = content;
-    block.classList.add('block');
-
-    container.appendChild(block);
-}
-
-function calculateASF() {
-    const form = document.forms['average-square-footage'];
-
-    const key = String(form['filter-key'].value);
-    const value = parseInput(form['filter-value'].value);
-
-    let container = form.querySelector(`#asf-container`);
-    container.innerHTML = "";
-    const errorElement = form.querySelector('.error-message');
-
-    try {
-        let asf = statistics.prosjecnaKvadratura({ [key]: value });
-        insertBlock(container, asf)
-
-        errorElement.textContent = "";
-    } catch (error) {
-        errorElement.textContent = error.message;
-    }
-}
-
-function findOutlier() {
-    const form = document.forms['outlier'];
-
-    const key = String(form['filter-key'].value);
-    const value = parseInput(form['filter-value'].value);
-    const deviation = String(form['deviation-key'].value);
-
-    let container = form.querySelector(`#outlier-container`);
-    container.innerHTML = "";
-    const errorElement = form.querySelector('.error-message');
-
-    try {
-        let outlier = statistics.outlier({ [key]: value }, deviation);
-        insertBlock(
-            container,
-            `${outlier.naziv} [${outlier.datum_objave}] (${outlier.id})`
-        )
-
-        errorElement.textContent = "";
-    } catch (error) {
-        errorElement.textContent = error.message;
-    }
-}
-
-function extractMy() {
-    const form = document.forms['my-properties'];
-
-    const id = parseInt(form['user-id'].value);
-
-    let container = form.querySelector(`#my-properties-container`);
-    container.innerHTML = "";
-    const errorElement = form.querySelector('.error-message');
-
-    try {
-        let myProperties = statistics.mojeNekretnine({ id: id });
-        myProperties.forEach(property => insertBlock(
-            container,
-            `${property.naziv} [${property.datum_objave}] (${property.id})`
-        ));
-
-        errorElement.textContent = "";
-    } catch (error) {
-        errorElement.textContent = error.message;
-    }
-}
-
-let yearRanges = [];
-let priceRanges = [];
 
 function addRange(input) {
     const form = document.forms['years-prices'];
@@ -103,37 +44,35 @@ function addRange(input) {
         if (input === 'year') {
             if (yearRanges.some(e => e.od === start && e.do === end)) return;
             yearRanges.push({ od: start, do: end });
-        } else {
+        } else if (input === 'price') {
             if (priceRanges.some(e => e.od === start && e.do === end)) return;
             priceRanges.push({ od: start, do: end });
         }
 
-        insertBlock(
-            form.querySelector(`#${input}-ranges-container`),
-            `${start} - ${end}`
-        );
+        const block = document.createElement('div');
+        block.classList.add('block');
+        block.textContent = `${start} - ${end}`;
+        form.querySelector(`#${input}-ranges-container`).appendChild(block);
 
-        startElement.value = "";
-        endElement.value = "";
+        startElement.value = '';
+        endElement.value = '';
     } else {
-        alert("Start must be less than or equal to End.");
+        window.alert('Start must be less than or equal to End.');
     }
 }
-
-Chart.defaults.font.size = 16;
 
 function iscrtajHistogram() {
     const histogram = statistics.histogramCijena(yearRanges, priceRanges);
 
-    const chartsContainer = document.getElementById("charts-container");
-    chartsContainer.innerHTML = "";
+    const chartsContainer = document.getElementById('charts-container');
+    chartsContainer.innerHTML = '';
 
     const labels_PriceRanges = priceRanges.map(range => `${range.od} - ${range.do}`);
 
     yearRanges.forEach((range, index) => {
-        const chart = document.createElement("canvas");
+        const chart = document.createElement('canvas');
         chart.id = `chart-${index}`;
-        chart.classList.add("chart");
+        chart.classList.add('chart');
         chartsContainer.appendChild(chart);
 
         const data_PropertyNumbers = histogram
@@ -142,16 +81,16 @@ function iscrtajHistogram() {
         const maxBarHeight = Math.max(...data_PropertyNumbers);
 
         new Chart(chart, {
-            type: "bar",
+            type: 'bar',
             data: {
                 labels: labels_PriceRanges,
                 datasets: [
                     {
-                        label: " # of properties",
+                        label: ' # of properties',
                         data: data_PropertyNumbers,
                         backgroundColor: function(context) {
                             const barHeight = context.dataset.data[context.dataIndex] / maxBarHeight || 0;
-                            return `rgba(255, 153, 0, ${barHeight})`;
+                            return `rgba(255, 99, 71, ${barHeight})`;
                         }
                     }
                 ]
@@ -163,7 +102,7 @@ function iscrtajHistogram() {
                         display: true,
                         text: `Year range: ${range.od} - ${range.do}`,
                         font: {
-                            size: 24
+                            size: 20
                         }
                     }
                 },
@@ -171,14 +110,14 @@ function iscrtajHistogram() {
                     x: {
                         title: {
                             display: true,
-                            text: "Price ranges"
+                            text: 'Price ranges'
                         }
                     },
                     y: {
                         beginAtZero: true,
                         title: {
                             display: true,
-                            text: "Number of properties"
+                            text: 'Number of properties'
                         }
                     }
                 }
@@ -186,3 +125,100 @@ function iscrtajHistogram() {
         });
     });
 }
+
+document.getElementById('asf-button').addEventListener('click', () => {
+    const form = document.forms['average-square-footage'];
+
+    const key = String(form['filter-key'].value);
+    const value = parseInput(form['filter-value'].value);
+
+    const result = form.querySelector('.result');
+    result.innerHTML = '';
+    
+    const feedback = form.querySelector('.feedback');
+
+    try {
+        const asf = statistics.prosjecnaKvadratura({ [key]: value });
+
+        const block = document.createElement('div');
+        block.classList.add('block');
+        block.textContent = asf;
+        result.appendChild(block);
+
+        feedback.textContent = '';
+    } catch (error) {
+        feedback.textContent = error.message;
+        feedback.style.display = 'inline-block';
+    }
+});
+
+document.getElementById('outlier-button').addEventListener('click', () => {
+    const form = document.forms['outlier'];
+
+    const key = String(form['filter-key'].value);
+    const value = parseInput(form['filter-value'].value);
+    const deviation = String(form['deviation-key'].value);
+
+    const result = form.querySelector('.result');
+    result.innerHTML = '';
+
+    const feedback = form.querySelector('.feedback');
+
+    try {
+        const outlier = statistics.outlier({ [key]: value }, deviation);
+
+        const block = document.createElement('div');
+        block.classList.add('block');
+        const link = document.createElement('a');
+        link.textContent = `${outlier.naziv}`;
+        link.href = `http://localhost:3000/detalji.html?id=${encodeURIComponent(outlier.id)}`;
+        block.appendChild(link);
+        result.appendChild(block);
+
+        feedback.textContent = '';
+    } catch (error) {
+        feedback.textContent = error.message;
+        feedback.style.display = 'inline-block';
+    }
+});
+
+document.getElementById('my-properties-button').addEventListener('click', () => {
+    const form = document.forms['my-properties'];
+
+    const id = parseInt(form['user-id'].value);
+
+    const result = form.querySelector('.result');
+    result.innerHTML = '';
+
+    const feedback = form.querySelector('.feedback');
+
+    try {
+        const myProperties = statistics.mojeNekretnine({ id: id });
+        myProperties.forEach(property => {
+            const block = document.createElement('div');
+            block.classList.add('block');
+            const link = document.createElement('a');
+            link.textContent = `${property.naziv}`;
+            link.href = `http://localhost:3000/detalji.html?id=${encodeURIComponent(property.id)}`;
+            block.appendChild(link);
+            result.appendChild(block);
+        });
+
+        feedback.textContent = '';
+    } catch (error) {
+        feedback.textContent = error.message;
+        feedback.style.display = 'inline-block';
+    }
+});
+
+document.getElementById('add-year-range-button').addEventListener('click', () => {
+    addRange('year');
+});
+
+document.getElementById('add-price-range-button').addEventListener('click', () => {
+    addRange('price');
+});
+
+document.getElementById('generate-charts-button').addEventListener('click', () => {
+    iscrtajHistogram();
+});

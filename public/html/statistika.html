@@ -15,62 +15,51 @@
             <!-- Navigation placeholder (DO NOT EDIT) -->
         </div>
         
-        <form name="average-square-footage">
-            <h2>Average square footage</h2>
-
-            <input name="filter-key" type="text" placeholder="Filter key">
-            <input name="filter-value" type="text" placeholder="Filter value">
-
-            <button onclick="calculateASF()" type="button">Calculate</button>
-
-            <div id="asf-container"></div>
-            <span class="error-message"></span>
-        </form>
-
-        <form name="outlier">
-            <h2>Outlier</h2>
-
-            <input name="filter-key" type="text" placeholder="Filter key">
-            <input name="filter-value" type="text" placeholder="Filter value">
-            <input name="deviation-key" type="text" placeholder="Deviation key">
-
-            <button onclick="findOutlier()" type="button">Find</button>
-
-            <div id="outlier-container"></div>
-            <span class="error-message"></span>
-        </form>
-
-        <form name="my-properties">
-            <h2>My properties</h2>
-
-            <input name="user-id" type="number" placeholder="User ID">
-
-            <button onclick="extractMy()" type="button">Extract</button>
-
-            <div id="my-properties-container"></div>
-            <span class="error-message"></span>
-        </form>
-
-        <form name="years-prices">
-            <h2>Year ranges</h2>
-            
-            <input name="start-year" type="number" placeholder="Start year">
-            <input name="end-year" type="number" placeholder="End year">
-            
-            <button onclick="addRange('year')" type="button">Add</button>
-            <div id="year-ranges-container"></div>
-
-            <h2>Price ranges</h2>
-
-            <input name="start-price" type="number" placeholder="Start price">
-            <input name="end-price" type="number" placeholder="End price">
-            
-            <button onclick="addRange('price')" type="button">Add</button>
-            <div id="price-ranges-container"></div>
-
-            <button onclick="iscrtajHistogram()" type="button">Generate charts</button>
-            <div id="charts-container"></div>
-        </form>
+        <div id="statistics-container">
+            <form name="average-square-footage" class="input-container">
+                <div class="heading">Average square footage</div>
+                <input name="filter-key" type="text" placeholder="Filter key">
+                <input name="filter-value" type="text" placeholder="Filter value">
+                <button id="asf-button" type="button">Calculate</button>
+                <div class="result"></div>
+                <div class="feedback"></div>
+            </form>
+    
+            <form name="outlier" class="input-container">
+                <div class="heading">Outlier</div>
+                <input name="filter-key" type="text" placeholder="Filter key">
+                <input name="filter-value" type="text" placeholder="Filter value">
+                <input name="deviation-key" type="text" placeholder="Deviation key">
+                <button id="outlier-button" type="button">Find</button>
+                <div class="result"></div>
+                <div class="feedback"></div>
+            </form>
+    
+            <form name="my-properties" class="input-container">
+                <div class="heading">My properties</div>
+                <input name="user-id" type="number" placeholder="User ID">
+                <button id="my-properties-button" type="button">Extract</button>
+                <div class="result"></div>
+                <div class="feedback"></div>
+            </form>
+    
+            <form name="years-prices" class="input-container">
+                <div class="heading">Year ranges</div>
+                <input name="start-year" type="number" placeholder="Start year">
+                <input name="end-year" type="number" placeholder="End year">
+                <button id="add-year-range-button" type="button">Add</button>
+                <div id="year-ranges-container"></div>
+    
+                <div class="heading">Price ranges</div>
+                <input name="start-price" type="number" placeholder="Start price">
+                <input name="end-price" type="number" placeholder="End price">
+                <button id="add-price-range-button" type="button">Add</button>
+                <div id="price-ranges-container"></div>
+    
+                <button id="generate-charts-button" type="button">Generate charts</button>
+                <div id="charts-container"></div>
+            </form>
+        </div>
 
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
