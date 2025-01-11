@@ -1,10 +1,97 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
+:root {
+    --primary-light: darkorange;
+    --primary-dark: darkorange;
+
+    --secondary-light: linen;
+    --secondary-dark: linen;
+
+    --background-light: linen;
+    --background-dark: linen;
+
+    --surface-primary-light: white;
+    --surface-primary-dark: white;
+
+    --surface-secondary-light: #333;
+    --surface-secondary-dark: #333;
+
+    --text-primary-light: black;
+    --text-primary-dark: black;
+
+    --text-secondary-light: white;
+    --text-secondary-dark: white;
+
+    --text-tertiary-light: grey;
+    --text-tertiary-dark: grey;
+
+    --success-light: #4caf50;
+    --success-dark: #ddffdd;
+
+    --error-light: #f44336;
+    --error-dark: #ffc0c7;
+
+    --link-visited-light: purple;
+    --link-visited-dark: purple;
+
+    --heading-size: 20px;
+    --title-size: 18px;
+    --content-size: 16px;
+}
+
+::selection {
+    background-color: var(--primary-light);
+    color: var(--text-secondary-light);
+}
+
 body {
-    background-color: lavenderblush;
-    font-family: 'Roboto', Arial, sans-serif;
+    background-color: var(--background-light);
     margin: 0;
     padding: 0;
+}
+
+body, div, span, p, a, button, label, input, textarea {
+    font-family: 'Roboto', Arial, sans-serif;
+    font-size: var(--content-size);
+}
+
+a {
+    color: var(--primary-light);
+    text-decoration: none;
+}
+
+a:visited {
+    color: var(--link-visited-light);
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+button {
+    cursor: pointer;
+    color: var(--text-secondary-light);
+    background-color: var(--primary-light);
+    padding: 12px 18px;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+}
+
+input, textarea {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 12px 18px;
+    border: 2px solid var(--secondary-light);
+    border-radius: 5px;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    outline: none;
+}
+
+input:focus, textarea:focus {
+    border: 2px solid var(--primary-light);
 }
 
 .error {
@@ -21,11 +108,13 @@ body {
     object-fit: contain;
 }
 
+/* NAVIGATION */
+
 #navigation-container ul {
     list-style: none;
     margin: 0;
     padding: 0;
-    background-color: #333;
+    background-color: var(--surface-secondary-light);
     overflow: hidden;
     padding: 0 15px;
 }
@@ -37,13 +126,13 @@ body {
 
 #navigation-container li a {
     display: block;
-    color: white;
+    color: var(--text-secondary-light);
     text-align: center;
     text-decoration: none;
 }
 
 #navigation-container li a:hover {
-    color: tomato;
+    color: var(--primary-light);
 }
 
 #navigation-container li a:hover p {

@@ -1,26 +1,14 @@
 #queries-container .query-container {
-    background-color: white;
+    background-color: var(--surface-primary-light);
     padding: 30px;
     border-radius: 10px;
-    margin: 30px auto;
-    font-size: 18px;
-    width: 75%;
+    margin: 30px;
 }
 
 #queries-container a {
-    text-decoration: none;
-    color: tomato;
-}
-
-#queries-container a:visited {
-    color: purple;
-}
-
-#queries-container a:hover {
-    text-decoration: underline;
+    font-size: var(--title-size);
 }
 
 #queries-container p {
-    font-size: 17px;
-    margin: 20px 0 0 0;
+    margin: 30px 0 0 0;
 }

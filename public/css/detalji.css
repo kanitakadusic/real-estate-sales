@@ -1,29 +1,37 @@
 #content-container .heading {
     font-weight: bold;
-    font-size: 24px;
-    margin: 50px 30px 30px 30px;
+    font-size: var(--heading-size);
+    margin: 60px 30px 30px 30px;
 }
 
 #content-container p {
-    margin: 0 0 15px 0;
+    margin: 15px 0;
+}
+
+#content-container .feedback {
+    display: none;
+    margin: 15px 0;
+}
+
+#content-container button {
+    margin: 15px 0;
 }
 
 #basic-container,
 #details-container,
 #queries-container,
-#new-query-container {
-    background-color: white;
-    padding: 30px 30px 15px 30px;
+#query-container {
+    background-color: var(--surface-primary-light);
+    padding: 15px 30px;
     margin: 30px;
     border-radius: 10px;
-    font-size: 17px;
 }
 
 #basic-container img {
     width: 100%;
     height: auto;
     border-radius: 5px;
-    margin-bottom: 25px;
+    margin: 15px 0;
 }
 
 #details-container {
@@ -33,13 +41,13 @@
     justify-content: flex-start;
     align-content: flex-start;
     align-items: flex-start;
+    column-gap: 30px;
 }
 
 #details-container #column-1 {
     order: 1;
     flex: 1 1 auto;
     align-self: auto;
-    margin-right: 30px;
 }
 
 #details-container #column-2 {
@@ -54,75 +62,16 @@
     align-self: auto;
 }
 
-#details-container a {
-    text-decoration: none;
-    color: tomato;
-}
-
-#details-container a:visited {
-    color: purple;
-}
-
-#details-container a:hover {
-    text-decoration: underline;
-}
-
-#queries-container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-}
-
-#queries-container .query {
-    flex: 1 1 100%;
-}
-
-#carousel-buttons {
-    margin: 0 auto 30px auto;
+#queries-container #carousel-buttons {
+    margin: 0 auto;
     width: fit-content;
 }
 
-#new-query-container textarea {
-    display: block;
-    border-radius: 5px;
-    font-size: 17px;
-    width: 100%;
-    box-sizing: border-box;
-    border: 2px solid lavenderblush;
-    padding: 12px 16px;
-    margin-bottom: 30px;
-    -webkit-transition: 0.5s;
-    transition: 0.5s;
+#queries-container #carousel-buttons button {
+    margin: 15px;
+}
+
+#query-container textarea {
+    margin: 15px 0;
     resize: vertical;
-    font-family: 'Roboto', Arial, sans-serif;
-}
-
-#new-query-container textarea:focus {
-    border: 2px solid tomato;
-    outline: none;
-}
-
-#new-query-container #feedback {
-    display: none;
-    margin: 10px 0;
-}
-
-#carousel-buttons button,
-#new-query-container button {
-    cursor: pointer;
-    color: white;
-    font-size: 17px;
-    border: 0;
-    padding: 10px 20px;
-    border-radius: 5px;
-    background-color: tomato;
-    margin: 0;
-}
-
-#carousel-buttons button {
-    margin: 0 15px;
-}
-
-#new-query-container button {
-    margin-bottom: 15px;
 }

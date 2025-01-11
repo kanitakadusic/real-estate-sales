@@ -40,30 +40,19 @@
     
             <div class="heading">Queries</div>
             <div id="queries-container">
-                <div class="query">
-                    <p><strong>Username 1:</strong></p>
-                    <p></p>
+                <div id="carousel-content"></div>
+                <div id="carousel-buttons">
+                    <button id="previous">Previous</button>
+                    <button id="next">Next</button>
                 </div>
-                <div class="query">
-                    <p><strong>Username 2:</strong></p>
-                    <p></p>
-                </div>
-                <div class="query">
-                    <p><strong>Username 3:</strong></p>
-                    <p></p>
-                </div>
-            </div>
-    
-            <div id="carousel-buttons">
-                <button id="previous">Previous</button>
-                <button id="next">Next</button>
+                <div class="feedback"></div>
             </div>
 
             <div class="heading">Do you have a question?</div>
-            <div id="new-query-container">
-                <textarea id="new-query-text"></textarea>
-                <button id="new-query-button">Send</button>
-                <div id="feedback">Internal server error.</div>
+            <div id="query-container">
+                <textarea id="query-text"></textarea>
+                <button id="send">Send</button>
+                <div class="feedback"></div>
             </div>
         </div>
 

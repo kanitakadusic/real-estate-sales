@@ -5,36 +5,27 @@ function setCarousel(containerElement, childElements, index = 0) {
         index < 0 || index >= childElements.length
     ) return null;
 
-    containerElement.innerHTML = `
-        <div class="${childElements[index].className}">
-            ${childElements[index].innerHTML}
-        </div>
-    `;
+    containerElement.replaceChildren(childElements[index]);
 
     function previous() {
-        index--;
-        if (index < 0) index = childElements.length - 1;
-
-        containerElement.innerHTML = `
-            <div class="${childElements[index].className}">
-                ${childElements[index].innerHTML}
-            </div>
-        `;
+        if (--index < 0) index = childElements.length - 1;
+        containerElement.replaceChildren(childElements[index]);
     }
 
     function next() {
-        index++;
-        if (index >= childElements.length) index = 0;
+        if (++index >= childElements.length) index = 0;
+        containerElement.replaceChildren(childElements[index]);
+    }
 
-        containerElement.innerHTML = `
-            <div class="${childElements[index].className}">
-                ${childElements[index].innerHTML}
-            </div>
-        `;
+    function add(newChildElements) {
+        childElements.push(...newChildElements);
     }
 
     return {
         previous: previous,
-        next: next
+        next: next,
+        add: add,
+        get index() { return index; },
+        get length() { return childElements.length; }
     }
 }

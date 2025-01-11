@@ -20,32 +20,32 @@
         "tekst_upita": "Phasellus viverra nulla."
       },
       {
-        "korisnik_id": 123,
+        "korisnik_id": 3,
         "tekst_upita": "Nullam eu pede mollis pretium."
-      },
-      {
-        "korisnik_id": 333,
-        "tekst_upita": "Nullam eu pede mollis pretium."
-      },
-      {
-        "korisnik_id": 444,
-        "tekst_upita": "Phasellus viverra nulla."
-      },
-      {
-        "korisnik_id": 555,
-        "tekst_upita": "Nullam eu pede mollis pretium."
-      },
-      {
-        "korisnik_id": 666,
-        "tekst_upita": "Phasellus viverra nulla."
       },
       {
         "korisnik_id": 999999,
         "tekst_upita": "Cijena?"
       },
       {
+        "korisnik_id": 4,
+        "tekst_upita": "Nullam eu pede mollis pretium."
+      },
+      {
+        "korisnik_id": 5,
+        "tekst_upita": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eu dignissim sapien. Interdum et malesuada fames ac ante ipsum primis in faucibus. Mauris tempor nulla diam, eu sodales arcu commodo et. Suspendisse imperdiet varius ipsum sed lacinia. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras nulla sapien, interdum eu ex vel, gravida congue nibh. Etiam justo dui, varius sed ligula non, hendrerit pellentesque ante. Duis ex turpis, ornare vel arcu sit amet, faucibus tempor leo. Etiam eleifend felis lorem, et efficitur arcu accumsan quis. Interdum et malesuada fames ac ante ipsum primis in faucibus. Vivamus lorem odio, facilisis sit amet commodo eget, mattis nec enim. Vivamus ornare, risus nec semper varius, magna ligula accumsan sem, eu convallis dolor magna lacinia mi."
+      },
+      {
+        "korisnik_id": 6,
+        "tekst_upita": "Nullam eu pede mollis pretium."
+      },
+      {
         "korisnik_id": 999999,
         "tekst_upita": "Koliko košta?"
+      },
+      {
+        "korisnik_id": 7,
+        "tekst_upita": "Phasellus viverra nulla."
       },
       {
         "korisnik_id": 999999,
@@ -90,16 +90,7 @@
     "godina_izgradnje": 2005,
     "datum_objave": "05.08.2023.",
     "opis": "Magnis dis parturient montes.",
-    "upiti": [
-      {
-        "korisnik_id": 2,
-        "tekst_upita": "Integer tincidunt."
-      },
-      {
-        "korisnik_id": 999999,
-        "tekst_upita": "Cijena?"
-      }
-    ]
+    "upiti": []
   },
   {
     "id": 777777,
@@ -119,15 +110,15 @@
       },
       {
         "korisnik_id": 999999,
-        "tekst_upita": "Cijena?"
-      },
-      {
-        "korisnik_id": 999999,
         "tekst_upita": "Na kojem spratu se nalazi prostor?"
       },
       {
         "korisnik_id": 999999,
         "tekst_upita": "Pozdrav!\nDa li objekat ima izlaz na balkon?"
+      },
+      {
+        "korisnik_id": 999999,
+        "tekst_upita": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eu dignissim sapien. Interdum et malesuada fames ac ante ipsum primis in faucibus. Mauris tempor nulla diam, eu sodales arcu commodo et. Suspendisse imperdiet varius ipsum sed lacinia. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras nulla sapien, interdum eu ex vel, gravida congue nibh. Etiam justo dui, varius sed ligula non, hendrerit pellentesque ante. Duis ex turpis, ornare vel arcu sit amet, faucibus tempor leo. Etiam eleifend felis lorem, et efficitur arcu accumsan quis. Interdum et malesuada fames ac ante ipsum primis in faucibus. Vivamus lorem odio, facilisis sit amet commodo eget, mattis nec enim. Vivamus ornare, risus nec semper varius, magna ligula accumsan sem, eu convallis dolor magna lacinia mi."
       }
     ]
   }

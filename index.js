@@ -402,7 +402,7 @@ app.get('/nekretnina/:id', async (req, res) => {
             return res.status(400).json({ greska: `Nekretnina sa id-em ${id} ne postoji` });
         }
         
-        property.upiti = property.upiti.slice(-3);
+        property.upiti = property.upiti.slice(-3).reverse();
 
         res.status(200).json(property);
     } catch (error) {
@@ -437,7 +437,7 @@ app.get('/next/upiti/nekretnina/:id', async (req, res) => {
             return res.status(404).json([]);
         }
 
-        res.status(200).json(nextQueries);
+        res.status(200).json(nextQueries.reverse());
     } catch (error) {
         console.error('Error fetching next queries for property:', error);
         res.status(500).json({ greska: 'Internal Server Error' });

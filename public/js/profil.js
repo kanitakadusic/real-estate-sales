@@ -35,13 +35,13 @@ confirmButton.addEventListener('click', () => {
 
             feedbackElement.textContent = 'An error occurred while updating data.';
             feedbackElement.style.display = 'block';
-            feedbackElement.style.color = 'tomato';
+            feedbackElement.style.color = 'var(--error-light)';
         } else {
             console.log(status.poruka);
 
             feedbackElement.textContent = 'The data was successfully updated.';
             feedbackElement.style.display = 'block';
-            feedbackElement.style.color = 'mediumseagreen';
+            feedbackElement.style.color = 'var(--success-light)';
 
             if (firstnameElement.value) {
                 firstnameElement.placeholder = firstnameElement.value;

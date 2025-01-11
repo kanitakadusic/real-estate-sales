@@ -45,6 +45,7 @@ PoziviAjax.getMojiUpiti((error, queries) => {
 
             const textElement = document.createElement('p');
             textElement.textContent = tekst_upita;
+            textElement.innerHTML = textElement.textContent.replace(/\n/g, '<br>');
             queryElement.appendChild(textElement);
 
             queriesContainer.appendChild(queryElement);
