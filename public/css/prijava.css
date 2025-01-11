@@ -11,6 +11,6 @@
 
 #login-form #feedback {
     display: none;
-    color: var(--primary-light);
+    color: var(--error-light);
     margin-top: 30px;
 }
