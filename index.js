@@ -418,8 +418,8 @@ app.get('/next/upiti/nekretnina/:id', async (req, res) => {
     const { id } = req.params;
     const { page } = req.query;
 
-    if (page < 1) {
-        return res.status(400).json({ greska: `Broj ${page} nije validan broj stranice` });
+    if (page < 0) {
+        return res.status(404).json([]);
     }
 
     try {
