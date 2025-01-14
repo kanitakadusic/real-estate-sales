@@ -131,47 +131,38 @@ app.post('/login', async (req, res) => {
 
     try {
         const users = await readJsonFile('korisnici');
+        const user = users.find((u) => u.username === username);
 
-        for (let user of users) {
-            if (user.username == username) {
-
-                if (user.loginAttempts >= 3) {
-                    if (new Date() < new Date(user.blockedUntil)) {
-                        await logLoginAttempt(user.username, false);
-
-                        return res.status(429).json({
-                            greska: 'Previše neuspješnih pokušaja. Pokušajte ponovo za 1 minutu.'
-                        });
-                    } else {
-                        user.loginAttempts = 0;
-                        user.blockedUntil = null;
-                    }
-                }
-
-                const isPasswordMatched = await bcrypt.compare(password, user.password);
-
-                if (isPasswordMatched) {
-                    req.session.username = user.username;
-                    user.loginAttempts = 0;
-
-                    res.json({ poruka: 'Uspješna prijava' });
+        if (user) {            
+            if (!req.session.loginAttempts) req.session.loginAttempts = 0;
+            if (!req.session.blockedUntil) req.session.blockedUntil = null;
+            
+            if (req.session.blockedUntil) {
+                if (new Date() < new Date(req.session.blockedUntil)) {
+                    await logLoginAttempt(username, false);
+                    return res.status(429).json({ greska: 'Previše neuspješnih pokušaja. Pokušajte ponovo za 1 minutu.' });
                 } else {
-                    if (++(user.loginAttempts) >= 3) {
-                        user.blockedUntil = new Date(new Date().getTime() + 1 * 60 * 1000);
-                    }
-
-                    res.json({ poruka: 'Neuspješna prijava' });
+                    req.session.loginAttempts = 0;
+                    req.session.blockedUntil = null;
                 }
+            }
 
-                await logLoginAttempt(user.username, isPasswordMatched);
-                await saveJsonFile('korisnici', users);
-                return;
+            const isPasswordMatched = await bcrypt.compare(password, user.password);
+
+            if (isPasswordMatched) {
+                req.session.username = username;
+                req.session.loginAttempts = 0;
+                await logLoginAttempt(username, true);
+                return res.status(200).json({ poruka: 'Uspješna prijava' });
+            }
+
+            if (++(req.session.loginAttempts) >= 3) {
+                req.session.blockedUntil = new Date(new Date().getTime() + 1 * 60 * 1000);
             }
         }
-        
-        await logLoginAttempt(username, false);
 
-        res.json({ poruka: 'Neuspješna prijava' });
+        await logLoginAttempt(username, false);
+        res.status(200).json({ poruka: 'Neuspješna prijava' });
     } catch (error) {
         console.error('Error during login:', error);
         res.status(500).json({ greska: 'Internal Server Error' });
