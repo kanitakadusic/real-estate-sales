@@ -7,20 +7,7 @@ document.getElementById('login-button').addEventListener('click', () => {
     PoziviAjax.postLogin(usernameElement.value, passwordElement.value, (error, status) => {
         if (error) {
             console.error('Greška prilikom prijave korisnika:', error);
-
-            loginContainer.innerHTML = '';
-            loginContainer.className = 'error';
-            const imageElement = document.createElement('img');
-
-            if (error === 'Too Many Requests') {
-                imageElement.src = '../resources/images/429.svg';
-                imageElement.alt = '429';
-            } else {
-                imageElement.src = '../resources/images/500.svg';
-                imageElement.alt = '500';
-            }
-
-            loginContainer.appendChild(imageElement);
+            showErrorImage(error, loginContainer);
         } else {
             if (status.poruka === 'Neuspješna prijava') {
                 const feedbackElement = document.getElementById('feedback');

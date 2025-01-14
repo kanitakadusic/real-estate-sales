@@ -3,21 +3,7 @@ PoziviAjax.getMojiUpiti((error, queries) => {
 
     if (error) {
         console.error('Greška prilikom dohvatanja korisničkih upita sa servera:', error);
-
-        queriesContainer.innerHTML = '';
-        queriesContainer.className = 'error';
-        const imageElement = document.createElement('img');
-
-        if (error === 'Not Found') {
-            imageElement.src = '../resources/images/404.svg';
-            imageElement.alt = '404';
-        } else {
-            imageElement.src = '../resources/images/500.svg';
-            imageElement.alt = '500';
-        }
-
-        queriesContainer.appendChild(imageElement);
-
+        showErrorImage(error, queriesContainer);
         return;
     }
 

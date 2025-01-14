@@ -86,15 +86,8 @@ const propertyListing = SpisakNekretnina();
 function fnCallback(error, propertiesList) {
     if (error) {
         console.error('Greška prilikom dohvatanja nekretnina sa servera:', error);
-
         propertyListing.init([], []);
-
-        overallPropertiesContainer.innerHTML = '';
-        overallPropertiesContainer.className = 'error';
-        const imageElement = document.createElement('img');
-        imageElement.src = '../resources/images/500.svg';
-        imageElement.alt = '500';
-        overallPropertiesContainer.appendChild(imageElement);
+        showErrorImage(error, overallPropertiesContainer);
     } else {
         propertyListing.init(propertiesList, []);
         displayProperties(propertyListing);

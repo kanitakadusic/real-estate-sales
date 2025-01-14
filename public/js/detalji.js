@@ -6,26 +6,12 @@ let areAllQueriesLoaded = false;
 const contentContainer = document.getElementById('content-container');
 
 if (!propertyId) {
-    const imageElement = document.createElement('img');
-    imageElement.src = '../resources/images/question-mark.svg';
-    imageElement.alt = 'question-mark';
-
-    contentContainer.className = 'error';
-    contentContainer.replaceChildren(imageElement);
+    showErrorImage(null, contentContainer);
 } else {
     PoziviAjax.getNekretnina(propertyId, (error, property) => {
         if (error) {
             console.error('Greška prilikom dohvatanja detalja nekretnine sa servera:', error);
-
-            let errorStatus = 500;
-            if (error === 'Bad Request') errorStatus = 400;
-
-            const imageElement = document.createElement('img');
-            imageElement.src = `../resources/images/${errorStatus}.svg`;
-            imageElement.alt = error;
-
-            contentContainer.className = 'error';
-            contentContainer.replaceChildren(imageElement);
+            showErrorImage(error, contentContainer);
         } else {
             document.getElementById('property-title').textContent = property.naziv;
             document.getElementById('property-square-footage').textContent = property.kvadratura;

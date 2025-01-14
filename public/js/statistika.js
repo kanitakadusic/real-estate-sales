@@ -8,16 +8,8 @@ const statistics = StatistikaNekretnina();
 PoziviAjax.getNekretnine((error, propertiesList) => {
     if (error) {
         console.error('Greška prilikom dohvatanja nekretnina sa servera:', error);
-
         statistics.init([], []);
-
-        const statisticsContainer = document.getElementById('statistics-container');
-        statisticsContainer.innerHTML = '';
-        statisticsContainer.className = 'error';
-        const imageElement = document.createElement('img');
-        imageElement.src = '../resources/images/500.svg';
-        imageElement.alt = '500';
-        statisticsContainer.appendChild(imageElement);
+        showErrorImage(error, document.getElementById('statistics-container'));
     } else {
         statistics.init(propertiesList, []);
     }
@@ -90,7 +82,7 @@ function iscrtajHistogram() {
                         data: data_PropertyNumbers,
                         backgroundColor: function(context) {
                             const barHeight = context.dataset.data[context.dataIndex] / maxBarHeight || 0;
-                            return `rgba(255, 99, 71, ${barHeight})`;
+                            return `rgba(255, 140, 0, ${barHeight})`;
                         }
                     }
                 ]
