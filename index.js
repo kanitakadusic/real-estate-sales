@@ -1,12 +1,18 @@
+require('./config/database');
+
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
 const fs = require('fs').promises;
-const bcrypt = require('bcrypt');
 const pug = require('pug');
 
-const app = express();
+const propertyController = require('./controllers/property.controller');
+const userController = require('./controllers/user.controller');
+
+const { readJsonFile, saveJsonFile } = require('./utils/file.utils');
+
 const PORT = 3000;
+const app = express();
 
 app.use(session({
     secret: 'tajna sifra',
@@ -70,376 +76,64 @@ function isAuthenticated(req, res, next) {
 
 /* ----------- SERVING OTHER ROUTES --------------- */
 
-// Async function for reading json data from 'data' folder
-async function readJsonFile(fileName) {
-    const filePath = path.join(__dirname, 'data', `${fileName}.json`);
-    try {
-        const rawdata = await fs.readFile(filePath, 'utf-8');
-        return JSON.parse(rawdata);
-    } catch (error) {
-        console.error(`Error reading JSON file ${fileName}.json:`, error);
-        throw error;
-    }
-}
-
-// Async function for saving json data in 'data' folder
-async function saveJsonFile(fileName, data) {
-    const filePath = path.join(__dirname, 'data', `${fileName}.json`);
-    try {
-        await fs.writeFile(filePath, JSON.stringify(data, null, 2), 'utf-8');
-    } catch (error) {
-        console.error(`Error writing JSON file ${fileName}.json:`, error);
-        throw error;
-    }
-}
-
-// Async function for adding data in txt file in 'logs' folder
-async function addInTxtFile(fileName, data) {
-    const filePath = path.join(__dirname, 'logs', `${fileName}.txt`);
-    try {
-        await fs.appendFile(filePath, data, 'utf-8');
-    } catch (error) {
-        console.error(`Error appending TXT file ${fileName}.txt:`, error);
-        throw error;
-    }
-}
-
-/*
-Logs user's login attempt with timestamp, username and status
-into 'prijave.txt' file in 'logs' folder.
-*/
-async function logLoginAttempt(username, success) {
-    const currently = new Date().toISOString();
-    const status = success ? 'uspješno' : 'neuspješno';
-    const log = `[${currently}]-username:\"${username}\"-status:\"${status}\"\n`;
-    try {
-        await addInTxtFile('prijave', log);
-    } catch (error) {
-        console.error(`Error logging login attempt for ${username}:`, error);
-        throw error;
-    }
-}
-
 /*
 Checks if the user exists and if the password is correct based on 'korisnici.json' data. 
 If the data is correct, the username is saved in the session and a success message is sent.
 User can make a maximum of 3 failed login attempts, otherwise he will be blocked for one minute.
 Every login attempt is logged.
 */
-app.post('/login', async (req, res) => {
-    const { username, password } = req.body;
-
-    try {
-        const users = await readJsonFile('korisnici');
-        const user = users.find((u) => u.username === username);
-
-        if (user) {            
-            if (!req.session.loginAttempts) req.session.loginAttempts = 0;
-            if (!req.session.blockedUntil) req.session.blockedUntil = null;
-            
-            if (req.session.blockedUntil) {
-                if (new Date() < new Date(req.session.blockedUntil)) {
-                    await logLoginAttempt(username, false);
-                    return res.status(429).json({ greska: 'Previse neuspjesnih pokusaja. Pokusajte ponovo za 1 minutu.' });
-                } else {
-                    req.session.loginAttempts = 0;
-                    req.session.blockedUntil = null;
-                }
-            }
-
-            const isPasswordMatched = await bcrypt.compare(password, user.password);
-
-            if (isPasswordMatched) {
-                req.session.username = username;
-                req.session.loginAttempts = 0;
-                await logLoginAttempt(username, true);
-                return res.status(200).json({ poruka: 'Uspješna prijava' });
-            }
-
-            if (++(req.session.loginAttempts) >= 3) {
-                req.session.blockedUntil = new Date(new Date().getTime() + 1 * 60 * 1000);
-            }
-        }
-
-        await logLoginAttempt(username, false);
-        res.status(200).json({ poruka: 'Neuspješna prijava' });
-    } catch (error) {
-        console.error('Error during login:', error);
-        res.status(500).json({ greska: 'Internal Server Error' });
-    }
-});
+app.post('/login', userController.userLogin);
 
 /*
 Delete everything from the session.
 */
-app.post('/logout', (req, res) => {
-    if (!req.session.username) {
-        return res.status(401).json({ greska: 'Neautorizovan pristup' });
-    }
-
-    req.session.destroy((error) => {
-        if (error) {
-            console.error('Error during logout:', error);
-            res.status(500).json({ greska: 'Internal Server Error' });
-        } else {
-            res.status(200).json({ poruka: 'Uspješno ste se odjavili' });
-        }
-    });
-});
+app.post('/logout', userController.userLogout);
 
 /*
 Returns currently logged user data.
 First takes the username from the session and grabs other data from the .json file.
 */
-app.get('/korisnik', async (req, res) => {
-    if (!req.session.username) {
-        return res.status(401).json({ greska: 'Neautorizovan pristup' });
-    }
+app.get('/korisnik', userController.getUser);
 
-    try {
-        const users = await readJsonFile('korisnici');
-        const user = users.find((u) => u.username === req.session.username);
+/*
+Updates any user field.
+*/
+app.put('/korisnik', userController.setUser);
 
-        if (!user) {
-            // User not found (should not happen if users are correctly managed)
-            return res.status(401).json({ greska: 'Neautorizovan pristup' });
-        }
-
-        const userPublicData = {
-            id: user.id,
-            ime: user.ime,
-            prezime: user.prezime,
-            username: user.username
-        };
-
-        res.status(200).json(userPublicData);
-    } catch (error) {
-        console.error('Error fetching user data:', error);
-        res.status(500).json({ greska: 'Internal Server Error' });
-    }
-});
+/*
+Returns all queries made by the logged-in user.
+*/
+app.get('/upiti/moji', userController.getQueries);
 
 /*
 Allows logged user to make a request for a property.
 User can make a maximum of 3 queries for one property.
 */
-app.post('/upit', async (req, res) => {
-    if (!req.session.username) {
-        return res.status(401).json({ greska: 'Neautorizovan pristup' });
-    }
-
-    const { nekretnina_id, tekst_upita } = req.body;
-
-    try {
-        const users = await readJsonFile('korisnici');
-        const user = users.find((u) => u.username === req.session.username);
-
-        const properties = await readJsonFile('nekretnine');
-        const property = properties.find((p) => p.id === nekretnina_id);
-
-        if (!property) {
-            return res.status(400).json({ greska: `Nekretnina sa id-em ${nekretnina_id} ne postoji` });
-        }
-
-        const userQueries = property.upiti.filter((q) => q.korisnik_id === user.id);
-        if (userQueries.length >= 3) {
-            return res.status(429).json({ greska: 'Previse upita za istu nekretninu.' });
-        }
-
-        property.upiti.push({
-            korisnik_id: user.id,
-            tekst_upita: tekst_upita
-        });
-        
-        await saveJsonFile('nekretnine', properties);
-        res.status(200).json({ poruka: 'Upit je uspješno dodan' });
-    } catch (error) {
-        console.error('Error processing query:', error);
-        res.status(500).json({ greska: 'Internal Server Error' });
-    }
-});
-
-/*
-Updates any user field.
-*/
-app.put('/korisnik', async (req, res) => {
-    if (!req.session.username) {
-        return res.status(401).json({ greska: 'Neautorizovan pristup' });
-    }
-
-    const { ime, prezime, username, password } = req.body;
-
-    try {
-        const users = await readJsonFile('korisnici');
-        const user = users.find((u) => u.username === req.session.username);
-
-        if (!user) {
-            // User not found (should not happen if users are correctly managed)
-            return res.status(401).json({ greska: 'Neautorizovan pristup' });
-        }
-
-        if (ime) user.ime = ime;
-        if (prezime) user.prezime = prezime;
-        if (username) user.username = username;
-        if (password) {
-            const hashedPassword = await bcrypt.hash(password, 10);
-            user.password = hashedPassword;
-        }
-
-        await saveJsonFile('korisnici', users);
-        res.status(200).json({ poruka: 'Podaci su uspješno ažurirani' });
-    } catch (error) {
-        console.error('Error updating user data:', error);
-        res.status(500).json({ greska: 'Internal Server Error' });
-    }
-});
+app.post('/upit', userController.addQuery);
 
 /*
 Returns all properties from the file.
 */
-app.get('/nekretnine', async (req, res) => {
-    try {
-        const properties = await readJsonFile('nekretnine');
-        res.json(properties);
-    } catch (error) {
-        console.error('Error fetching properties data:', error);
-        res.status(500).json({ greska: 'Internal Server Error' });
-    }
-});
-
-// Function for parsing a date in the "DD.MM.YYYY." format.
-function parseDate(date) {
-    const [day, month, year] = date.trim().split('.');
-
-    if (!day || !month || !year) {
-        throw new Error('Invalid date format');
-    }
-
-    return new Date(`${year.trim()}-${month.trim()}-${day.trim()}`);
-}
+app.get('/nekretnine', propertyController.getProperties);
 
 /*
 Returns the 5 most recently listed properties
 located at the given location from the file 'nekretnine.json'.
 */
-app.get('/nekretnine/top5', async (req, res) => {
-    const { lokacija } = req.query;
-
-    try {
-        const properties = await readJsonFile('nekretnine');
-
-        const processedProperties = properties
-            .filter((p) => p.lokacija === lokacija)
-            .sort((a, b) => parseDate(b.datum_objave) - parseDate(a.datum_objave))
-            .slice(0, 5);
-
-        res.status(200).json(processedProperties);
-    } catch (error) {
-        console.error('Error fetching top 5 properties:', error);
-        res.status(500).json({ greska: 'Internal Server Error' });
-    }
-});
-
-/*
-Returns all queries made by the logged-in user.
-*/
-app.get('/upiti/moji', async (req, res) => {
-    if (!req.session.username) {
-        return res.status(401).json({ greska: 'Neautorizovan pristup' });
-    }
-
-    try {
-        const users = await readJsonFile('korisnici');
-        const user = users.find((u) => u.username === req.session.username);
-
-        const properties = await readJsonFile('nekretnine');
-        const userQueries = [];
-
-        properties.forEach((property) => {
-            property.upiti.forEach((query) => {
-                if (query.korisnik_id === user.id) {
-                    userQueries.push({
-                        id_nekretnine: property.id,
-                        tekst_upita: query.tekst_upita
-                    });
-                }
-            });
-        });
-
-        if (userQueries.length === 0) {
-            return res.status(404).json([]);
-        }
-
-        res.status(200).json(userQueries);
-    } catch (error) {
-        console.error('Error fetching user queries:', error);
-        res.status(500).json({ greska: 'Internal Server Error' });
-    }
-});
+app.get('/nekretnine/top5', propertyController.getTopProperties);
 
 /*
 Returns details of property with specified ID in JSON format.
 List of queries within the property is shortened to return only the last 3 queries.
 */
-app.get('/nekretnina/:id', async (req, res) => {
-    const { id } = req.params;
-
-    try {
-        const properties = await readJsonFile('nekretnine');
-        const property = properties.find((p) => p.id === Number(id));
-
-        if (!property) {
-            return res.status(400).json({ greska: `Nekretnina sa id-em ${id} ne postoji` });
-        }
-        
-        property.upiti = property.upiti.slice(-3).reverse();
-
-        res.status(200).json(property);
-    } catch (error) {
-        console.error('Error fetching property details:', error);
-        res.status(500).json({ greska: 'Internal Server Error' });
-    }
-});
+app.get('/nekretnina/:id', propertyController.getProperty);
 
 /*
 Returns the next 3 queries for the property based on the page number.
 */
-app.get('/next/upiti/nekretnina/:id', async (req, res) => {
-    const { id } = req.params;
-    const { page } = req.query;
+app.get('/next/upiti/nekretnina/:id', propertyController.getQueries);
 
-    if (page < 0) {
-        return res.status(404).json([]);
-    }
-
-    try {
-        const properties = await readJsonFile('nekretnine');
-        const property = properties.find((p) => p.id === Number(id));
-
-        if (!property) {
-            return res.status(400).json({ greska: `Nekretnina sa id-em ${id} ne postoji` });
-        }
-
-        let nextQueries = [];
-        if (page == 0) {
-            nextQueries = property.upiti.slice(-3);
-        } else {
-            const endIndex = -page * 3;
-            nextQueries = property.upiti.slice(endIndex - 3, endIndex);
-        }
-
-        if (nextQueries.length === 0) {
-            return res.status(404).json([]);
-        }
-
-        res.status(200).json(nextQueries.reverse());
-    } catch (error) {
-        console.error('Error fetching next queries for property:', error);
-        res.status(500).json({ greska: 'Internal Server Error' });
-    }
-});
-
-/* ----------------- MARKETING ROUTES ----------------- */
+/* ----------------- SERVING MARKETING ROUTES ----------------- */
 
 /*
 Increases the number of searches for each of the properties by one.
