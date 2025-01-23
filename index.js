@@ -140,7 +140,7 @@ app.post('/login', async (req, res) => {
             if (req.session.blockedUntil) {
                 if (new Date() < new Date(req.session.blockedUntil)) {
                     await logLoginAttempt(username, false);
-                    return res.status(429).json({ greska: 'Previše neuspješnih pokušaja. Pokušajte ponovo za 1 minutu.' });
+                    return res.status(429).json({ greska: 'Previse neuspjesnih pokusaja. Pokusajte ponovo za 1 minutu.' });
                 } else {
                     req.session.loginAttempts = 0;
                     req.session.blockedUntil = null;
@@ -243,7 +243,7 @@ app.post('/upit', async (req, res) => {
 
         const userQueries = property.upiti.filter((q) => q.korisnik_id === user.id);
         if (userQueries.length >= 3) {
-            return res.status(429).json({ greska: 'Previše upita za istu nekretninu.' });
+            return res.status(429).json({ greska: 'Previse upita za istu nekretninu.' });
         }
 
         property.upiti.push({
@@ -252,7 +252,6 @@ app.post('/upit', async (req, res) => {
         });
         
         await saveJsonFile('nekretnine', properties);
-
         res.status(200).json({ poruka: 'Upit je uspješno dodan' });
     } catch (error) {
         console.error('Error processing query:', error);
@@ -300,8 +299,8 @@ Returns all properties from the file.
 */
 app.get('/nekretnine', async (req, res) => {
     try {
-        const nekretnineData = await readJsonFile('nekretnine');
-        res.json(nekretnineData);
+        const properties = await readJsonFile('nekretnine');
+        res.json(properties);
     } catch (error) {
         console.error('Error fetching properties data:', error);
         res.status(500).json({ greska: 'Internal Server Error' });
@@ -421,8 +420,13 @@ app.get('/next/upiti/nekretnina/:id', async (req, res) => {
             return res.status(400).json({ greska: `Nekretnina sa id-em ${id} ne postoji` });
         }
 
-        const endIndex = -page * 3;
-        const nextQueries = property.upiti.slice(endIndex - 3, endIndex);
+        let nextQueries = [];
+        if (page == 0) {
+            nextQueries = property.upiti.slice(-3);
+        } else {
+            const endIndex = -page * 3;
+            nextQueries = property.upiti.slice(endIndex - 3, endIndex);
+        }
 
         if (nextQueries.length === 0) {
             return res.status(404).json([]);
