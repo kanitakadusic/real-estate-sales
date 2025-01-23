@@ -28,11 +28,7 @@ const PoziviAjax = (() => {
     
         ajaxRequest('GET', url, null, (error, response) => {
             if (error) {
-                if (error.status === 401) {
-                    window.location.href = 'http://localhost:3000/prijava.html';
-                } else {
-                    fnCallback(error.statusText, null);
-                }
+                fnCallback(error.statusText, null);
             } else {
                 try {
                     fnCallback(null, JSON.parse(response));
@@ -48,11 +44,7 @@ const PoziviAjax = (() => {
     
         ajaxRequest('PUT', url, noviPodaci, (error, response) => {
             if (error) {
-                if (error.status === 401) {
-                    window.location.href = 'http://localhost:3000/prijava.html';
-                } else {
-                    fnCallback(error.statusText, null);
-                }
+                fnCallback(error.statusText, null);
             } else {
                 try {
                     fnCallback(null, JSON.parse(response));
@@ -72,11 +64,7 @@ const PoziviAjax = (() => {
     
         ajaxRequest('POST', url, data, (error, response) => {
             if (error) {
-                if (error.status === 401) {
-                    window.location.href = 'http://localhost:3000/prijava.html';
-                } else {
-                    fnCallback(error.statusText, null);
-                }
+                fnCallback(error.statusText, null);
             } else {
                 try {
                     fnCallback(null, JSON.parse(response));
@@ -128,11 +116,7 @@ const PoziviAjax = (() => {
 
         ajaxRequest('POST', url, null, (error, response) => {
             if (error) {
-                if (error.status === 401) {
-                    window.location.href = 'http://localhost:3000/prijava.html';
-                } else {
-                    fnCallback(error.statusText, null);
-                }
+                fnCallback(error.statusText, null);
             } else {
                 try {
                     fnCallback(null, JSON.parse(response));
@@ -164,11 +148,7 @@ const PoziviAjax = (() => {
 
         ajaxRequest('GET', url, null, (error, response) => {
             if (error) {
-                if (error.status === 401) {
-                    window.location.href = 'http://localhost:3000/prijava.html';
-                } else {
-                    fnCallback(error.statusText, null);
-                }
+                fnCallback(error.statusText, null);
             } else {
                 try {
                     fnCallback(null, JSON.parse(response));
