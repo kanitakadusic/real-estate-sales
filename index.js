@@ -139,6 +139,9 @@ app.get('/next/upiti/nekretnina/:id', queryController.getPropertyQueriesPaged);
 // Create a new request for property viewing by a logged-in user.
 app.post('/nekretnina/:id/zahtjev', requestController.createRequest);
 
+// Update a request status for property viewing by an admin.
+app.put('/nekretnina/:id/zahtjev/:zid', requestController.updateRequestStatusByAdmin);
+
 /* ----------------- SERVING MARKETING ROUTES ----------------- */
 
 /*
