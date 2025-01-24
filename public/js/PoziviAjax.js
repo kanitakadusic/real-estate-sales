@@ -191,6 +191,22 @@ const PoziviAjax = (() => {
         });
     }
 
+    function impl_getInteresovanja(nekretnina_id, fnCallback) {
+        const url = `http://localhost:3000/nekretnina/${encodeURIComponent(nekretnina_id)}/interesovanja`;
+        
+        ajaxRequest('GET', url, null, (error, response) => {
+            if (error) {
+                fnCallback(error.statusText, null);
+            } else {
+                try {
+                    fnCallback(null, JSON.parse(response));
+                } catch (parseError) {
+                    fnCallback(parseError.message, null);
+                }
+            }
+        });
+    }
+
     function impl_postZahtjev(nekretnina_id, tekst, trazeniDatum, fnCallback) {
         const url = `http://localhost:3000/nekretnina/${encodeURIComponent(nekretnina_id)}/zahtjev`;
         const data = {
@@ -229,7 +245,7 @@ const PoziviAjax = (() => {
                 }
             }
         });
-    }    
+    }
 
     return {
         postLogin: impl_postLogin,
@@ -242,6 +258,7 @@ const PoziviAjax = (() => {
         getMojiUpiti: impl_getMojiUpiti,
         getNekretnina: impl_getNekretnina,
         getNextUpiti: impl_getNextUpiti,
+        getInteresovanja: impl_getInteresovanja,
         postZahtjev: impl_postZahtjev,
         putZahtjev: impl_putZahtjev
     };

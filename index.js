@@ -136,6 +136,9 @@ Returns the next 3 queries for the property based on the page number.
 */
 app.get('/next/upiti/nekretnina/:id', queryController.getPropertyQueriesPaged);
 
+// Fetch interests (queries, requests, offers) for a given property.
+app.get('/nekretnina/:id/interesovanja', propertyController.getPropertyInterests);
+
 // Create a new request for property viewing by a logged-in user.
 app.post('/nekretnina/:id/zahtjev', requestController.createRequest);
 
