@@ -8,6 +8,7 @@ const pug = require('pug');
 
 const propertyController = require('./controllers/property.controller');
 const userController = require('./controllers/user.controller');
+const queryController = require('./controllers/query.controller');
 
 const { readJsonFile, saveJsonFile } = require('./utils/file.utils');
 
@@ -93,45 +94,45 @@ app.post('/logout', userController.userLogout);
 Returns currently logged user data.
 First takes the username from the session and grabs other data from the .json file.
 */
-app.get('/korisnik', userController.getUser);
+app.get('/korisnik', userController.getLoggedInUser);
 
 /*
 Updates any user field.
 */
-app.put('/korisnik', userController.setUser);
+app.put('/korisnik', userController.updateLoggedInUser);
 
 /*
 Returns all queries made by the logged-in user.
 */
-app.get('/upiti/moji', userController.getQueries);
+app.get('/upiti/moji', queryController.getUserQueries);
 
 /*
 Allows logged user to make a request for a property.
 User can make a maximum of 3 queries for one property.
 */
-app.post('/upit', userController.addQuery);
+app.post('/upit', queryController.addUserQuery);
 
 /*
 Returns all properties from the file.
 */
-app.get('/nekretnine', propertyController.getProperties);
+app.get('/nekretnine', propertyController.getAllProperties);
 
 /*
 Returns the 5 most recently listed properties
 located at the given location from the file 'nekretnine.json'.
 */
-app.get('/nekretnine/top5', propertyController.getTopProperties);
+app.get('/nekretnine/top5', propertyController.getTopPropertiesByLocation);
 
 /*
 Returns details of property with specified ID in JSON format.
 List of queries within the property is shortened to return only the last 3 queries.
 */
-app.get('/nekretnina/:id', propertyController.getProperty);
+app.get('/nekretnina/:id', propertyController.getPropertyById);
 
 /*
 Returns the next 3 queries for the property based on the page number.
 */
-app.get('/next/upiti/nekretnina/:id', propertyController.getQueries);
+app.get('/next/upiti/nekretnina/:id', queryController.getPropertyQueriesPaged);
 
 /* ----------------- SERVING MARKETING ROUTES ----------------- */
 
