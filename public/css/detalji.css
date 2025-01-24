@@ -20,7 +20,7 @@
 #basic-container,
 #details-container,
 #queries-container,
-#query-container {
+#interests-container {
     background-color: var(--surface-primary-light);
     padding: 15px 30px;
     margin: 30px;
@@ -71,7 +71,29 @@
     margin: 15px;
 }
 
-#query-container textarea {
-    margin: 15px 0;
+#interests-container #interests-selection {
+    margin: 15px 0 30px 0;
+}
+
+#interests-container #viewing-date {
+    display: none;
+    margin-bottom: -15px;
+}
+
+#interests-container #related-offers {
+    display: none;
+    margin-bottom: -15px;
+    width: calc(50% - 8px);
+}
+
+#interests-container #offer-price {
+    display: none;
+    margin-bottom: -15px;
+    width: calc(50% - 8px);
+    float: right;
+}
+
+#interests-container textarea {
+    margin: 30px 0 15px 0;
     resize: vertical;
 }

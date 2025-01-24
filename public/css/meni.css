@@ -50,7 +50,7 @@ body {
     padding: 0;
 }
 
-body, div, span, p, a, button, label, input, textarea {
+body, div, span, p, a, button, label, input, textarea, select, option {
     font-family: 'Roboto', Arial, sans-serif;
     font-size: var(--content-size);
 }
@@ -78,7 +78,7 @@ button {
     outline: none;
 }
 
-input, textarea {
+input, textarea, select {
     display: block;
     box-sizing: border-box;
     width: 100%;
@@ -90,7 +90,7 @@ input, textarea {
     outline: none;
 }
 
-input:focus, textarea:focus {
+input:focus, textarea:focus, select:focus {
     border: 2px solid var(--primary-light);
 }
 

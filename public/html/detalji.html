@@ -48,9 +48,24 @@
                 <div class="feedback"></div>
             </div>
 
-            <div class="heading">Do you have a question?</div>
-            <div id="query-container">
-                <textarea id="query-text"></textarea>
+            <div class="heading">Are you interested in this property?</div>
+            
+            <div id="interests-container">
+                <select id="interests-selection">
+                    <option value="query">Query</option>
+                    <option value="request">Request</option>
+                    <option value="offer">Offer</option>
+                </select>
+
+                <input type="date" id="viewing-date">
+                <input type="checkbox" id="approve-request">
+
+                <select id="related-offers"></select>
+                <input type="number" id="offer-price" min="0" placeholder="Price offer">
+                <input type="checkbox" id="reject-offer">
+
+                <textarea id="interest-text"></textarea>
+
                 <button id="send">Send</button>
                 <div class="feedback"></div>
             </div>

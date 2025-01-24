@@ -77,9 +77,28 @@ document.getElementById('next').addEventListener('click', () => {
     });
 });
 
+document.getElementById('interests-selection').addEventListener('change', (event) => {
+    const selectedValue = event.target.value;
+
+    const viewingDateElement = document.getElementById('viewing-date');
+    const offerPriceElement = document.getElementById('offer-price');
+    const relatedOffersElement = document.getElementById('related-offers');
+
+    viewingDateElement.style.display = 'none';
+    offerPriceElement.style.display = 'none';
+    relatedOffersElement.style.display = 'none';
+
+    if (selectedValue === 'request') {
+        viewingDateElement.style.display = 'inline-block';
+    } else if (selectedValue === 'offer') {
+        offerPriceElement.style.display = 'inline-block';
+        relatedOffersElement.style.display = 'inline-block';
+    }
+});
+
 document.getElementById('send').addEventListener('click', () => {
     const queryTextElement = document.getElementById('query-text');
-    const feedbackElement = document.querySelector('#query-container .feedback');
+    const feedbackElement = document.querySelector('#interests-container .feedback');
 
     PoziviAjax.postUpit(propertyId, queryTextElement.value, (error, status) => {
         if (error) {
