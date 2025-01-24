@@ -1,14 +1,16 @@
+const Property = require('../models/property.model');
+const User = require('../models/user.model');
+const Query = require('../models/query.model');
 const bcrypt = require('bcrypt');
-const { readJsonFile, saveJsonFile, addInTxtFile } = require('../utils/file.utils');
+const { addInTxtFile } = require('../utils/file.utils');
 
 exports.userLogin = async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        const users = await readJsonFile('korisnici');
-        const user = users.find((u) => u.username === username);
+        const user = await User.findOne({ where: { username: username } });
 
-        if (user) {            
+        if (user) {
             if (!req.session.loginAttempts) req.session.loginAttempts = 0;
             if (!req.session.blockedUntil) req.session.blockedUntil = null;
             
@@ -65,11 +67,8 @@ exports.getUser = async (req, res) => {
     }
 
     try {
-        const users = await readJsonFile('korisnici');
-        const user = users.find((u) => u.username === req.session.username);
-
+        const user = await User.findOne({ where: { username: req.session.username } });
         if (!user) {
-            // User not found (should not happen if users are correctly managed)
             return res.status(401).json({ greska: 'Neautorizovan pristup' });
         }
 
@@ -77,7 +76,8 @@ exports.getUser = async (req, res) => {
             id: user.id,
             ime: user.ime,
             prezime: user.prezime,
-            username: user.username
+            username: user.username,
+            admin: user.admin
         };
 
         res.status(200).json(userPublicData);
@@ -95,13 +95,7 @@ exports.setUser = async (req, res) => {
     const { ime, prezime, username, password } = req.body;
 
     try {
-        const users = await readJsonFile('korisnici');
-        const user = users.find((u) => u.username === req.session.username);
-
-        if (!user) {
-            // User not found (should not happen if users are correctly managed)
-            return res.status(401).json({ greska: 'Neautorizovan pristup' });
-        }
+        const user = {};
 
         if (ime) user.ime = ime;
         if (prezime) user.prezime = prezime;
@@ -111,8 +105,14 @@ exports.setUser = async (req, res) => {
             user.password = hashedPassword;
         }
 
-        await saveJsonFile('korisnici', users);
-        res.status(200).json({ poruka: 'Podaci su uspješno ažurirani' });
+        const [updated] = await User.update(user, { where: { username: req.session.username } });
+
+        if (updated > 0) {
+            if (username) req.session.username = username;
+            res.status(200).json({ poruka: 'Podaci su uspješno ažurirani' });
+        } else {
+            res.status(401).json({ greska: 'Neautorizovan pristup' });
+        }
     } catch (error) {
         console.error('Error updating user data:', error);
         res.status(500).json({ greska: 'Internal Server Error' });
@@ -125,28 +125,22 @@ exports.getQueries = async (req, res) => {
     }
 
     try {
-        const users = await readJsonFile('korisnici');
-        const user = users.find((u) => u.username === req.session.username);
+        const user = await User.findOne({ where: { username: req.session.username } });
+        if (!user) {
+            return res.status(401).json({ greska: 'Neautorizovan pristup' });
+        }
 
-        const properties = await readJsonFile('nekretnine');
-        const userQueries = [];
-
-        properties.forEach((property) => {
-            property.upiti.forEach((query) => {
-                if (query.korisnik_id === user.id) {
-                    userQueries.push({
-                        id_nekretnine: property.id,
-                        tekst_upita: query.tekst_upita
-                    });
-                }
-            });
+        const queries = await Query.findAll({
+            where: { korisnik_id: user.id },
+            attributes: ['nekretnina_id', 'tekst_upita'],
+            raw: true
         });
-
-        if (userQueries.length === 0) {
+        
+        if (queries.length === 0) {
             return res.status(404).json([]);
         }
 
-        res.status(200).json(userQueries);
+        res.status(200).json(queries);
     } catch (error) {
         console.error('Error fetching user queries:', error);
         res.status(500).json({ greska: 'Internal Server Error' });
@@ -161,27 +155,27 @@ exports.addQuery = async (req, res) => {
     const { nekretnina_id, tekst_upita } = req.body;
 
     try {
-        const users = await readJsonFile('korisnici');
-        const user = users.find((u) => u.username === req.session.username);
-
-        const properties = await readJsonFile('nekretnine');
-        const property = properties.find((p) => p.id === nekretnina_id);
-
+        const property = await Property.findOne({ where: { id: nekretnina_id } });
         if (!property) {
             return res.status(400).json({ greska: `Nekretnina sa id-em ${nekretnina_id} ne postoji` });
         }
 
-        const userQueries = property.upiti.filter((q) => q.korisnik_id === user.id);
-        if (userQueries.length >= 3) {
+        const user = await User.findOne({ where: { username: req.session.username } });
+        if (!user) {
+            return res.status(401).json({ greska: 'Neautorizovan pristup' });
+        }
+
+        const queryCount = await Query.count({ where: { nekretnina_id: nekretnina_id, korisnik_id: user.id } });
+        if (queryCount >= 3) {
             return res.status(429).json({ greska: 'Previse upita za istu nekretninu.' });
         }
 
-        property.upiti.push({
+        await Query.create({
+            nekretnina_id: nekretnina_id,
             korisnik_id: user.id,
             tekst_upita: tekst_upita
         });
-        
-        await saveJsonFile('nekretnine', properties);
+
         res.status(200).json({ poruka: 'Upit je uspješno dodan' });
     } catch (error) {
         console.error('Error processing query:', error);

@@ -14,7 +14,7 @@ sequelize.authenticate()
     })
     .then(() => {
         console.log('Tables successfully synchronized');
-        //return insertData();
+        return insertData();
     })
     .catch((error) => {
         console.error('Error during database setup:', error);
@@ -35,17 +35,22 @@ async function insertData() {
         const properties = await readJsonFile('properties.data');
         for (const property of properties) {
             await Property.create(property);
+            await new Promise(resolve => setTimeout(resolve, 1000));
         }
 
         const users = await readJsonFile('users.data');       
         for (const user of users) {
             await User.create(user);
+            await new Promise(resolve => setTimeout(resolve, 1000));
         }
 
         const queries = await readJsonFile('queries.data');
         for (const query of queries) {
             await Query.create(query);
+            await new Promise(resolve => setTimeout(resolve, 1000));
         }
+
+        console.log("Inserted");
     } catch (error) {
         console.error('Error inserting data:', error);
     }

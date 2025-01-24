@@ -8,22 +8,22 @@ PoziviAjax.getMojiUpiti((error, queries) => {
     }
 
     queries.forEach(query => {
-        const { id_nekretnine, tekst_upita } = query;
+        const { nekretnina_id, tekst_upita } = query;
 
         const queryElement = document.createElement('div');
         queryElement.classList.add('query-container');
 
-        PoziviAjax.getNekretnina(id_nekretnine, (error, property) => {
+        PoziviAjax.getNekretnina(nekretnina_id, (error, property) => {
             const titleElement = document.createElement('div');
 
             if (error) {
                 console.error('Greška prilikom dohvatanja detalja nekretnine sa servera:', error);
 
-                titleElement.textContent = id_nekretnine;
+                titleElement.textContent = nekretnina_id;
             } else {
                 const linkElement = document.createElement('a');
                 linkElement.textContent = property.naziv;
-                linkElement.href = `http://localhost:3000/detalji.html?id=${encodeURIComponent(id_nekretnine)}`;
+                linkElement.href = `http://localhost:3000/detalji.html?id=${encodeURIComponent(nekretnina_id)}`;
                 titleElement.appendChild(linkElement);
             }
             
