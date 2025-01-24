@@ -191,6 +191,26 @@ const PoziviAjax = (() => {
         });
     }
 
+    function impl_postZahtjev(nekretnina_id, tekst, trazeniDatum, fnCallback) {
+        const url = `http://localhost:3000/nekretnina/${encodeURIComponent(nekretnina_id)}/zahtjev`;
+        const data = {
+            tekst: tekst,
+            trazeniDatum: trazeniDatum
+        };
+    
+        ajaxRequest('POST', url, data, (error, response) => {
+            if (error) {
+                fnCallback(error.statusText, null);
+            } else {
+                try {
+                    fnCallback(null, JSON.parse(response));
+                } catch (parseError) {
+                    fnCallback(parseError.message, null);
+                }
+            }
+        });
+    }
+
     return {
         postLogin: impl_postLogin,
         postLogout: impl_postLogout,
@@ -201,6 +221,7 @@ const PoziviAjax = (() => {
         getTop5Nekretnina: impl_getTop5Nekretnina,
         getMojiUpiti: impl_getMojiUpiti,
         getNekretnina: impl_getNekretnina,
-        getNextUpiti: impl_getNextUpiti
+        getNextUpiti: impl_getNextUpiti,
+        postZahtjev: impl_postZahtjev
     };
 })();

@@ -9,6 +9,8 @@ const pug = require('pug');
 const propertyController = require('./controllers/property.controller');
 const userController = require('./controllers/user.controller');
 const queryController = require('./controllers/query.controller');
+const requestController = require('./controllers/request.controller');
+const offerController = require('./controllers/offer.controller');
 
 const { readJsonFile, saveJsonFile } = require('./utils/file.utils');
 
@@ -133,6 +135,9 @@ app.get('/nekretnina/:id', propertyController.getPropertyById);
 Returns the next 3 queries for the property based on the page number.
 */
 app.get('/next/upiti/nekretnina/:id', queryController.getPropertyQueriesPaged);
+
+// Create a new request for property viewing by a logged-in user.
+app.post('/nekretnina/:id/zahtjev', requestController.createRequest);
 
 /* ----------------- SERVING MARKETING ROUTES ----------------- */
 
