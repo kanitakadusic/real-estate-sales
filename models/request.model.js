@@ -4,13 +4,11 @@ const sequelize = require('../config/database');
 const Request = sequelize.define('Zahtjev', 
     {
         id: {
-            field: 'id',
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true
         },
         nekretnina_id: {
-            field: 'nekretnina_id',
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
@@ -19,7 +17,6 @@ const Request = sequelize.define('Zahtjev',
             }
         },
         korisnik_id: {
-            field: 'korisnik_id',
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
@@ -28,19 +25,13 @@ const Request = sequelize.define('Zahtjev',
             }
         },
         tekst: {
-            field: 'tekst',
             type: DataTypes.TEXT
         },
         trazeniDatum: {
-            field: 'trazeniDatum',
-            type: DataTypes.DATE,
-            allowNull: false
+            type: DataTypes.DATE
         },
         odobren: {
-            field: 'odobren',
-            type: DataTypes.BOOLEAN,
-            defaultValue: false,
-            allowNull: false
+            type: DataTypes.BOOLEAN
         }
     },
     {

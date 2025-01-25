@@ -4,13 +4,11 @@ const sequelize = require('../config/database');
 const Offer = sequelize.define('Ponuda', 
     {
         id: {
-            field: 'id',
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true
         },
         nekretnina_id: {
-            field: 'nekretnina_id',
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
@@ -19,7 +17,6 @@ const Offer = sequelize.define('Ponuda',
             }
         },
         korisnik_id: {
-            field: 'korisnik_id',
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
@@ -28,27 +25,18 @@ const Offer = sequelize.define('Ponuda',
             }
         },
         tekst: {
-            field: 'tekst',
             type: DataTypes.TEXT
         },
         cijenaPonude: {
-            field: 'cijenaPonude',
-            type: DataTypes.FLOAT,
-            allowNull: false
+            type: DataTypes.FLOAT
         },
         datumPonude: {
-            field: 'datumPonude',
-            type: DataTypes.DATE,
-            allowNull: false
+            type: DataTypes.DATE
         },
         odbijenaPonuda: {
-            field: 'odbijenaPonuda',
-            type: DataTypes.BOOLEAN,
-            defaultValue: true,
-            allowNull: false
+            type: DataTypes.BOOLEAN
         },
-        vezanePonude: {
-            field: 'vezanePonude',
+        parentOfferId: {
             type: DataTypes.INTEGER,
             allowNull: true,
             references: {

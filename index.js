@@ -79,71 +79,51 @@ function isAuthenticated(req, res, next) {
 
 /* ----------- SERVING OTHER ROUTES --------------- */
 
-/*
-Checks if the user exists and if the password is correct based on 'korisnici.json' data. 
-If the data is correct, the username is saved in the session and a success message is sent.
-User can make a maximum of 3 failed login attempts, otherwise he will be blocked for one minute.
-Every login attempt is logged.
-*/
+// Verify user credentials and log the user in.
+// Limit failed attempts to 3, with a 1-minute block.
+// Log all login attempts.
 app.post('/login', userController.userLogin);
 
-/*
-Delete everything from the session.
-*/
+// Delete all data from the session, effectively logging out the user.
 app.post('/logout', userController.userLogout);
 
-/*
-Returns currently logged user data.
-First takes the username from the session and grabs other data from the .json file.
-*/
+// Fetch details of the currently logged-in user.
 app.get('/korisnik', userController.getLoggedInUser);
 
-/*
-Updates any user field.
-*/
+// Update any field of the logged-in user's profile.
 app.put('/korisnik', userController.updateLoggedInUser);
 
-/*
-Returns all queries made by the logged-in user.
-*/
-app.get('/upiti/moji', queryController.getUserQueries);
-
-/*
-Allows logged user to make a request for a property.
-User can make a maximum of 3 queries for one property.
-*/
-app.post('/upit', queryController.addUserQuery);
-
-/*
-Returns all properties from the file.
-*/
+// Fetch all properties in the system.
 app.get('/nekretnine', propertyController.getAllProperties);
 
-/*
-Returns the 5 most recently listed properties
-located at the given location from the file 'nekretnine.json'.
-*/
+// Fetch the 5 most recently listed properties in the specified location.
 app.get('/nekretnine/top5', propertyController.getTopPropertiesByLocation);
 
-/*
-Returns details of property with specified ID in JSON format.
-List of queries within the property is shortened to return only the last 3 queries.
-*/
+// Fetch details of the property with the given ID.
+// The list of queries for the property is limited to the last 3 queries.
 app.get('/nekretnina/:id', propertyController.getPropertyById);
-
-/*
-Returns the next 3 queries for the property based on the page number.
-*/
-app.get('/next/upiti/nekretnina/:id', queryController.getPropertyQueriesPaged);
 
 // Fetch interests (queries, requests, offers) for a given property.
 app.get('/nekretnina/:id/interesovanja', propertyController.getPropertyInterests);
 
-// Create a new request for property viewing by a logged-in user.
-app.post('/nekretnina/:id/zahtjev', requestController.createRequest);
+// Fetch all queries made by the logged-in user for properties.
+app.get('/upiti/moji', queryController.getUserQueries);
 
-// Update a request status for property viewing by an admin.
+// Create a new query for a property by a logged-in user.
+// A user can make a maximum of 3 queries for each property.
+app.post('/upit', queryController.createUserQuery);
+
+// Fetch queries with pagination for the given property.
+app.get('/next/upiti/nekretnina/:id', queryController.getPropertyQueriesPaged);
+
+// Create a new request for viewing a property by a logged-in user.
+app.post('/nekretnina/:id/zahtjev', requestController.createPropertyRequest);
+
+// Update the status of a request for property viewing by an admin.
 app.put('/nekretnina/:id/zahtjev/:zid', requestController.updateRequestStatusByAdmin);
+
+// Create a new price offer for a property by a logged-in user.
+app.post('/nekretnina/:id/ponuda', offerController.createPropertyOffer);
 
 /* ----------------- SERVING MARKETING ROUTES ----------------- */
 
@@ -228,6 +208,7 @@ app.post('/marketing/osvjezi/pretrage', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 /*
 Updates the number of clicks.
 */

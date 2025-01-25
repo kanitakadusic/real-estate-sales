@@ -90,13 +90,16 @@ exports.updateLoggedInUser = async (req, res) => {
         return res.status(401).json({ greska: 'Neautorizovan pristup' });
     }
 
-    const { ime, prezime, username, password } = req.body;
+    const firstname = req.body.ime;
+    const lastname = req.body.prezime;
+    const username = req.body.username;
+    const password = req.body.password;
 
     try {
         const user = {};
 
-        if (ime) user.ime = ime;
-        if (prezime) user.prezime = prezime;
+        if (firstname) user.ime = firstname;
+        if (lastname) user.prezime = lastname;
         if (username) user.username = username;
         if (password) {
             const hashedPassword = await bcrypt.hash(password, 10);

@@ -28,5 +28,5 @@ Property.hasMany(Offer, { foreignKey: 'nekretnina_id', as: 'offers' });
 Offer.belongsTo(User, { foreignKey: 'korisnik_id', as: 'user' });
 User.hasMany(Offer, { foreignKey: 'korisnik_id', as: 'offers' });
 
-Offer.belongsTo(Offer, { foreignKey: 'vezanePonude', as: 'parentOffer' });
-Offer.hasMany(Offer, { foreignKey: 'vezanePonude', as: 'childOffers' });
+Offer.belongsTo(Offer, { foreignKey: 'parentOfferId', as: 'parentOffer' });
+Offer.hasMany(Offer, { foreignKey: 'parentOfferId', as: 'childOffers' });

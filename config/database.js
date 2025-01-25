@@ -8,13 +8,13 @@ const sequelize = new Sequelize('wt24', 'root', 'password', {
 
 sequelize.authenticate()
     .then(() => {
-        console.log('Database successfully connected');
+        console.log('Successfully connected to the database');
         require('../models/associations');
         return sequelize.sync({ force: true });
     })
     .then(() => {
         console.log('Tables successfully synchronized');
-        return insertData();
+        return insertTestData();
     })
     .catch((error) => {
         console.error('Error during database setup:', error);
@@ -22,7 +22,7 @@ sequelize.authenticate()
 
 module.exports = sequelize;
 
-async function insertData() {
+async function insertTestData() {
     const { readJsonFile } = require('../utils/file.utils');
 
     const Property = require('../models/property.model');
@@ -50,8 +50,14 @@ async function insertData() {
             await new Promise(resolve => setTimeout(resolve, 1000));
         }
 
-        console.log("Inserted");
+        const offers = await readJsonFile('offers.data');
+        for (const offer of offers) {
+            await Offer.create(offer);
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+
+        console.log("Test data successfully inserted");
     } catch (error) {
-        console.error('Error inserting data:', error);
+        console.error('Error inserting test data:', error);
     }
 };

@@ -20,11 +20,11 @@ exports.getAllProperties = async (req, res) => {
 };
 
 exports.getTopPropertiesByLocation = async (req, res) => {
-    const { lokacija } = req.query;
+    const propertyLocation = req.query.lokacija;
 
     try {
         const properties = await Property.findAll({
-            where: { lokacija: lokacija },
+            where: { lokacija: propertyLocation },
             limit: 5,
             order: [['datum_objave', 'DESC']],
             raw: true
@@ -42,24 +42,22 @@ exports.getTopPropertiesByLocation = async (req, res) => {
 };
 
 exports.getPropertyById = async (req, res) => {
-    const { id } = req.params;
+    const propertyId = req.params.id;
 
     try {
-        const property = await Property.findOne({
-            where: { id: id },
-            raw: true
-        });
+        const property = await Property.findOne({ where: { id: propertyId }, raw: true });
         if (!property) {
-            return res.status(400).json({ greska: `Nekretnina sa id-em ${id} ne postoji` });
+            return res.status(400).json({ greska: `Nekretnina sa id-em ${propertyId} ne postoji` });
         }
 
         const queries = await Query.findAll({
-            where: { nekretnina_id: id },
+            where: { nekretnina_id: propertyId },
             limit: 3,
             order: [['createdAt', 'DESC']],
-            attributes: ['korisnik_id', 'tekst_upita'],
+            attributes: ['korisnik_id', 'tekst'],
             raw: true
         });
+        
         property.upiti = queries;
 
         res.status(200).json(property);
@@ -70,26 +68,17 @@ exports.getPropertyById = async (req, res) => {
 };
 
 exports.getPropertyInterests = async (req, res) => {
-    const { id } = req.params;
+    const propertyId = req.params.id;
 
     try {
-        const property = await Property.findOne({ where: { id: id } });
+        const property = await Property.findOne({ where: { id: propertyId } });
         if (!property) {
-            return res.status(404).json({ greska: `Nekretnina sa id-em ${id} ne postoji` });
+            return res.status(404).json({ greska: `Nekretnina sa id-em ${propertyId} ne postoji` });
         }
 
-        const queries = await Query.findAll({
-            where: {nekretnina_id: id},
-            raw: true
-        });
-        const requests = await Request.findAll({
-            where: {nekretnina_id: id},
-            raw: true
-        });
-        const offers = await Offer.findAll({
-            where: {nekretnina_id: id},
-            raw: true
-        });
+        const queries = await Query.findAll({ where: {nekretnina_id: propertyId}, raw: true });
+        const requests = await Request.findAll({ where: {nekretnina_id: propertyId}, raw: true });
+        const offers = await Offer.findAll({ where: {nekretnina_id: propertyId}, raw: true });
 
         res.status(200).json({ queries, requests, offers });
     } catch (error) {

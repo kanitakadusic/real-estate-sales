@@ -18,8 +18,10 @@ if (!propertyId) {
             document.getElementById('property-price').textContent = property.cijena;
             document.getElementById('property-heating').textContent = property.tip_grijanja;
             document.getElementById('property-construction-year').textContent = property.godina_izgradnje;
-            document.getElementById('property-publication-date').textContent = property.datum_objave;
             document.getElementById('property-description').textContent = property.opis;
+
+            const publicationDate = new Date(property.datum_objave);
+            document.getElementById('property-publication-date').textContent = publicationDate.toLocaleDateString();
     
             const locationElement = document.getElementById('property-location');
             locationElement.textContent = property.lokacija;
@@ -133,7 +135,7 @@ function createQueryElement(query) {
     queryElement.appendChild(userElement);
 
     const textElement = document.createElement('p');
-    textElement.textContent = query.tekst_upita;
+    textElement.textContent = query.tekst;
     textElement.innerHTML = textElement.textContent.replace(/\n/g, '<br>');
     queryElement.appendChild(textElement);
 

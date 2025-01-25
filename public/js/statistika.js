@@ -174,35 +174,6 @@ document.getElementById('outlier-button').addEventListener('click', () => {
     }
 });
 
-document.getElementById('my-properties-button').addEventListener('click', () => {
-    const form = document.forms['my-properties'];
-
-    const id = parseInt(form['user-id'].value);
-
-    const result = form.querySelector('.result');
-    result.innerHTML = '';
-
-    const feedback = form.querySelector('.feedback');
-
-    try {
-        const myProperties = statistics.mojeNekretnine({ id: id });
-        myProperties.forEach(property => {
-            const block = document.createElement('div');
-            block.classList.add('block');
-            const link = document.createElement('a');
-            link.textContent = `${property.naziv}`;
-            link.href = `http://localhost:3000/detalji.html?id=${encodeURIComponent(property.id)}`;
-            block.appendChild(link);
-            result.appendChild(block);
-        });
-
-        feedback.textContent = '';
-    } catch (error) {
-        feedback.textContent = error.message;
-        feedback.style.display = 'inline-block';
-    }
-});
-
 document.getElementById('add-year-range-button').addEventListener('click', () => {
     addRange('year');
 });

@@ -1,0 +1,81 @@
+[
+    {
+        "id": 1,
+        "nekretnina_id": 1,
+        "korisnik_id": 2,
+        "tekst": "offer-1",
+        "cijenaPonude": 100,
+        "datumPonude": "2025-01-05T13:31:05.717Z"
+    },
+    {
+        "id": 2,
+        "nekretnina_id": 1,
+        "korisnik_id": 2,
+        "tekst": "offer-2",
+        "cijenaPonude": 200,
+        "datumPonude": "2025-01-05T13:31:05.717Z",
+        "parentOfferId": 1
+    },
+    {
+        "id": 3,
+        "nekretnina_id": 1,
+        "korisnik_id": 2,
+        "tekst": "offer-3",
+        "cijenaPonude": 300,
+        "datumPonude": "2025-01-05T13:31:05.717Z",
+        "parentOfferId": 1
+    },
+    {
+        "id": 4,
+        "nekretnina_id": 1,
+        "korisnik_id": 1,
+        "tekst": "offer-4",
+        "cijenaPonude": 400,
+        "datumPonude": "2025-01-05T13:31:05.717Z",
+        "parentOfferId": 1
+    },
+    {
+        "id": 5,
+        "nekretnina_id": 1,
+        "korisnik_id": 1,
+        "tekst": "offer-5",
+        "cijenaPonude": 500,
+        "datumPonude": "2025-01-05T13:31:05.717Z",
+        "parentOfferId": 2
+    },
+    {
+        "id": 6,
+        "nekretnina_id": 1,
+        "korisnik_id": 2,
+        "tekst": "offer-6",
+        "cijenaPonude": 600,
+        "datumPonude": "2025-01-05T13:31:05.717Z",
+        "parentOfferId": 4
+    },
+    {
+        "id": 7,
+        "nekretnina_id": 1,
+        "korisnik_id": 1,
+        "tekst": "offer-7",
+        "cijenaPonude": 700,
+        "datumPonude": "2025-01-05T13:31:05.717Z",
+        "parentOfferId": 4
+    },
+    {
+        "id": 8,
+        "nekretnina_id": 1,
+        "korisnik_id": 1,
+        "tekst": "offer-8",
+        "cijenaPonude": 800,
+        "datumPonude": "2025-01-05T13:31:05.717Z"
+    },
+    {
+        "id": 9,
+        "nekretnina_id": 1,
+        "korisnik_id": 1,
+        "tekst": "offer-9",
+        "cijenaPonude": 900,
+        "datumPonude": "2025-01-05T13:31:05.717Z",
+        "parentOfferId": 8
+    }
+]

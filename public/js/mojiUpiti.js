@@ -8,7 +8,7 @@ PoziviAjax.getMojiUpiti((error, queries) => {
     }
 
     queries.forEach(query => {
-        const { nekretnina_id, tekst_upita } = query;
+        const { nekretnina_id, tekst } = query;
 
         const queryElement = document.createElement('div');
         queryElement.classList.add('query-container');
@@ -30,7 +30,7 @@ PoziviAjax.getMojiUpiti((error, queries) => {
             queryElement.appendChild(titleElement);
 
             const textElement = document.createElement('p');
-            textElement.textContent = tekst_upita;
+            textElement.textContent = tekst;
             textElement.innerHTML = textElement.textContent.replace(/\n/g, '<br>');
             queryElement.appendChild(textElement);
 
