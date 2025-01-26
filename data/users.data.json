@@ -14,5 +14,13 @@
         "username": "pajapatak",
         "password": "$2b$10$.RxSX6EaDt2RVLfuCAFvueqv21MFUEVJNtYoZcCU.TPH7TsE6/Emm",
         "admin": false
+    },
+    {
+        "id": 3,
+        "ime": "Mini",
+        "prezime": "Maus",
+        "username": "minimaus",
+        "password": "$2b$10$.RxSX6EaDt2RVLfuCAFvueqv21MFUEVJNtYoZcCU.TPH7TsE6/Emm",
+        "admin": false
     }
 ]

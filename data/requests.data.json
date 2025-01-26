@@ -19,5 +19,12 @@
         "korisnik_id": 2,
         "tekst": "request-3",
         "trazeniDatum": "2025-03-14T23:21:11.229Z"
+    },
+    {
+        "id": 4,
+        "nekretnina_id": 1,
+        "korisnik_id": 3,
+        "tekst": "request-4",
+        "trazeniDatum": "2025-03-10T23:21:11.229Z"
     }
 ]

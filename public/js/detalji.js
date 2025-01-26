@@ -74,6 +74,11 @@ if (!propertyId) {
                 }
             }
 
+            const option = document.createElement("option");
+            option.value = 'initial';
+            option.textContent = 'Initial offer';
+            relatedOffersSelect.appendChild(option);
+
             interests.offers.forEach((offer) => {
                 if (offer.cijenaPonude) {
                     const option = document.createElement("option");
@@ -192,7 +197,7 @@ sendButton.addEventListener('click', () => {
             interestTextInput.value,
             offerPriceInput.value,
             new Date(),
-            relatedOffersSelect.value,
+            relatedOffersSelect.value === 'initial' ? null : relatedOffersSelect.value,
             offerRejectionCheckbox.checked,
             feedbackHandler
         );
