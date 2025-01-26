@@ -24,10 +24,10 @@ require('../models/associations')(database);
         await sequelize.authenticate();
         console.log('Successfully connected to the database');
 
-        await sequelize.sync({ force: true });
+        await sequelize.sync({ force: false });
         console.log('Tables successfully synchronized');
 
-        await insertTestData();
+        //await insertTestData();
     } catch (error) {
         console.error('Error during database setup:', error);
     }
