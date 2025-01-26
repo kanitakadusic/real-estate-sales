@@ -103,8 +103,11 @@ app.get('/nekretnine/top5', propertyController.getTopPropertiesByLocation);
 // The list of queries for the property is limited to the last 3 queries.
 app.get('/nekretnina/:id', propertyController.getPropertyById);
 
-// Fetch interests (queries, requests, offers) for a given property.
-app.get('/nekretnina/:id/interesovanja', propertyController.getPropertyInterests);
+// Fetch interests [...queries, ...requests, ...offers] for a given property.
+app.get('/nekretnina/:id/interesovanja', propertyController.getPropertyInterestsAsArray);
+
+// Fetch interests { queries, requests, offers } for a given property.
+app.get('/property/:id/interests', propertyController.getPropertyInterestsAsObject);
 
 // Fetch all queries made by the logged-in user for properties.
 app.get('/upiti/moji', queryController.getUserQueries);

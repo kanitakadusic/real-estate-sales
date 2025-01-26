@@ -67,7 +67,7 @@ exports.getPropertyById = async (req, res) => {
     }
 };
 
-exports.getPropertyInterests = async (req, res) => {
+exports.getPropertyInterestsAsArray = async (req, res) => {
     const propertyId = req.params.id;
 
     try {
@@ -76,9 +76,76 @@ exports.getPropertyInterests = async (req, res) => {
             return res.status(404).json({ greska: `Nekretnina sa id-em ${propertyId} ne postoji` });
         }
 
-        const queries = await Query.findAll({ where: {nekretnina_id: propertyId}, raw: true });
-        const requests = await Request.findAll({ where: {nekretnina_id: propertyId}, raw: true });
-        const offers = await Offer.findAll({ where: {nekretnina_id: propertyId}, raw: true });
+        const queries = await Query.findAll({ where: { nekretnina_id: propertyId }, raw: true });
+        const requests = await Request.findAll({ where: { nekretnina_id: propertyId }, raw: true });
+        const offers = await Offer.findAll({ where: { nekretnina_id: propertyId }, raw: true });
+
+        if (req.session.username) {
+            const user = await User.findOne({ where: { username: req.session.username } });
+            if (user) {
+                if (!user.admin) {
+                    offers.forEach((o) => {
+                        if (
+                            o.korisnik_id != user.id &&
+                            findRootOffer(offers, o.id).korisnik_id != user.id
+                        ) {
+                            delete o.cijenaPonude;
+                        }
+                    });
+                }
+
+                return res.status(200).json([...queries, ...requests, ...offers]);
+            }
+        }
+
+        offers.forEach((o) => delete o.cijenaPonude);
+
+        res.status(200).json([...queries, ...requests, ...offers]);
+    } catch (error) {
+        console.error('Error fetching property details:', error);
+        res.status(500).json({ greska: 'Internal Server Error' });
+    }
+};
+
+exports.getPropertyInterestsAsObject = async (req, res) => {
+    const propertyId = req.params.id;
+
+    try {
+        const property = await Property.findOne({ where: { id: propertyId } });
+        if (!property) {
+            return res.status(404).json({ greska: `Nekretnina sa id-em ${propertyId} ne postoji` });
+        }
+
+        const queries = await Query.findAll({ where: { nekretnina_id: propertyId }, raw: true });
+        const requests = await Request.findAll({ where: { nekretnina_id: propertyId }, raw: true });
+        const offers = await Offer.findAll({ where: { nekretnina_id: propertyId }, raw: true });
+
+        if (req.session.username) {
+            const user = await User.findOne({ where: { username: req.session.username } });
+            if (user) {
+                if (!user.admin) {
+                    requests.forEach((r) => {
+                        if (r.korisnik_id != user.id) {
+                            delete r.korisnik_id;
+                        }
+                    });
+
+                    offers.forEach((o) => {
+                        if (
+                            o.korisnik_id != user.id &&
+                            findRootOffer(offers, o.id).korisnik_id != user.id
+                        ) {
+                            delete o.cijenaPonude;
+                        }
+                    });
+                }
+
+                return res.status(200).json({ queries, requests, offers });
+            }
+        }
+
+        requests.forEach((r) => delete r.korisnik_id);
+        offers.forEach((o) => delete o.cijenaPonude);
 
         res.status(200).json({ queries, requests, offers });
     } catch (error) {
@@ -86,3 +153,13 @@ exports.getPropertyInterests = async (req, res) => {
         res.status(500).json({ greska: 'Internal Server Error' });
     }
 };
+
+function findRootOffer(offers, offerId) {
+    let offer = offers.find((o) => o.id == offerId);
+
+    while (offer && offer.parentOfferId !== null) {
+        offer = offers.find((o) => o.id == offer.parentOfferId);
+    }
+
+    return offer || null;
+}

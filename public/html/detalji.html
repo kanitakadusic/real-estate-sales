@@ -40,32 +40,54 @@
     
             <div class="heading">Queries</div>
             <div id="queries-container">
-                <div id="carousel-content"></div>
-                <div id="carousel-buttons">
-                    <button id="previous">Previous</button>
-                    <button id="next">Next</button>
+                <div class="carousel-content"></div>
+                <div class="carousel-buttons">
+                    <button class="previous">Previous</button>
+                    <button class="next">Next</button>
+                </div>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="heading">Requests</div>
+            <div id="requests-container">
+                <div class="carousel-content"></div>
+                <div class="carousel-buttons">
+                    <button class="previous">Previous</button>
+                    <button class="next">Next</button>
+                </div>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="heading">Offers</div>
+            <div id="offers-container">
+                <div class="carousel-content"></div>
+                <div class="carousel-buttons">
+                    <button class="previous">Previous</button>
+                    <button class="next">Next</button>
                 </div>
                 <div class="feedback"></div>
             </div>
 
             <div class="heading">Are you interested in this property?</div>
-            
             <div id="interests-container">
                 <select id="interests-selection">
                     <option value="query">Query</option>
                     <option value="request">Request</option>
                     <option value="offer">Offer</option>
                 </select>
-
-                <input type="date" id="viewing-date">
-                <input type="checkbox" id="approve-request">
-
+                <input type="datetime-local" id="request-date">
+                <select id="related-requests"></select>
+                <label id="request-label">
+                    <input type="checkbox" id="request-approval">
+                    Approve request
+                </label>                                
                 <select id="related-offers"></select>
-                <input type="number" id="offer-price" min="0" placeholder="Price offer">
-                <input type="checkbox" id="reject-offer">
-
+                <input type="number" id="offer-price" placeholder="Price">
+                <label id="offer-label">
+                    <input type="checkbox" id="offer-rejection">
+                    Reject offer
+                </label>  
                 <textarea id="interest-text"></textarea>
-
                 <button id="send">Send</button>
                 <div class="feedback"></div>
             </div>

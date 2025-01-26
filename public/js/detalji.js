@@ -1,9 +1,22 @@
 const propertyId = Number(getPropertyIdFromUrl());
+let isAdmin = false;
 
-let carousel = null;
-let areAllQueriesLoaded = false;
+let queriesCarousel = null;
+let requestsCarousel = null;
+let offersCarousel = null;
 
 const contentContainer = document.getElementById('content-container');
+const interestsSelectionElement = document.getElementById('interests-selection');
+const requestDateInput = document.getElementById('request-date');
+const relatedRequestsSelect = document.getElementById('related-requests');
+const requestApprovalLabel = document.getElementById('request-label');
+const requestApprovalCheckbox = document.getElementById('request-approval');
+const relatedOffersSelect = document.getElementById('related-offers');
+const offerPriceInput = document.getElementById('offer-price');
+const offerRejectionLabel = document.getElementById('offer-label');
+const offerRejectionCheckbox = document.getElementById('offer-rejection');
+const interestTextInput = document.getElementById('interest-text');
+const sendButton = document.getElementById('send');
 
 if (!propertyId) {
     showErrorImage(null, contentContainer);
@@ -26,97 +39,164 @@ if (!propertyId) {
             const locationElement = document.getElementById('property-location');
             locationElement.textContent = property.lokacija;
             locationElement.href = `http://localhost:3000/nekretnine.html?location=${encodeURIComponent(property.lokacija)}`;
+        }
+    });
 
-            const carouselContent = document.getElementById('carousel-content');
+    PoziviAjax.getKorisnik((error, user) => {
+        if (error) {
+            console.error('Greška prilikom preuzimanja korisničkih podataka:', error);
 
-            carousel = setCarousel(
-                carouselContent,
-                property.upiti.map(q => createQueryElement(q))
-            );
+            requestDateInput.disabled = true;
+            relatedOffersSelect.disabled = true;
+            offerPriceInput.disabled = true;
+            offerRejectionCheckbox.disabled = true;
+            interestTextInput.disabled = true;
+            sendButton.disabled = true;
+        } else {
+            isAdmin = user.admin;
+        }
+    });
 
-            if (!carousel) {
-                document.getElementById('carousel-buttons').style.display = 'none';
+    PoziviAjax.getInterests(propertyId, (error, interests) => {
+        if (error) {
+            console.error('Greška prilikom preuzimanja interesovanja za nekretninu:', error);
+        } else {
+            if (isAdmin) {
+                interests.requests.forEach((request) => {
+                    const option = document.createElement("option");
+                    option.value = request.id;
+                    option.textContent = request.id;
+                    relatedRequestsSelect.appendChild(option);
+                });
 
-                const messageElement = document.createElement('p');
-                messageElement.textContent = 'No queries have been made for this property.';
-                carouselContent.replaceChildren(messageElement);
+                if (interests.requests.length === 0) {
+                    relatedRequestsSelect.disabled = true;
+                }
             }
+
+            interests.offers.forEach((offer) => {
+                if (offer.cijenaPonude) {
+                    const option = document.createElement("option");
+                    option.value = offer.id;
+                    option.textContent = offer.id;
+                    relatedOffersSelect.appendChild(option);
+                }
+            });
+
+            if (interests.offers.length === 0) {
+                relatedOffersSelect.disabled = true;
+            }
+
+            queriesCarousel = initializeCarousel(
+                document.getElementById('queries-container'),
+                interests.queries.map((q) => createInterestElement(q, 'query'))
+            );
+            requestsCarousel = initializeCarousel(
+                document.getElementById('requests-container'),
+                interests.requests.map((r) => createInterestElement(r, 'request'))
+            );
+            offersCarousel = initializeCarousel(
+                document.getElementById('offers-container'),
+                interests.offers.map((o) => createInterestElement(o, 'offer'))
+            );
         }
     });
 }
 
-document.getElementById('previous').addEventListener('click', () => {
-    if (carousel) carousel.previous();
+document.querySelector('#queries-container .previous').addEventListener('click', () => {
+    if (queriesCarousel) queriesCarousel.previous();
+});
+document.querySelector('#queries-container .next').addEventListener('click', () => {
+    if (queriesCarousel) queriesCarousel.next();
 });
 
-document.getElementById('next').addEventListener('click', () => {
-    if (!carousel) return;
+document.querySelector('#requests-container .previous').addEventListener('click', () => {
+    if (requestsCarousel) requestsCarousel.previous();
+});
+document.querySelector('#requests-container .next').addEventListener('click', () => {
+    if (requestsCarousel) requestsCarousel.next();
+});
 
-    if (carousel.index !== carousel.length - 1 || areAllQueriesLoaded) {
-        carousel.next();
-        return;
-    }
+document.querySelector('#offers-container .previous').addEventListener('click', () => {
+    if (offersCarousel) offersCarousel.previous();
+});
+document.querySelector('#offers-container .next').addEventListener('click', () => {
+    if (offersCarousel) offersCarousel.next();
+});
 
-    PoziviAjax.getNextUpiti(propertyId, Math.ceil(carousel.length / 3), (error, queries) => {
-        if (error) {
-            console.error('Greška prilikom učitavanja sljedećih upita:', error);
+interestsSelectionElement.addEventListener('change', () => {
+    requestDateInput.style.display = 'none';
+    relatedRequestsSelect.style.display = 'none';
+    requestApprovalLabel.style.display = 'none';
+    relatedOffersSelect.style.display = 'none';
+    offerPriceInput.style.display = 'none';
+    offerRejectionLabel.style.display = 'none';
 
-            if (error === 'Not Found') {
-                areAllQueriesLoaded = true;
-            } else {
-                const feedbackElement = document.querySelector('#queries-container .feedback');
-                feedbackElement.textContent = `Error: ${error}.`;
-                feedbackElement.style.color = 'var(--error-light)';
-                feedbackElement.style.display = 'block';
-            }
+    if (interestsSelectionElement.value === 'request') {
+        if (!isAdmin) {
+            requestDateInput.style.display = 'inline-block';
         } else {
-            console.log('Učitana je sljedeća tura upita');
-
-            carousel.add(queries.map(q => createQueryElement(q)));
+            relatedRequestsSelect.style.display = 'inline-block';
+            requestApprovalLabel.style.display = 'inline-block';
         }
-
-        carousel.next();
-    });
-});
-
-document.getElementById('interests-selection').addEventListener('change', (event) => {
-    const selectedValue = event.target.value;
-
-    const viewingDateElement = document.getElementById('viewing-date');
-    const offerPriceElement = document.getElementById('offer-price');
-    const relatedOffersElement = document.getElementById('related-offers');
-
-    viewingDateElement.style.display = 'none';
-    offerPriceElement.style.display = 'none';
-    relatedOffersElement.style.display = 'none';
-
-    if (selectedValue === 'request') {
-        viewingDateElement.style.display = 'inline-block';
-    } else if (selectedValue === 'offer') {
-        offerPriceElement.style.display = 'inline-block';
-        relatedOffersElement.style.display = 'inline-block';
+    } else if (interestsSelectionElement.value === 'offer') {
+        relatedOffersSelect.style.display = 'inline-block';
+        offerPriceInput.style.display = 'inline-block';
+        offerRejectionLabel.style.display = 'inline-block';
     }
 });
 
-document.getElementById('send').addEventListener('click', () => {
-    const queryTextElement = document.getElementById('query-text');
+sendButton.addEventListener('click', () => {
     const feedbackElement = document.querySelector('#interests-container .feedback');
 
-    PoziviAjax.postUpit(propertyId, queryTextElement.value, (error, status) => {
+    const feedbackHandler = (error, status) => {
         if (error) {
-            console.error('Greška prilikom postavljanja upita:', error);
+            console.error('Greška prilikom postavljanja interesovanja:', error);
 
             feedbackElement.textContent = `Error: ${error}.`;
             feedbackElement.style.color = 'var(--error-light)';
             feedbackElement.style.display = 'block';
         } else {
-            queryTextElement.value = '';
-
-            feedbackElement.textContent = 'The query was successfully sent.';
+            feedbackElement.textContent = 'The interest was successfully sent.';
             feedbackElement.style.color = 'var(--success-light)';
             feedbackElement.style.display = 'block';
         }
-    });
+    };
+
+    if (interestsSelectionElement.value === 'query') {
+        PoziviAjax.postUpit(
+            propertyId,
+            interestTextInput.value,
+            feedbackHandler
+        );
+    } else if (interestsSelectionElement.value === 'request') {
+        if (!isAdmin) {
+            PoziviAjax.postZahtjev(
+                propertyId,
+                interestTextInput.value,
+                requestDateInput.value,
+                feedbackHandler
+            );
+        } else {
+            PoziviAjax.putZahtjev(
+                propertyId,
+                relatedRequestsSelect.value,
+                requestApprovalCheckbox.checked,
+                interestTextInput.value,
+                feedbackHandler
+            );
+        }
+    } else if (interestsSelectionElement.value === 'offer') {
+        PoziviAjax.postPonuda(
+            propertyId,
+            interestTextInput.value,
+            offerPriceInput.value,
+            new Date(),
+            relatedOffersSelect.value,
+            offerRejectionCheckbox.checked,
+            feedbackHandler
+        );
+    }
 });
 
 function getPropertyIdFromUrl() {
@@ -124,20 +204,55 @@ function getPropertyIdFromUrl() {
     return params.get('id');
 }
 
-function createQueryElement(query) {
-    const queryElement = document.createElement('div');
-    queryElement.classList.add('query');
+function initializeCarousel(container, content) {
+    const carousel = setCarousel(
+        container.querySelector('.carousel-content'),
+        content
+    );
 
-    const strongElement = document.createElement('strong');
-    strongElement.textContent = `User ID: ${query.korisnik_id}`;
-    const userElement = document.createElement('p');
-    userElement.appendChild(strongElement);
-    queryElement.appendChild(userElement);
+    if (!carousel) {
+        container.style.display = 'none';
+        container.previousElementSibling.style.display = 'none';
+    }
 
-    const textElement = document.createElement('p');
-    textElement.textContent = query.tekst;
-    textElement.innerHTML = textElement.textContent.replace(/\n/g, '<br>');
-    queryElement.appendChild(textElement);
+    return carousel;
+}
 
-    return queryElement;
+function createInterestElement(interest, interestType) {
+    const interestElement = document.createElement('div');
+    interestElement.classList.add('interest');
+
+    let element = document.createElement('p');
+    element.innerHTML = `<strong>ID:</strong> ${interest.id}`;
+    interestElement.appendChild(element);
+
+    if (interestType === 'request') {
+        if (interest.korisnik_id) {
+            element = document.createElement('p');
+            element.innerHTML = `<strong>User ID:</strong> ${interest.korisnik_id}`;
+            interestElement.appendChild(element);
+        }
+
+        element = document.createElement('p');
+        const date = new Date(interest.trazeniDatum);
+        element.innerHTML = `<strong>Date:</strong> ${date.toLocaleString()}`;
+        interestElement.appendChild(element);
+
+        element = document.createElement('p');
+        const status = interest.odobren ? 'approved' : 'rejected';
+        element.innerHTML = `<strong>Status:</strong> ${status}`;
+        interestElement.appendChild(element);
+    } else if (interestType === 'offer') {
+        element = document.createElement('p');
+        const status = interest.odbijenaPonuda ? 'rejected' : 'approved';
+        element.innerHTML = `<strong>Status:</strong> ${status}`;
+        interestElement.appendChild(element);
+    }
+
+    element = document.createElement('p');
+    element.textContent = interest.tekst;
+    element.innerHTML = element.textContent.replace(/\n/g, '<br>');
+    interestElement.appendChild(element);
+
+    return interestElement;
 }

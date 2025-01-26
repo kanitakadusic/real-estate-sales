@@ -50,6 +50,12 @@ async function insertTestData() {
             await new Promise(resolve => setTimeout(resolve, 1000));
         }
 
+        const requests = await readJsonFile('requests.data');
+        for (const request of requests) {
+            await Request.create(request);
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+
         const offers = await readJsonFile('offers.data');
         for (const offer of offers) {
             await Offer.create(offer);

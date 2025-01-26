@@ -150,6 +150,22 @@ const PoziviAjax = (() => {
         });
     }
 
+    function impl_getInterests(propertyId, fnCallback) {
+        const url = `http://localhost:3000/property/${encodeURIComponent(propertyId)}/interests`;
+        
+        ajaxRequest('GET', url, null, (error, response) => {
+            if (error) {
+                fnCallback(error.statusText, null);
+            } else {
+                try {
+                    fnCallback(null, JSON.parse(response));
+                } catch (parseError) {
+                    fnCallback(parseError.message, null);
+                }
+            }
+        });
+    }
+
     function impl_getMojiUpiti(fnCallback) {
         const url = 'http://localhost:3000/upiti/moji';
 
@@ -274,6 +290,7 @@ const PoziviAjax = (() => {
         getTop5Nekretnina: impl_getTop5Nekretnina,
         getNekretnina: impl_getNekretnina,
         getInteresovanja: impl_getInteresovanja,
+        getInterests: impl_getInterests,
         getMojiUpiti: impl_getMojiUpiti,
         postUpit: impl_postUpit,
         getNextUpiti: impl_getNextUpiti,

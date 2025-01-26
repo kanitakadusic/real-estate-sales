@@ -1,0 +1,23 @@
+[
+    {
+        "id": 1,
+        "nekretnina_id": 1,
+        "korisnik_id": 2,
+        "tekst": "request-1",
+        "trazeniDatum": "2025-02-23T23:21:11.229Z"
+    },
+    {
+        "id": 2,
+        "nekretnina_id": 2,
+        "korisnik_id": 2,
+        "tekst": "request-2",
+        "trazeniDatum": "2025-02-25T23:21:11.229Z"
+    },
+    {
+        "id": 3,
+        "nekretnina_id": 1,
+        "korisnik_id": 2,
+        "tekst": "request-3",
+        "trazeniDatum": "2025-03-14T23:21:11.229Z"
+    }
+]
