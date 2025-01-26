@@ -1,4 +1,4 @@
-const User = require('../models/user.model');
+const { User } = require('../config/database');
 const bcrypt = require('bcrypt');
 const { addInTxtFile } = require('../utils/file.utils');
 

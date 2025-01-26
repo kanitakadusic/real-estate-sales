@@ -1,6 +1,4 @@
-const Property = require('../models/property.model');
-const User = require('../models/user.model');
-const Query = require('../models/query.model');
+const { User, Query, Property } = require('../config/database');
 
 exports.getPropertyQueriesPaged = async (req, res) => {
     const propertyId = req.params.id;

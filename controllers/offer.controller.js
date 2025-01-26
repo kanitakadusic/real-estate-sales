@@ -1,6 +1,4 @@
-const Property = require('../models/property.model');
-const User = require('../models/user.model');
-const Offer = require('../models/offer.model');
+const { User, Offer, Property } = require('../config/database');
 
 exports.createPropertyOffer = async (req, res) => {
     if (!req.session.username) {

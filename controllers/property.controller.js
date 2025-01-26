@@ -1,8 +1,4 @@
-const Property = require('../models/property.model');
-const User = require('../models/user.model');
-const Query = require('../models/query.model');
-const Request = require('../models/request.model');
-const Offer = require('../models/offer.model');
+const { User, Query, Request, Offer, Property } = require('../config/database');
 
 exports.getAllProperties = async (req, res) => {
     try {

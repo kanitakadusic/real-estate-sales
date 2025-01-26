@@ -1,6 +1,4 @@
-const Property = require('../models/property.model');
-const User = require('../models/user.model');
-const Request = require('../models/request.model');
+const { User, Request, Property } = require('../config/database');
 
 exports.createPropertyRequest = async (req, res) => {
     if (!req.session.username) {
