@@ -1,5 +1,8 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
+const Query = require('./query.model');
+const Request = require('./request.model');
+const Offer = require('./offer.model');
 
 const Property = sequelize.define('Nekretnina', 
     {
@@ -40,5 +43,13 @@ const Property = sequelize.define('Nekretnina',
         tableName: 'Nekretnina'
     }
 );
+
+Property.prototype.getInteresovanja = async function () {
+    const queries = await Query.findAll();
+    const requests = await Request.findAll();
+    const offers = await Offer.findAll();
+
+    return [...queries, ...requests, ...offers];
+};
 
 module.exports = Property;

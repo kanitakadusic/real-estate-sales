@@ -1,8 +1,8 @@
-const Property = require('./property.model');
 const User = require('./user.model');
 const Query = require('./query.model');
 const Request = require('./request.model');
 const Offer = require('./offer.model');
+const Property = require('./property.model');
 
 //Property.belongsTo(User, { foreignKey: 'korisnik_id', as: 'owner' });
 //User.hasMany(Property, { foreignKey: 'korisnik_id', as: 'properties' });
