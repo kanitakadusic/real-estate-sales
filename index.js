@@ -287,6 +287,11 @@ app.put('/korisnik', async (req, res) => {
         }
 
         await saveJsonFile('korisnici', users);
+
+        if (username) {
+            req.session.username = username;
+        }
+
         res.status(200).json({ poruka: 'Podaci su uspješno ažurirani' });
     } catch (error) {
         console.error('Error updating user data:', error);
