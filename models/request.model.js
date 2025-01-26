@@ -35,7 +35,7 @@ const Request = sequelize.define('Zahtjev',
         }
     },
     {
-        tableName: 'Zahtjev',
+        tableName: 'Zahtjev'
     }
 );
 

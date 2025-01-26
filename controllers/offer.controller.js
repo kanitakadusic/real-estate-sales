@@ -29,7 +29,7 @@ exports.createPropertyOffer = async (req, res) => {
         if (parentOfferId !== null) {
             const offers = await Offer.findAll();
 
-            const rootOffer = findRootOffer(offers, parentOfferId);
+            const rootOffer = Offer.rootOffer(offers, parentOfferId);
             if (!rootOffer) {
                 return res.status(404).json({ greska: `Ponuda sa id-em ${parentOfferId} ne postoji` });
             }
@@ -47,7 +47,7 @@ exports.createPropertyOffer = async (req, res) => {
             }
 
             if (isOfferRejected) {
-                const relatedOffers = findChildOffers(offers, rootOffer.id);
+                const relatedOffers = Offer.childOffers(offers, rootOffer.id);
                 relatedOffers.push(rootOffer);
 
                 await Promise.all(
@@ -75,31 +75,3 @@ exports.createPropertyOffer = async (req, res) => {
         res.status(500).json({ greska: 'Internal Server Error' });
     }
 };
-
-function findRootOffer(offers, offerId) {
-    let offer = offers.find((o) => o.id == offerId);
-
-    while (offer && offer.parentOfferId !== null) {
-        offer = offers.find((o) => o.id == offer.parentOfferId);
-    }
-
-    return offer || null;
-}
-
-function findChildOffers(offers, offerId) {
-    const children = [];
-    const stack = [offerId];
-
-    while (stack.length > 0) {
-        const currentParentId = stack.pop();
-
-        for (const offer of offers) {
-            if (offer.parentOfferId == currentParentId) {
-                children.push(offer);
-                stack.push(offer.id);
-            }
-        }
-    }
-
-    return children;
-}

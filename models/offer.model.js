@@ -46,8 +46,50 @@ const Offer = sequelize.define('Ponuda',
         }
     },
     {
-        tableName: 'Ponuda',
+        tableName: 'Ponuda'
     }
 );
+
+Offer.rootOffer = function(offers, offerId) {
+    let offer = offers.find((o) => o.id == offerId);
+
+    while (offer && offer.parentOfferId !== null) {
+        offer = offers.find((o) => o.id == offer.parentOfferId);
+    }
+
+    return offer || null;
+}
+
+Offer.childOffers = function(offers, offerId) {
+    const children = [];
+    const stack = [offerId];
+
+    while (stack.length > 0) {
+        const currentParentId = stack.pop();
+
+        for (const offer of offers) {
+            if (offer.parentOfferId == currentParentId) {
+                children.push(offer);
+                stack.push(offer.id);
+            }
+        }
+    }
+
+    return children;
+}
+
+Object.defineProperty(Offer.prototype, 'vezanePonude', {
+    get: async function () {
+        const offers = await Offer.findAll();
+
+        const rootOffer = Offer.rootOffer(offers, this.id);
+        if (rootOffer) {
+            const childOffers = Offer.childOffers(offers, rootOffer.id);
+            return [rootOffer, ...childOffers];
+        }
+
+        return [];
+    }
+});
 
 module.exports = Offer;

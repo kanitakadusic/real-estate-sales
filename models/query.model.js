@@ -29,7 +29,7 @@ const Query = sequelize.define('Upit',
         }
     },
     {
-        tableName: 'Upit',
+        tableName: 'Upit'
     }
 );
 

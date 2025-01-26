@@ -87,7 +87,7 @@ exports.getPropertyInterestsAsArray = async (req, res) => {
                     offers.forEach((o) => {
                         if (
                             o.korisnik_id != user.id &&
-                            findRootOffer(offers, o.id).korisnik_id != user.id
+                            Offer.rootOffer(offers, o.id).korisnik_id != user.id
                         ) {
                             delete o.cijenaPonude;
                         }
@@ -133,7 +133,7 @@ exports.getPropertyInterestsAsObject = async (req, res) => {
                     offers.forEach((o) => {
                         if (
                             o.korisnik_id != user.id &&
-                            findRootOffer(offers, o.id).korisnik_id != user.id
+                            Offer.rootOffer(offers, o.id).korisnik_id != user.id
                         ) {
                             delete o.cijenaPonude;
                         }
@@ -153,13 +153,3 @@ exports.getPropertyInterestsAsObject = async (req, res) => {
         res.status(500).json({ greska: 'Internal Server Error' });
     }
 };
-
-function findRootOffer(offers, offerId) {
-    let offer = offers.find((o) => o.id == offerId);
-
-    while (offer && offer.parentOfferId !== null) {
-        offer = offers.find((o) => o.id == offer.parentOfferId);
-    }
-
-    return offer || null;
-}
