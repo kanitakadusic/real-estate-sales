@@ -13,6 +13,10 @@ exports.createPropertyOffer = async (req, res) => {
     const isOfferRejected = req.body.odbijenaPonuda;
     const parentOfferId = req.body.idVezanePonude;
 
+    if (!offerPrice && !isOfferRejected) {
+        return res.status(400).json({ greska: `Potrebno je ili dati cjenovnu kontraponudu ili odbiti ponudu ili oboje.` });
+    }
+
     try {
         const user = await User.findByUsername(req.session.username);
         if (!user) {

@@ -130,6 +130,11 @@ document.querySelector('#offers-container .next').addEventListener('click', () =
 });
 
 interestsSelectionElement.addEventListener('change', () => {
+    const feedbackElement = document.querySelector('#interests-container .feedback');
+    if (feedbackElement) {
+        feedbackElement.style.display = 'none';
+    }
+
     requestDateInput.style.display = 'none';
     relatedRequestsSelect.style.display = 'none';
     requestApprovalLabel.style.display = 'none';
@@ -153,6 +158,9 @@ interestsSelectionElement.addEventListener('change', () => {
 
 sendButton.addEventListener('click', () => {
     const feedbackElement = document.querySelector('#interests-container .feedback');
+    if (feedbackElement) {
+        feedbackElement.style.display = 'none';
+    }
 
     const feedbackHandler = (error, status) => {
         if (error) {
@@ -169,38 +177,58 @@ sendButton.addEventListener('click', () => {
     };
 
     if (interestsSelectionElement.value === 'query') {
-        PoziviAjax.postUpit(
-            propertyId,
-            interestTextInput.value,
-            feedbackHandler
-        );
+        if (interestTextInput.value) {
+            PoziviAjax.postUpit(
+                propertyId,
+                interestTextInput.value,
+                feedbackHandler
+            );
+
+            interestTextInput.value = '';
+        }
     } else if (interestsSelectionElement.value === 'request') {
         if (!isAdmin) {
-            PoziviAjax.postZahtjev(
-                propertyId,
-                interestTextInput.value,
-                requestDateInput.value,
-                feedbackHandler
-            );
+            if (requestDateInput.value) {
+                PoziviAjax.postZahtjev(
+                    propertyId,
+                    interestTextInput.value,
+                    requestDateInput.value,
+                    feedbackHandler
+                );
+
+                interestTextInput.value = '';
+                requestDateInput.value = '';
+            }
         } else {
-            PoziviAjax.putZahtjev(
-                propertyId,
-                relatedRequestsSelect.value,
-                requestApprovalCheckbox.checked,
-                interestTextInput.value,
-                feedbackHandler
-            );
+            if (relatedRequestsSelect.value && (requestApprovalCheckbox.checked || interestTextInput.value)) {
+                PoziviAjax.putZahtjev(
+                    propertyId,
+                    relatedRequestsSelect.value,
+                    requestApprovalCheckbox.checked,
+                    interestTextInput.value,
+                    feedbackHandler
+                );
+    
+                requestApprovalCheckbox.checked = false;
+                interestTextInput.value = "";
+            }
         }
     } else if (interestsSelectionElement.value === 'offer') {
-        PoziviAjax.postPonuda(
-            propertyId,
-            interestTextInput.value,
-            offerPriceInput.value,
-            new Date(),
-            relatedOffersSelect.value === 'initial' ? null : relatedOffersSelect.value,
-            offerRejectionCheckbox.checked,
-            feedbackHandler
-        );
+        if (offerPriceInput.value || offerRejectionCheckbox.checked) {
+            PoziviAjax.postPonuda(
+                propertyId,
+                interestTextInput.value,
+                offerPriceInput.value,
+                new Date(),
+                relatedOffersSelect.value === 'initial' ? null : relatedOffersSelect.value,
+                offerRejectionCheckbox.checked,
+                feedbackHandler
+            );
+
+            interestTextInput.value = '';
+            offerPriceInput.value = '';
+            offerRejectionCheckbox.checked = false;
+        }
     }
 });
 
