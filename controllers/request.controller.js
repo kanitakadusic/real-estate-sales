@@ -11,7 +11,7 @@ exports.createPropertyRequest = async (req, res) => {
     const requestViewingDate = req.body.trazeniDatum;
 
     try {
-        const user = await User.findOne({ where: { username: req.session.username } });
+        const user = await User.findByUsername(req.session.username);
         if (!user) {
             return res.status(401).json({ greska: 'Neautorizovan pristup' });
         }
@@ -20,7 +20,7 @@ exports.createPropertyRequest = async (req, res) => {
             return res.status(404).json({ greska: 'Traženi datum ne može biti raniji od trenutnog datuma' });
         }
 
-        const property = await Property.findOne({ where: { id: propertyId } });
+        const property = await Property.findByPk(propertyId);
         if (!property) {
             return res.status(404).json({ greska: `Nekretnina sa id-em ${propertyId} ne postoji` });
         }
@@ -51,7 +51,7 @@ exports.updateRequestStatusByAdmin = async (req, res) => {
     const requestText = req.body.addToTekst;
 
     try {
-        const user = await User.findOne({ where: { username: req.session.username } });
+        const user = await User.findByUsername(req.session.username);
         if (!user) {
             return res.status(401).json({ greska: 'Neautorizovan pristup' });
         }
@@ -59,7 +59,7 @@ exports.updateRequestStatusByAdmin = async (req, res) => {
             return res.status(403).json({ greska: 'Zabranjen pristup' });
         }
 
-        const property = await Property.findOne({ where: { id: propertyId } });
+        const property = await Property.findByPk(propertyId);
         if (!property) {
             return res.status(404).json({ greska: `Nekretnina sa id-em ${propertyId} ne postoji` });
         }
@@ -70,7 +70,7 @@ exports.updateRequestStatusByAdmin = async (req, res) => {
         }
 
         if (isRequestApproved === false && !requestText) {
-            return res.status(400).json({ greska: 'Mora postojati objašnjenje na neodobren zahtjev' });
+            return res.status(400).json({ greska: 'Mora postojati objašnjenje za neodobren zahtjev' });
         }
 
         if (requestText) {

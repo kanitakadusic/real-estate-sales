@@ -10,13 +10,12 @@ exports.getPropertyQueriesPaged = async (req, res) => {
             return res.status(404).json([]);
         }
 
-        const property = await Property.findOne({ where: { id: propertyId } });
+        const property = await Property.findByPk(propertyId);
         if (!property) {
             return res.status(400).json({ greska: `Nekretnina sa id-em ${propertyId} ne postoji` });
         }
 
-        const queries = await Query.findAll({
-            where: { nekretnina_id: propertyId },
+        const queries = await property.getQueries({
             limit: 3,
             offset: page * 3,
             order: [['createdAt', 'DESC']],
@@ -41,13 +40,12 @@ exports.getUserQueries = async (req, res) => {
     }
 
     try {
-        const user = await User.findOne({ where: { username: req.session.username } });
+        const user = await User.findByUsername(req.session.username);
         if (!user) {
             return res.status(401).json({ greska: 'Neautorizovan pristup' });
         }
 
-        const queries = await Query.findAll({
-            where: { korisnik_id: user.id },
+        const queries = await user.getQueries({
             attributes: ['nekretnina_id', 'tekst'],
             raw: true
         });
@@ -72,12 +70,12 @@ exports.createUserQuery = async (req, res) => {
     const queryText = req.body.tekst_upita;
 
     try {
-        const property = await Property.findOne({ where: { id: propertyId } });
+        const property = await Property.findByPk(propertyId);
         if (!property) {
             return res.status(400).json({ greska: `Nekretnina sa id-em ${propertyId} ne postoji` });
         }
 
-        const user = await User.findOne({ where: { username: req.session.username } });
+        const user = await User.findByUsername(req.session.username);
         if (!user) {
             return res.status(401).json({ greska: 'Neautorizovan pristup' });
         }

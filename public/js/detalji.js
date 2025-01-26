@@ -51,7 +51,7 @@ if (!propertyId) {
             offerPriceInput.disabled = true;
             offerRejectionCheckbox.disabled = true;
             interestTextInput.disabled = true;
-            sendButton.disabled = true;
+            sendButton.style.display = 'none';
         } else {
             isAdmin = user.admin;
         }
@@ -63,7 +63,7 @@ if (!propertyId) {
         } else {
             if (isAdmin) {
                 interests.requests.forEach((request) => {
-                    const option = document.createElement("option");
+                    const option = document.createElement('option');
                     option.value = request.id;
                     option.textContent = request.id;
                     relatedRequestsSelect.appendChild(option);
@@ -74,14 +74,14 @@ if (!propertyId) {
                 }
             }
 
-            const option = document.createElement("option");
+            const option = document.createElement('option');
             option.value = 'initial';
             option.textContent = 'Initial offer';
             relatedOffersSelect.appendChild(option);
 
             interests.offers.forEach((offer) => {
                 if (offer.cijenaPonude) {
-                    const option = document.createElement("option");
+                    const option = document.createElement('option');
                     option.value = offer.id;
                     option.textContent = offer.id;
                     relatedOffersSelect.appendChild(option);
@@ -232,12 +232,6 @@ function createInterestElement(interest, interestType) {
     interestElement.appendChild(element);
 
     if (interestType === 'request') {
-        if (interest.korisnik_id) {
-            element = document.createElement('p');
-            element.innerHTML = `<strong>User ID:</strong> ${interest.korisnik_id}`;
-            interestElement.appendChild(element);
-        }
-
         element = document.createElement('p');
         const date = new Date(interest.trazeniDatum);
         element.innerHTML = `<strong>Date:</strong> ${date.toLocaleString()}`;
@@ -248,6 +242,12 @@ function createInterestElement(interest, interestType) {
         element.innerHTML = `<strong>Status:</strong> ${status}`;
         interestElement.appendChild(element);
     } else if (interestType === 'offer') {
+        if (interest.cijenaPonude) {
+            element = document.createElement('p');
+            element.innerHTML = `<strong>Price:</strong> ${interest.cijenaPonude}`;
+            interestElement.appendChild(element);
+        }
+
         element = document.createElement('p');
         const status = interest.odbijenaPonuda ? 'rejected' : 'approved';
         element.innerHTML = `<strong>Status:</strong> ${status}`;

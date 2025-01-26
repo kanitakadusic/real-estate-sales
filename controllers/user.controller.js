@@ -6,7 +6,7 @@ exports.userLogin = async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        const user = await User.findOne({ where: { username: username } });
+        const user = await User.findByUsername(username);
 
         if (user) {
             if (!req.session.loginAttempts) req.session.loginAttempts = 0;
@@ -65,7 +65,7 @@ exports.getLoggedInUser = async (req, res) => {
     }
 
     try {
-        const user = await User.findOne({ where: { username: req.session.username } });
+        const user = await User.findByUsername(req.session.username);
         if (!user) {
             return res.status(401).json({ greska: 'Neautorizovan pristup' });
         }

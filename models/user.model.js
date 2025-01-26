@@ -33,5 +33,9 @@ module.exports = function(sequelize, DataTypes) {
         }
     );
 
+    User.findByUsername = async function(username) {
+        return await this.findOne({ where: { username: username } });
+    };    
+
     return User;
 };

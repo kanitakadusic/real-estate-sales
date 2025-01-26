@@ -41,7 +41,7 @@ exports.getPropertyById = async (req, res) => {
     const propertyId = req.params.id;
 
     try {
-        const property = await Property.findOne({ where: { id: propertyId }, raw: true });
+        const property = await Property.findByPk(propertyId, { raw: true });
         if (!property) {
             return res.status(400).json({ greska: `Nekretnina sa id-em ${propertyId} ne postoji` });
         }
@@ -67,34 +67,35 @@ exports.getPropertyInterestsAsArray = async (req, res) => {
     const propertyId = req.params.id;
 
     try {
-        const property = await Property.findOne({ where: { id: propertyId } });
+        const property = await Property.findByPk(propertyId);
         if (!property) {
             return res.status(404).json({ greska: `Nekretnina sa id-em ${propertyId} ne postoji` });
         }
 
-        const queries = await Query.findAll({ where: { nekretnina_id: propertyId }, raw: true });
-        const requests = await Request.findAll({ where: { nekretnina_id: propertyId }, raw: true });
-        const offers = await Offer.findAll({ where: { nekretnina_id: propertyId }, raw: true });
+        const queries = await property.getQueries();
+        const requests = await property.getRequests();
+        const offers = await property.getOffers();
 
         if (req.session.username) {
-            const user = await User.findOne({ where: { username: req.session.username } });
+            const user = await User.findByUsername(req.session.username);
             if (user) {
                 if (!user.admin) {
-                    offers.forEach((o) => {
-                        if (
-                            o.korisnik_id != user.id &&
-                            Offer.rootOffer(offers, o.id).korisnik_id != user.id
-                        ) {
-                            delete o.cijenaPonude;
+                    for (const offer of offers) {
+                        const rootOffer = await offer.getRootOffer();
+
+                        if (rootOffer.korisnik_id != user.id) {
+                            offer.cijenaPonude = undefined;
                         }
-                    });
+                    }
                 }
 
                 return res.status(200).json([...queries, ...requests, ...offers]);
             }
         }
 
-        offers.forEach((o) => delete o.cijenaPonude);
+        for (const offer of offers) {
+            offer.cijenaPonude = undefined;
+        }
 
         res.status(200).json([...queries, ...requests, ...offers]);
     } catch (error) {
@@ -107,32 +108,46 @@ exports.getPropertyInterestsAsObject = async (req, res) => {
     const propertyId = req.params.id;
 
     try {
-        const property = await Property.findOne({ where: { id: propertyId } });
+        const property = await Property.findByPk(propertyId);
         if (!property) {
             return res.status(404).json({ greska: `Nekretnina sa id-em ${propertyId} ne postoji` });
         }
 
-        const queries = await Query.findAll({ where: { nekretnina_id: propertyId }, raw: true });
-        const requests = await Request.findAll({ where: { nekretnina_id: propertyId }, raw: true });
-        const offers = await Offer.findAll({ where: { nekretnina_id: propertyId }, raw: true });
+        const queries = await property.getQueries({ attributes: ['id', 'tekst'] });
 
         if (req.session.username) {
-            const user = await User.findOne({ where: { username: req.session.username } });
+            const user = await User.findByUsername(req.session.username);
             if (user) {
+                let requests = [];
+                let offers = [];
+
                 if (!user.admin) {
-                    requests.forEach((r) => {
-                        if (r.korisnik_id != user.id) {
-                            delete r.korisnik_id;
+                    requests = await property.getRequests({
+                        where: { korisnik_id: user.id },
+                        attributes: ['id', 'tekst', 'trazeniDatum', 'odobren']
+                    });
+                    offers = await property.getOffers({
+                        attributes: {
+                            exclude: ['nekretnina_id', 'datumPonude', 'createdAt', 'updatedAt']
                         }
                     });
 
-                    offers.forEach((o) => {
-                        if (
-                            o.korisnik_id != user.id &&
-                            Offer.rootOffer(offers, o.id).korisnik_id != user.id
-                        ) {
-                            delete o.cijenaPonude;
+                    for (const offer of offers) {
+                        const rootOffer = await offer.getRootOffer();
+
+                        if (rootOffer.korisnik_id != user.id) {
+                            offer.cijenaPonude = undefined;
                         }
+
+                        offer.korisnik_id = undefined;
+                        offer.parentOfferId = undefined;
+                    }
+                } else {
+                    requests = await property.getRequests({
+                        attributes: ['id', 'tekst', 'trazeniDatum', 'odobren']
+                    });
+                    offers = await property.getOffers({
+                        attributes: ['id', 'tekst', 'cijenaPonude', 'odbijenaPonuda']
                     });
                 }
 
@@ -140,10 +155,9 @@ exports.getPropertyInterestsAsObject = async (req, res) => {
             }
         }
 
-        requests.forEach((r) => delete r.korisnik_id);
-        offers.forEach((o) => delete o.cijenaPonude);
+        const offers = await property.getOffers({ attributes: ['id', 'tekst', 'odbijenaPonuda'] });
 
-        res.status(200).json({ queries, requests, offers });
+        res.status(200).json({ queries, requests: [], offers });
     } catch (error) {
         console.error('Error fetching property details:', error);
         res.status(500).json({ greska: 'Internal Server Error' });

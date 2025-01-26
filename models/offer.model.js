@@ -48,46 +48,41 @@ module.exports = function(sequelize, DataTypes) {
         }
     );
 
-    Offer.rootOffer = function(offers, offerId) {
-        let offer = offers.find((o) => o.id == offerId);
-    
-        while (offer && offer.parentOfferId !== null) {
-            offer = offers.find((o) => o.id == offer.parentOfferId);
+    Offer.prototype.getRootOffer = async function () {
+        let offer = this;
+
+        while (true) {
+            let parentOffer = await offer.getParentOffer();
+            if (parentOffer === null) break;
+            offer = parentOffer;
         }
-    
-        return offer || null;
-    }
-    
-    Offer.childOffers = function(offers, offerId) {
-        const children = [];
-        const stack = [offerId];
-    
+
+        return offer;
+    };
+
+    Offer.prototype.getAllChildOffers = async function () {
+        const allChildOffers = [];
+        const stack = [];
+
+        const directChildren = await this.getChildOffers();
+        stack.push(...directChildren);
+
         while (stack.length > 0) {
-            const currentParentId = stack.pop();
-    
-            for (const offer of offers) {
-                if (offer.parentOfferId == currentParentId) {
-                    children.push(offer);
-                    stack.push(offer.id);
-                }
-            }
+            let currentOffer = stack.pop();
+            allChildOffers.push(currentOffer);
+
+            let childOffers = await currentOffer.getChildOffers();
+            stack.push(...childOffers);
         }
-    
-        return children;
-    }
+
+        return allChildOffers;
+    };
     
     Object.defineProperty(Offer.prototype, 'vezanePonude', {
-        get: async function () {
-            const offers = await Offer.findAll();
-            
-            const rootOffer = Offer.rootOffer(offers, this.id);
-
-            if (rootOffer) {
-                const childOffers = Offer.childOffers(offers, rootOffer.id);
-                return [rootOffer, ...childOffers];
-            }
-    
-            return [];
+        get: async function () {            
+            const rootOffer = await this.getRootOffer();
+            const allChildOffers = await rootOffer.getAllChildOffers();
+            return [rootOffer, ...allChildOffers];
         }
     });
 

@@ -39,5 +39,13 @@ module.exports = function(sequelize, DataTypes) {
         }
     );
 
+    Property.prototype.getInteresovanja = async function () {
+        const queries = await this.getQueries();
+        const requests = await this.getRequests();
+        const offers = await this.getOffers();
+
+        return [...queries, ...requests, ...offers];
+    };
+
     return Property;
 };

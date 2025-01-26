@@ -14,23 +14,23 @@ exports.createPropertyOffer = async (req, res) => {
     const parentOfferId = req.body.idVezanePonude;
 
     try {
-        const user = await User.findOne({ where: { username: req.session.username } });
+        const user = await User.findByUsername(req.session.username);
         if (!user) {
             return res.status(401).json({ greska: 'Neautorizovan pristup' });
         }
 
-        const property = await Property.findOne({ where: { id: propertyId } });
+        const property = await Property.findByPk(propertyId);
         if (!property) {
             return res.status(404).json({ greska: `Nekretnina sa id-em ${propertyId} ne postoji` });
         }
 
         if (parentOfferId !== null) {
-            const offers = await Offer.findAll();
-
-            const rootOffer = Offer.rootOffer(offers, parentOfferId);
-            if (!rootOffer) {
+            const parentOffer = await Offer.findByPk(parentOfferId);
+            if (!parentOffer) {
                 return res.status(404).json({ greska: `Ponuda sa id-em ${parentOfferId} ne postoji` });
             }
+
+            const rootOffer = await parentOffer.getRootOffer();
 
             if (!user.admin && user.id != rootOffer.korisnik_id) {
                 return res.status(403).json({ greska: 'Zabranjen pristup' });
@@ -45,8 +45,7 @@ exports.createPropertyOffer = async (req, res) => {
             }
 
             if (isOfferRejected) {
-                const relatedOffers = Offer.childOffers(offers, rootOffer.id);
-                relatedOffers.push(rootOffer);
+                const relatedOffers = await rootOffer.vezanePonude;
 
                 await Promise.all(
                     relatedOffers.map(async (offer) => {
