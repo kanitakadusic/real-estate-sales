@@ -1,9 +1,9 @@
 const { Sequelize } = require('sequelize');
 
-const sequelize = new Sequelize('wt24', 'root', 'password', {
+const sequelize = new Sequelize('real_estate', 'root', 'password', {
     host: 'localhost',
     dialect: 'mysql',
-    logging: false,
+    logging: false
 });
 
 const database = {};
@@ -28,6 +28,7 @@ require('../models/associations')(database);
         console.log('Tables successfully synchronized');
 
         //await insertTestData();
+        console.log('Test data successfully inserted');
     } catch (error) {
         console.error('Error during database setup:', error);
     }
@@ -36,7 +37,7 @@ require('../models/associations')(database);
 module.exports = database;
 
 async function insertTestData() {
-    const { readJsonFile } = require('../utils/file.utils');
+    const { readJsonFile } = require('../utils/file.util');
 
     const insertWithDelay = async (model, data) => {
         for (const item of data) {
@@ -60,8 +61,6 @@ async function insertTestData() {
 
         const offers = await readJsonFile('offers.data');
         await insertWithDelay(database.Offer, offers);
-
-        console.log("Test data successfully inserted");
     } catch (error) {
         console.error('Error inserting test data:', error);
     }

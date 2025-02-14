@@ -12,13 +12,13 @@ const queryController = require('./controllers/query.controller');
 const requestController = require('./controllers/request.controller');
 const offerController = require('./controllers/offer.controller');
 
-const { readJsonFile, saveJsonFile } = require('./utils/file.utils');
+const { readJsonFile, saveJsonFile } = require('./utils/file.util');
 
-const PORT = 3000;
+const PORT = 3001;
 const app = express();
 
 app.use(session({
-    secret: 'tajna sifra',
+    secret: 'l*3g29f!ek4$0=)2:Fd',
     resave: true,
     saveUninitialized: true
 }));
@@ -48,13 +48,13 @@ async function serveHTMLFile(req, res, fileName) {
 }
 
 const routes = [
-    { route: '/detalji.html', file: 'detalji.html', authRequired: false },
-    { route: '/mojiUpiti.html', file: 'mojiUpiti.html', authRequired: true },
-    { route: '/nekretnine.html', file: 'nekretnine.html', authRequired: false },
-    { route: '/prijava.html', file: 'prijava.html', authRequired: false },
-    { route: '/profil.html', file: 'profil.html', authRequired: true },
-    { route: '/statistika.html', file: 'statistika.html', authRequired: false },
-    { route: '/vijesti.html', file: 'vijesti.html', authRequired: false }
+    { route: '/details.html', file: 'detalji.html', authRequired: false },
+    { route: '/myQueries.html', file: 'mojiUpiti.html', authRequired: true },
+    { route: '/properties.html', file: 'nekretnine.html', authRequired: false },
+    { route: '/login.html', file: 'prijava.html', authRequired: false },
+    { route: '/profile.html', file: 'profil.html', authRequired: true },
+    { route: '/statistics.html', file: 'statistika.html', authRequired: false },
+    { route: '/news.html', file: 'vijesti.html', authRequired: false }
 ];
 
 routes.forEach(({ route, file, authRequired }) => {
@@ -73,7 +73,7 @@ function isAuthenticated(req, res, next) {
     if (req.session.username) {
         return next();
     } else {
-        res.redirect('/prijava.html');
+        res.redirect('/login.html');
     }
 }
 
@@ -88,45 +88,41 @@ app.post('/login', userController.userLogin);
 app.post('/logout', userController.userLogout);
 
 // Fetch details of the currently logged-in user.
-app.get('/korisnik', userController.getLoggedInUser);
+app.get('/user', userController.getLoggedInUser);
 
 // Update any field of the logged-in user's profile.
-app.put('/korisnik', userController.updateLoggedInUser);
+app.put('/user', userController.updateLoggedInUser);
 
 // Fetch all properties in the system.
-app.get('/nekretnine', propertyController.getAllProperties);
+app.get('/properties', propertyController.getAllProperties);
 
-// Fetch the 5 most recently listed properties in the specified location.
-app.get('/nekretnine/top5', propertyController.getTopPropertiesByLocation);
+// Fetch n most recently listed properties in the specified location.
+app.get('/properties/top', propertyController.getTopPropertiesByLocation);
 
 // Fetch details of the property with the given ID.
-// The list of queries for the property is limited to the last 3 queries.
-app.get('/nekretnina/:id', propertyController.getPropertyById);
-
-// Fetch interests [...queries, ...requests, ...offers] for a given property.
-app.get('/nekretnina/:id/interesovanja', propertyController.getPropertyInterestsAsArray);
+app.get('/properties/:id', propertyController.getPropertyById);
 
 // Fetch interests { queries, requests, offers } for a given property.
-app.get('/property/:id/interests', propertyController.getPropertyInterestsAsObject);
+app.get('/properties/:id/interests', propertyController.getPropertyInterests);
 
 // Fetch all queries made by the logged-in user for properties.
-app.get('/upiti/moji', queryController.getUserQueries);
+app.get('/user/queries', queryController.getUserQueries);
 
 // Create a new query for a property by a logged-in user.
 // A user can make a maximum of 3 queries for each property.
-app.post('/upit', queryController.createUserQuery);
+app.post('/properties/:propertyId/query', queryController.createPropertyQuery);
 
 // Fetch queries with pagination for the given property.
-app.get('/next/upiti/nekretnina/:id', queryController.getPropertyQueriesPaged);
+app.get('/properties/:propertyId/queries', queryController.getPropertyQueriesPaged);
 
 // Create a new request for viewing a property by a logged-in user.
-app.post('/nekretnina/:id/zahtjev', requestController.createPropertyRequest);
+app.post('/properties/:propertyId/request', requestController.createPropertyRequest);
 
 // Update the status of a request for property viewing by an admin.
-app.put('/nekretnina/:id/zahtjev/:zid', requestController.updateRequestStatusByAdmin);
+app.put('/properties/:propertyId/requests/:requestId', requestController.updateRequestStatusByAdmin);
 
 // Create a new price offer for a property by a logged-in user.
-app.post('/nekretnina/:id/ponuda', offerController.createPropertyOffer);
+app.post('/properties/:propertyId/offer', offerController.createPropertyOffer);
 
 /* ----------------- SERVING MARKETING ROUTES ----------------- */
 

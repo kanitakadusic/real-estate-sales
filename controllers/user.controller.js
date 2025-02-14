@@ -1,6 +1,6 @@
 const { User } = require('../config/database');
 const bcrypt = require('bcrypt');
-const { addInTxtFile } = require('../utils/file.utils');
+const { addInTxtFile } = require('../utils/file.util');
 
 exports.userLogin = async (req, res) => {
     const { username, password } = req.body;
@@ -72,10 +72,10 @@ exports.getLoggedInUser = async (req, res) => {
 
         const userPublicData = {
             id: user.id,
-            ime: user.ime,
-            prezime: user.prezime,
+            firstname: user.firstname,
+            lastname: user.lastname,
             username: user.username,
-            admin: user.admin
+            isAdmin: user.isAdmin
         };
 
         res.status(200).json(userPublicData);
@@ -90,16 +90,13 @@ exports.updateLoggedInUser = async (req, res) => {
         return res.status(401).json({ greska: 'Neautorizovan pristup' });
     }
 
-    const firstname = req.body.ime;
-    const lastname = req.body.prezime;
-    const username = req.body.username;
-    const password = req.body.password;
+    const { firstname, lastname, username, password } = req.body;
 
     try {
         const user = {};
 
-        if (firstname) user.ime = firstname;
-        if (lastname) user.prezime = lastname;
+        if (firstname) user.firstname = firstname;
+        if (lastname) user.lastname = lastname;
         if (username) user.username = username;
         if (password) {
             const hashedPassword = await bcrypt.hash(password, 10);
@@ -122,10 +119,9 @@ exports.updateLoggedInUser = async (req, res) => {
 
 async function logLoginAttempt(username, success) {
     const currently = new Date().toISOString();
-    const status = success ? 'uspješno' : 'neuspješno';
-    const log = `[${currently}]-username:\"${username}\"-status:\"${status}\"\n`;
+    const log = `[${currently}]-username:\"${username}\"-success:\"${success}\"\n`;
     try {
-        await addInTxtFile('prijave', log);
+        await addInTxtFile('login.log', log);
     } catch (error) {
         console.error(`Error logging login attempt for ${username}:`, error);
         throw error;

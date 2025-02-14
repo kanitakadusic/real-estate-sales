@@ -18,11 +18,11 @@ const PoziviAjax = (() => {
         ajax.send(data ? JSON.stringify(data) : null);
     }
 
-    function impl_postLogin(username, password, fnCallback) {
-        const url = 'http://localhost:3000/login';
+    function userLogin(username, password, fnCallback) {
+        const url = '/login';
         const data = {
-            username: username,
-            password: password
+            username,
+            password
         };
     
         ajaxRequest('POST', url, data, (error, response) => {
@@ -38,8 +38,8 @@ const PoziviAjax = (() => {
         });
     }
     
-    function impl_postLogout(fnCallback) {
-        const url = 'http://localhost:3000/logout';
+    function userLogout(fnCallback) {
+        const url = '/logout';
 
         ajaxRequest('POST', url, null, (error, response) => {
             if (error) {
@@ -54,8 +54,8 @@ const PoziviAjax = (() => {
         });
     }
 
-    function impl_getKorisnik(fnCallback) {
-        const url = 'http://localhost:3000/korisnik';
+    function getLoggedInUser(fnCallback) {
+        const url = '/user';
     
         ajaxRequest('GET', url, null, (error, response) => {
             if (error) {
@@ -70,10 +70,10 @@ const PoziviAjax = (() => {
         });
     }
 
-    function impl_putKorisnik(noviPodaci, fnCallback) {
-        const url = 'http://localhost:3000/korisnik';
+    function updateLoggedInUser(updatedUser, fnCallback) {
+        const url = '/user';
     
-        ajaxRequest('PUT', url, noviPodaci, (error, response) => {
+        ajaxRequest('PUT', url, updatedUser, (error, response) => {
             if (error) {
                 fnCallback(error.statusText, null);
             } else {
@@ -86,8 +86,8 @@ const PoziviAjax = (() => {
         });
     }
 
-    function impl_getNekretnine(fnCallback) {
-        const url = `http://localhost:3000/nekretnine`;
+    function getAllProperties(fnCallback) {
+        const url = `/properties`;
 
         ajaxRequest('GET', url, null, (error, response) => {
             if (error) {
@@ -102,8 +102,8 @@ const PoziviAjax = (() => {
         });
     }
 
-    function impl_getTop5Nekretnina(lokacija, fnCallback) {
-        const url = `http://localhost:3000/nekretnine/top5?lokacija=${encodeURIComponent(lokacija)}`;
+    function getTopPropertiesByLocation(location, fnCallback) {
+        const url = `/properties/top?location=${encodeURIComponent(location)}`;
 
         ajaxRequest('GET', url, null, (error, response) => {
             if (error) {
@@ -118,8 +118,8 @@ const PoziviAjax = (() => {
         });
     }
 
-    function impl_getNekretnina(nekretnina_id, fnCallback) {
-        const url = `http://localhost:3000/nekretnina/${encodeURIComponent(nekretnina_id)}`;
+    function getPropertyById(id, fnCallback) {
+        const url = `/properties/${encodeURIComponent(id)}`;
 
         ajaxRequest('GET', url, null, (error, response) => {
             if (error) {
@@ -134,8 +134,8 @@ const PoziviAjax = (() => {
         });
     }
 
-    function impl_getInteresovanja(nekretnina_id, fnCallback) {
-        const url = `http://localhost:3000/nekretnina/${encodeURIComponent(nekretnina_id)}/interesovanja`;
+    function getPropertyInterests(id, fnCallback) {
+        const url = `/properties/${encodeURIComponent(id)}/interests`;
         
         ajaxRequest('GET', url, null, (error, response) => {
             if (error) {
@@ -150,24 +150,8 @@ const PoziviAjax = (() => {
         });
     }
 
-    function impl_getInterests(propertyId, fnCallback) {
-        const url = `http://localhost:3000/property/${encodeURIComponent(propertyId)}/interests`;
-        
-        ajaxRequest('GET', url, null, (error, response) => {
-            if (error) {
-                fnCallback(error.statusText, null);
-            } else {
-                try {
-                    fnCallback(null, JSON.parse(response));
-                } catch (parseError) {
-                    fnCallback(parseError.message, null);
-                }
-            }
-        });
-    }
-
-    function impl_getMojiUpiti(fnCallback) {
-        const url = 'http://localhost:3000/upiti/moji';
+    function getUserQueries(fnCallback) {
+        const url = '/user/queries';
 
         ajaxRequest('GET', url, null, (error, response) => {
             if (error) {
@@ -182,11 +166,10 @@ const PoziviAjax = (() => {
         });
     }
 
-    function impl_postUpit(nekretnina_id, tekst_upita, fnCallback) {
-        const url = 'http://localhost:3000/upit';
+    function createPropertyQuery(propertyId, text, fnCallback) {
+        const url = `/properties/${encodeURIComponent(propertyId)}/query`;
         const data = {
-            nekretnina_id: nekretnina_id,
-            tekst_upita: tekst_upita
+            text
         };
     
         ajaxRequest('POST', url, data, (error, response) => {
@@ -202,8 +185,8 @@ const PoziviAjax = (() => {
         });
     }
 
-    function impl_getNextUpiti(nekretnina_id, page, fnCallback) {
-        const url = `http://localhost:3000/next/upiti/nekretnina/${encodeURIComponent(nekretnina_id)}?page=${encodeURIComponent(page)}`;
+    function getPropertyQueriesPaged(propertyId, page, fnCallback) {
+        const url = `/properties/${encodeURIComponent(propertyId)}/queries?page=${encodeURIComponent(page)}`;
 
         ajaxRequest('GET', url, null, (error, response) => {
             if (error) {
@@ -218,11 +201,11 @@ const PoziviAjax = (() => {
         });
     } 
 
-    function impl_postZahtjev(nekretnina_id, tekst, trazeniDatum, fnCallback) {
-        const url = `http://localhost:3000/nekretnina/${encodeURIComponent(nekretnina_id)}/zahtjev`;
+    function createPropertyRequest(propertyId, text, requestedDate, fnCallback) {
+        const url = `/properties/${encodeURIComponent(propertyId)}/request`;
         const data = {
-            tekst: tekst,
-            trazeniDatum: trazeniDatum
+            text,
+            requestedDate
         };
     
         ajaxRequest('POST', url, data, (error, response) => {
@@ -238,11 +221,11 @@ const PoziviAjax = (() => {
         });
     }
 
-    function impl_putZahtjev(nekretnina_id, zid, odobren, addToTekst, fnCallback) {
-        const url = `http://localhost:3000/nekretnina/${encodeURIComponent(nekretnina_id)}/zahtjev/${encodeURIComponent(zid)}`;
+    function updateRequestStatusByAdmin(propertyId, requestId, isApproved, textAddition, fnCallback) {
+        const url = `/properties/${encodeURIComponent(propertyId)}/requests/${encodeURIComponent(requestId)}`;
         const data = {
-            odobren: odobren,
-            addToTekst: addToTekst
+            isApproved,
+            textAddition
         };
         
         ajaxRequest('PUT', url, data, (error, response) => {
@@ -258,14 +241,13 @@ const PoziviAjax = (() => {
         });
     }
 
-    function impl_postPonuda(nekretnina_id, tekst, ponudaCijene, datumPonude, idVezanePonude, odbijenaPonuda, fnCallback) {
-        const url = `http://localhost:3000/nekretnina/${encodeURIComponent(nekretnina_id)}/ponuda`;
+    function createPropertyOffer(propertyId, text, price, isRejected, parentId, fnCallback) {
+        const url = `/properties/${encodeURIComponent(propertyId)}/offer`;
         const data = {
-            tekst: tekst,
-            ponudaCijene: ponudaCijene,
-            datumPonude: datumPonude,
-            idVezanePonude: idVezanePonude,
-            odbijenaPonuda: odbijenaPonuda
+            text,
+            price,
+            isRejected,
+            parentId
         };
     
         ajaxRequest('POST', url, data, (error, response) => {
@@ -282,20 +264,19 @@ const PoziviAjax = (() => {
     }
 
     return {
-        postLogin: impl_postLogin,
-        postLogout: impl_postLogout,
-        getKorisnik: impl_getKorisnik,
-        putKorisnik: impl_putKorisnik,
-        getNekretnine: impl_getNekretnine,
-        getTop5Nekretnina: impl_getTop5Nekretnina,
-        getNekretnina: impl_getNekretnina,
-        getInteresovanja: impl_getInteresovanja,
-        getInterests: impl_getInterests,
-        getMojiUpiti: impl_getMojiUpiti,
-        postUpit: impl_postUpit,
-        getNextUpiti: impl_getNextUpiti,
-        postZahtjev: impl_postZahtjev,
-        putZahtjev: impl_putZahtjev,
-        postPonuda: impl_postPonuda
+        userLogin,
+        userLogout,
+        getLoggedInUser,
+        updateLoggedInUser,
+        getAllProperties,
+        getTopPropertiesByLocation,
+        getPropertyById,
+        getPropertyInterests,
+        getUserQueries,
+        createPropertyQuery,
+        getPropertyQueriesPaged,
+        createPropertyRequest,
+        updateRequestStatusByAdmin,
+        createPropertyOffer
     };
 })();

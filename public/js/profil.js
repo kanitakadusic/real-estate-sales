@@ -3,7 +3,7 @@ const lastnameElement = document.getElementById('lastname');
 const usernameElement = document.getElementById('username');
 const passwordElement = document.getElementById('password');
 
-PoziviAjax.getKorisnik((error, user) => {
+PoziviAjax.getLoggedInUser((error, user) => {
     if (error) {
         console.error('Greška prilikom preuzimanja korisničkih podataka:', error);
 
@@ -11,23 +11,21 @@ PoziviAjax.getKorisnik((error, user) => {
         lastnameElement.placeholder = '?';
         usernameElement.placeholder = '?';
     } else {
-        firstnameElement.placeholder = user.ime;
-        lastnameElement.placeholder = user.prezime;
+        firstnameElement.placeholder = user.firstname;
+        lastnameElement.placeholder = user.lastname;
         usernameElement.placeholder = user.username;
     }
 });
 
-const confirmButton = document.getElementById('confirm-button');
-
-confirmButton.addEventListener('click', () => {
+document.getElementById('confirm-button').addEventListener('click', () => {
     const user = {};
 
-    if (firstnameElement.value) user.ime = firstnameElement.value;
-    if (lastnameElement.value) user.prezime = lastnameElement.value;
+    if (firstnameElement.value) user.firstname = firstnameElement.value;
+    if (lastnameElement.value) user.lastname = lastnameElement.value;
     if (usernameElement.value) user.username = usernameElement.value;
     if (passwordElement.value) user.password = passwordElement.value;
 
-    PoziviAjax.putKorisnik(user, (error, status) => {
+    PoziviAjax.updateLoggedInUser(user, (error, status) => {
         const feedbackElement = document.getElementById('feedback');
 
         if (error) {

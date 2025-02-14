@@ -1,18 +1,18 @@
 function mergeProperties(propertiesContainer, module, propertyType) {
-    const propertiesList = module.filtrirajNekretnine({ tip_nekretnine: propertyType });
+    const propertiesList = module.filterProperties({ type: propertyType });
     propertiesContainer.innerHTML = '';
 
-    if (propertiesList.length === 0) {
+    if (!propertiesList.length) {
         propertiesContainer.className = 'empty';
         propertiesContainer.innerHTML = 'There are currently no properties of this type available.';
     } else {
         propertiesContainer.className = 'properties-list';
 
-        propertiesList.forEach(property => {
+        propertiesList.forEach((property) => {
             const propertyClasses = {
-                'Stan': ['property', 'apartment'],
-                'Kuća': ['property', 'house'],
-                'Poslovni prostor': ['property', 'workspace'],
+                'apartment': ['property', 'apartment'],
+                'house': ['property', 'house'],
+                'workspace': ['property', 'workspace']
             };
             
             const propertyElement = document.createElement('div');
@@ -35,22 +35,22 @@ function mergeProperties(propertiesContainer, module, propertyType) {
             const pictureElement = document.createElement('img');
             pictureElement.classList.add('picture');
             pictureElement.src = `../resources/images/${property.id}.jpg`;
-            pictureElement.alt = property.naziv;
+            pictureElement.alt = property.name;
             propertyElement.appendChild(pictureElement);
 
             const titleElement = document.createElement('div');
             titleElement.classList.add('title');
-            titleElement.innerHTML = `${property.naziv}`;
+            titleElement.innerHTML = `${property.name}`;
             propertyElement.appendChild(titleElement);
 
             const detailsElement = document.createElement('div');
             detailsElement.classList.add('details');
-            detailsElement.innerHTML = `Square footage: ${property.kvadratura} m²`;
+            detailsElement.innerHTML = `Square footage: ${property.squareFootage}`;
             propertyElement.appendChild(detailsElement);
 
             const priceElement = document.createElement('div');
             priceElement.classList.add('price');
-            priceElement.innerHTML = `Price: ${property.cijena} €`;
+            priceElement.innerHTML = `Price: ${property.price}`;
             propertyElement.appendChild(priceElement);
 
             const detailsButton = document.createElement('button');
@@ -60,7 +60,7 @@ function mergeProperties(propertiesContainer, module, propertyType) {
                 MarketingAjax.klikNekretnina(property.id);
 
                 // Redirect to the details page with the property ID
-                window.location.href = `http://localhost:3000/detalji.html?id=${encodeURIComponent(property.id)}`;
+                window.location.href = `/details.html?id=${encodeURIComponent(property.id)}`;
             });
             propertyElement.appendChild(detailsButton);
 
@@ -76,9 +76,9 @@ const housesElement = document.getElementById('houses');
 const workspacesElement = document.getElementById('workspaces');
 
 function displayProperties(propertyListingInstance) {
-    mergeProperties(apartmentsElement, propertyListingInstance, 'Stan');
-    mergeProperties(housesElement, propertyListingInstance, 'Kuća');
-    mergeProperties(workspacesElement, propertyListingInstance, 'Poslovni prostor');
+    mergeProperties(apartmentsElement, propertyListingInstance, 'apartment');
+    mergeProperties(housesElement, propertyListingInstance, 'house');
+    mergeProperties(workspacesElement, propertyListingInstance, 'workspace');
 }
 
 const propertyListing = SpisakNekretnina();
@@ -102,20 +102,20 @@ function getPropertyLocationFromUrl() {
 const propertyLocation = getPropertyLocationFromUrl();
 
 if (!propertyLocation) {
-    PoziviAjax.getNekretnine(fnCallback);
+    PoziviAjax.getAllProperties(fnCallback);
 } else {
-    PoziviAjax.getTop5Nekretnina(propertyLocation, fnCallback);
+    PoziviAjax.getTopPropertiesByLocation(propertyLocation, fnCallback);
 }
 
 document.getElementById('filter-button').addEventListener('click', () => {
     const criteria = {
-        min_cijena: parseFloat(document.getElementById('min-price').value) || 0,
-        max_cijena: parseFloat(document.getElementById('max-price').value) || Infinity,
-        min_kvadratura: parseFloat(document.getElementById('min-square-footage').value) || 0,
-        max_kvadratura: parseFloat(document.getElementById('max-square-footage').value) || Infinity
+        minPrice: parseFloat(document.getElementById('min-price').value) || 0,
+        maxPrice: parseFloat(document.getElementById('max-price').value) || Infinity,
+        minSquareFootage: parseFloat(document.getElementById('min-square-footage').value) || 0,
+        maxSquareFootage: parseFloat(document.getElementById('max-square-footage').value) || Infinity
     };
 
-    const filteredPropertiesList = propertyListing.filtrirajNekretnine(criteria);
+    const filteredPropertiesList = propertyListing.filterProperties(criteria);
 
     // Increases the number of searches for each of the filtered properties by one
     MarketingAjax.novoFiltriranje(filteredPropertiesList.map(property => property.id));

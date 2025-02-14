@@ -5,15 +5,11 @@ exports.createPropertyOffer = async (req, res) => {
         return res.status(401).json({ greska: 'Neautorizovan pristup' });
     }
 
-    const propertyId = req.params.id;
+    const { propertyId } = req.params;
 
-    const offerText = req.body.tekst;
-    const offerPrice = req.body.ponudaCijene;
-    const offerDate = req.body.datumPonude;
-    const isOfferRejected = req.body.odbijenaPonuda;
-    const parentOfferId = req.body.idVezanePonude;
+    const { text, price, isRejected, parentId } = req.body;
 
-    if (!offerPrice && !isOfferRejected) {
+    if (!price && !isRejected) {
         return res.status(400).json({ greska: `Potrebno je ili dati cjenovnu kontraponudu ili odbiti ponudu ili oboje.` });
     }
 
@@ -28,32 +24,32 @@ exports.createPropertyOffer = async (req, res) => {
             return res.status(404).json({ greska: `Nekretnina sa id-em ${propertyId} ne postoji` });
         }
 
-        if (parentOfferId !== null) {
-            const parentOffer = await Offer.findByPk(parentOfferId);
+        if (parentId !== null) {
+            const parentOffer = await Offer.findByPk(parentId);
             if (!parentOffer) {
-                return res.status(404).json({ greska: `Ponuda sa id-em ${parentOfferId} ne postoji` });
+                return res.status(404).json({ greska: `Ponuda sa id-em ${parentId} ne postoji` });
             }
 
             const rootOffer = await parentOffer.getRootOffer();
 
-            if (!user.admin && user.id != rootOffer.korisnik_id) {
+            if (!user.isAdmin && user.id != rootOffer.userId) {
                 return res.status(403).json({ greska: 'Zabranjen pristup' });
             }
 
-            if (propertyId != rootOffer.nekretnina_id) {
-                return res.status(404).json({ greska: `Nekretnina sa id-em ${propertyId} nema ponudu sa id-em ${parentOfferId}` });
+            if (propertyId != rootOffer.propertyId) {
+                return res.status(404).json({ greska: `Nekretnina sa id-em ${propertyId} nema ponudu sa id-em ${parentId}` });
             }
 
-            if (rootOffer.odbijenaPonuda) {
-                return res.status(400).json({ greska: `Ponuda sa id-em ${parentOfferId} je odbijena` });
+            if (rootOffer.isRejected) {
+                return res.status(400).json({ greska: `Ponuda sa id-em ${parentId} je odbijena` });
             }
 
-            if (isOfferRejected) {
-                const relatedOffers = await rootOffer.vezanePonude;
+            if (isRejected) {
+                const relatedOffers = await rootOffer.getRelatedOffers();
 
                 await Promise.all(
                     relatedOffers.map(async (offer) => {
-                        offer.odbijenaPonuda = true;
+                        offer.isRejected = true;
                         await offer.save();
                     })
                 );
@@ -61,13 +57,12 @@ exports.createPropertyOffer = async (req, res) => {
         }
 
         await Offer.create({
-            nekretnina_id: propertyId,
-            korisnik_id: user.id,
-            tekst: offerText,
-            cijenaPonude: offerPrice,
-            datumPonude: offerDate,
-            odbijenaPonuda: parentOfferId !== null ? isOfferRejected : null,
-            parentOfferId: parentOfferId
+            propertyId,
+            userId: user.id,
+            text,
+            price,
+            isRejected: parentId !== null ? isRejected : null,
+            parentId
         });
 
         res.status(200).json({ poruka: 'Ponuda uspješno kreirana' });

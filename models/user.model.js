@@ -1,40 +1,37 @@
-module.exports = function(sequelize, DataTypes) {
-    const User = sequelize.define('Korisnik',
-        {
-            id: {
-                type: DataTypes.INTEGER,
-                primaryKey: true,
-                autoIncrement: true,
-            },
-            ime: {
-                type: DataTypes.STRING,
-                allowNull: false,
-            },
-            prezime: {
-                type: DataTypes.STRING,
-            },
-            username: {
-                type: DataTypes.STRING,
-                allowNull: false,
-                unique: true,
-            },
-            password: {
-                type: DataTypes.STRING,
-                allowNull: false,
-            },
-            admin: {
-                type: DataTypes.BOOLEAN,
-                defaultValue: false,
-                allowNull: false
-            },
+module.exports = function (sequelize, DataTypes) {
+    const User = sequelize.define('User', {
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
         },
-        {
-            tableName: 'Korisnik'
+        firstname: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        lastname: {
+            type: DataTypes.STRING
+        },
+        username: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true
+        },
+        password: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        isAdmin: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+            allowNull: false
         }
-    );
+    }, {
+        underscored: true
+    });
 
-    User.findByUsername = async function(username) {
-        return await this.findOne({ where: { username: username } });
+    User.findByUsername = async function (username) {
+        return await User.findOne({ where: { username } });
     };    
 
     return User;

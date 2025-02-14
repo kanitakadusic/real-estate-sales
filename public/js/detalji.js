@@ -21,28 +21,28 @@ const sendButton = document.getElementById('send');
 if (!propertyId) {
     showErrorImage(null, contentContainer);
 } else {
-    PoziviAjax.getNekretnina(propertyId, (error, property) => {
+    PoziviAjax.getPropertyById(propertyId, (error, property) => {
         if (error) {
             console.error('Greška prilikom dohvatanja detalja nekretnine sa servera:', error);
             showErrorImage(error, contentContainer);
         } else {
-            document.getElementById('property-title').textContent = property.naziv;
-            document.getElementById('property-square-footage').textContent = property.kvadratura;
-            document.getElementById('property-price').textContent = property.cijena;
-            document.getElementById('property-heating').textContent = property.tip_grijanja;
-            document.getElementById('property-construction-year').textContent = property.godina_izgradnje;
-            document.getElementById('property-description').textContent = property.opis;
+            document.getElementById('property-title').textContent = property.name;
+            document.getElementById('property-square-footage').textContent = property.squareFootage;
+            document.getElementById('property-price').textContent = property.price;
+            document.getElementById('property-heating').textContent = property.heating;
+            document.getElementById('property-construction-year').textContent = property.constructionYear;
+            document.getElementById('property-description').textContent = property.description;
 
-            const publicationDate = new Date(property.datum_objave);
+            const publicationDate = new Date(property.createdAt);
             document.getElementById('property-publication-date').textContent = publicationDate.toLocaleDateString();
     
             const locationElement = document.getElementById('property-location');
-            locationElement.textContent = property.lokacija;
-            locationElement.href = `http://localhost:3000/nekretnine.html?location=${encodeURIComponent(property.lokacija)}`;
+            locationElement.textContent = property.location;
+            locationElement.href = `/properties.html?location=${encodeURIComponent(property.location)}`;
         }
     });
 
-    PoziviAjax.getKorisnik((error, user) => {
+    PoziviAjax.getLoggedInUser((error, user) => {
         if (error) {
             console.error('Greška prilikom preuzimanja korisničkih podataka:', error);
 
@@ -53,11 +53,11 @@ if (!propertyId) {
             interestTextInput.disabled = true;
             sendButton.style.display = 'none';
         } else {
-            isAdmin = user.admin;
+            isAdmin = user.isAdmin;
         }
     });
 
-    PoziviAjax.getInterests(propertyId, (error, interests) => {
+    PoziviAjax.getPropertyInterests(propertyId, (error, interests) => {
         if (error) {
             console.error('Greška prilikom preuzimanja interesovanja za nekretninu:', error);
         } else {
@@ -69,7 +69,7 @@ if (!propertyId) {
                     relatedRequestsSelect.appendChild(option);
                 });
 
-                if (interests.requests.length === 0) {
+                if (!interests.requests.length) {
                     relatedRequestsSelect.disabled = true;
                 }
             }
@@ -80,7 +80,7 @@ if (!propertyId) {
             relatedOffersSelect.appendChild(option);
 
             interests.offers.forEach((offer) => {
-                if (offer.cijenaPonude) {
+                if (offer.price) {
                     const option = document.createElement('option');
                     option.value = offer.id;
                     option.textContent = offer.id;
@@ -88,21 +88,21 @@ if (!propertyId) {
                 }
             });
 
-            if (interests.offers.length === 0) {
+            if (!interests.offers.length) {
                 relatedOffersSelect.disabled = true;
             }
 
             queriesCarousel = initializeCarousel(
                 document.getElementById('queries-container'),
-                interests.queries.map((q) => createInterestElement(q, 'query'))
+                interests.queries.map((query) => createInterestElement(query, 'query'))
             );
             requestsCarousel = initializeCarousel(
                 document.getElementById('requests-container'),
-                interests.requests.map((r) => createInterestElement(r, 'request'))
+                interests.requests.map((request) => createInterestElement(request, 'request'))
             );
             offersCarousel = initializeCarousel(
                 document.getElementById('offers-container'),
-                interests.offers.map((o) => createInterestElement(o, 'offer'))
+                interests.offers.map((offer) => createInterestElement(offer, 'offer'))
             );
         }
     });
@@ -178,7 +178,7 @@ sendButton.addEventListener('click', () => {
 
     if (interestsSelectionElement.value === 'query') {
         if (interestTextInput.value) {
-            PoziviAjax.postUpit(
+            PoziviAjax.createPropertyQuery(
                 propertyId,
                 interestTextInput.value,
                 feedbackHandler
@@ -189,7 +189,7 @@ sendButton.addEventListener('click', () => {
     } else if (interestsSelectionElement.value === 'request') {
         if (!isAdmin) {
             if (requestDateInput.value) {
-                PoziviAjax.postZahtjev(
+                PoziviAjax.createPropertyRequest(
                     propertyId,
                     interestTextInput.value,
                     requestDateInput.value,
@@ -201,7 +201,7 @@ sendButton.addEventListener('click', () => {
             }
         } else {
             if (relatedRequestsSelect.value && (requestApprovalCheckbox.checked || interestTextInput.value)) {
-                PoziviAjax.putZahtjev(
+                PoziviAjax.updateRequestStatusByAdmin(
                     propertyId,
                     relatedRequestsSelect.value,
                     requestApprovalCheckbox.checked,
@@ -210,18 +210,17 @@ sendButton.addEventListener('click', () => {
                 );
     
                 requestApprovalCheckbox.checked = false;
-                interestTextInput.value = "";
+                interestTextInput.value = '';
             }
         }
     } else if (interestsSelectionElement.value === 'offer') {
         if (offerPriceInput.value || offerRejectionCheckbox.checked) {
-            PoziviAjax.postPonuda(
+            PoziviAjax.createPropertyOffer(
                 propertyId,
                 interestTextInput.value,
                 offerPriceInput.value,
-                new Date(),
-                relatedOffersSelect.value === 'initial' ? null : relatedOffersSelect.value,
                 offerRejectionCheckbox.checked,
+                relatedOffersSelect.value === 'initial' ? null : relatedOffersSelect.value,
                 feedbackHandler
             );
 
@@ -261,29 +260,29 @@ function createInterestElement(interest, interestType) {
 
     if (interestType === 'request') {
         element = document.createElement('p');
-        const date = new Date(interest.trazeniDatum);
+        const date = new Date(interest.requestedDate);
         element.innerHTML = `<strong>Date:</strong> ${date.toLocaleString()}`;
         interestElement.appendChild(element);
 
         element = document.createElement('p');
-        const status = interest.odobren ? 'approved' : 'rejected';
+        const status = interest.isApproved ? 'approved' : 'rejected';
         element.innerHTML = `<strong>Status:</strong> ${status}`;
         interestElement.appendChild(element);
     } else if (interestType === 'offer') {
-        if (interest.cijenaPonude) {
+        if (interest.price) {
             element = document.createElement('p');
-            element.innerHTML = `<strong>Price:</strong> ${interest.cijenaPonude}`;
+            element.innerHTML = `<strong>Price:</strong> ${interest.price}`;
             interestElement.appendChild(element);
         }
 
         element = document.createElement('p');
-        const status = interest.odbijenaPonuda ? 'rejected' : 'approved';
+        const status = interest.isRejected ? 'rejected' : 'approved';
         element.innerHTML = `<strong>Status:</strong> ${status}`;
         interestElement.appendChild(element);
     }
 
     element = document.createElement('p');
-    element.textContent = interest.tekst;
+    element.textContent = interest.text;
     element.innerHTML = element.textContent.replace(/\n/g, '<br>');
     interestElement.appendChild(element);
 

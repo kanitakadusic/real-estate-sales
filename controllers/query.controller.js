@@ -1,9 +1,9 @@
 const { User, Query, Property } = require('../config/database');
 
 exports.getPropertyQueriesPaged = async (req, res) => {
-    const propertyId = req.params.id;
+    const { propertyId } = req.params;
     
-    const page = req.query.page;
+    const { page } = req.query;
 
     try {
         if (page < 0) {
@@ -19,11 +19,11 @@ exports.getPropertyQueriesPaged = async (req, res) => {
             limit: 3,
             offset: page * 3,
             order: [['createdAt', 'DESC']],
-            attributes: ['korisnik_id', 'tekst'],
+            attributes: ['userId', 'text'],
             raw: true
         });
 
-        if (queries.length === 0) {
+        if (!queries.length) {
             return res.status(404).json([]);
         }
 
@@ -46,11 +46,11 @@ exports.getUserQueries = async (req, res) => {
         }
 
         const queries = await user.getQueries({
-            attributes: ['nekretnina_id', 'tekst'],
+            attributes: ['propertyId', 'text'],
             raw: true
         });
         
-        if (queries.length === 0) {
+        if (!queries.length) {
             return res.status(404).json([]);
         }
 
@@ -61,13 +61,14 @@ exports.getUserQueries = async (req, res) => {
     }
 };
 
-exports.createUserQuery = async (req, res) => {
+exports.createPropertyQuery = async (req, res) => {
     if (!req.session.username) {
         return res.status(401).json({ greska: 'Neautorizovan pristup' });
     }
 
-    const propertyId = req.body.nekretnina_id;
-    const queryText = req.body.tekst_upita;
+    const { propertyId } = req.params;
+
+    const { text } = req.body;
 
     try {
         const property = await Property.findByPk(propertyId);
@@ -80,15 +81,15 @@ exports.createUserQuery = async (req, res) => {
             return res.status(401).json({ greska: 'Neautorizovan pristup' });
         }
 
-        const queryCount = await Query.count({ where: { nekretnina_id: propertyId, korisnik_id: user.id } });
+        const queryCount = await Query.count({ where: { propertyId, userId: user.id } });
         if (queryCount >= 3) {
             return res.status(429).json({ greska: 'Previse upita za istu nekretninu.' });
         }
 
         await Query.create({
-            nekretnina_id: propertyId,
-            korisnik_id: user.id,
-            tekst: queryText
+            propertyId,
+            userId: user.id,
+            text
         });
 
         res.status(200).json({ poruka: 'Upit je uspješno dodan' });

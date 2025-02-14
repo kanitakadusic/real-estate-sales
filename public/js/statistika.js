@@ -5,7 +5,7 @@ const priceRanges = [];
 
 const statistics = StatistikaNekretnina();
 
-PoziviAjax.getNekretnine((error, propertiesList) => {
+PoziviAjax.getAllProperties((error, propertiesList) => {
     if (error) {
         console.error('Greška prilikom dohvatanja nekretnina sa servera:', error);
         statistics.init([], []);
@@ -34,11 +34,11 @@ function addRange(input) {
 
     if (start <= end) {
         if (input === 'year') {
-            if (yearRanges.some(e => e.od === start && e.do === end)) return;
-            yearRanges.push({ od: start, do: end });
+            if (yearRanges.some(e => e.start === start && e.end === end)) return;
+            yearRanges.push({ start: start, end: end });
         } else if (input === 'price') {
-            if (priceRanges.some(e => e.od === start && e.do === end)) return;
-            priceRanges.push({ od: start, do: end });
+            if (priceRanges.some(e => e.start === start && e.end === end)) return;
+            priceRanges.push({ start: start, end: end });
         }
 
         const block = document.createElement('div');
@@ -53,13 +53,13 @@ function addRange(input) {
     }
 }
 
-function iscrtajHistogram() {
-    const histogram = statistics.histogramCijena(yearRanges, priceRanges);
+function displayHistogram() {
+    const histogram = statistics.priceHistogram(yearRanges, priceRanges);
 
     const chartsContainer = document.getElementById('charts-container');
     chartsContainer.innerHTML = '';
 
-    const labels_PriceRanges = priceRanges.map(range => `${range.od} - ${range.do}`);
+    const labels_PriceRanges = priceRanges.map(range => `${range.start} - ${range.end}`);
 
     yearRanges.forEach((range, index) => {
         const chart = document.createElement('canvas');
@@ -69,7 +69,7 @@ function iscrtajHistogram() {
 
         const data_PropertyNumbers = histogram
             .slice(index * priceRanges.length, (index + 1) * priceRanges.length)
-            .map(bar => bar.brojNekretnina);
+            .map(bar => bar.numberOfProperties);
         const maxBarHeight = Math.max(...data_PropertyNumbers);
 
         new Chart(chart, {
@@ -80,7 +80,7 @@ function iscrtajHistogram() {
                     {
                         label: ' # of properties',
                         data: data_PropertyNumbers,
-                        backgroundColor: function(context) {
+                        backgroundColor: function (context) {
                             const barHeight = context.dataset.data[context.dataIndex] / maxBarHeight || 0;
                             return `rgba(255, 140, 0, ${barHeight})`;
                         }
@@ -92,7 +92,7 @@ function iscrtajHistogram() {
                 plugins: {
                     title: {
                         display: true,
-                        text: `Year range: ${range.od} - ${range.do}`,
+                        text: `Year range: ${range.start} - ${range.end}`,
                         font: {
                             size: 20
                         }
@@ -130,7 +130,7 @@ document.getElementById('asf-button').addEventListener('click', () => {
     const feedback = form.querySelector('.feedback');
 
     try {
-        const asf = statistics.prosjecnaKvadratura({ [key]: value });
+        const asf = statistics.averageSquareFootage({ [key]: value });
 
         const block = document.createElement('div');
         block.classList.add('block');
@@ -162,8 +162,8 @@ document.getElementById('outlier-button').addEventListener('click', () => {
         const block = document.createElement('div');
         block.classList.add('block');
         const link = document.createElement('a');
-        link.textContent = `${outlier.naziv}`;
-        link.href = `http://localhost:3000/detalji.html?id=${encodeURIComponent(outlier.id)}`;
+        link.textContent = `${outlier.name}`;
+        link.href = `/details.html?id=${encodeURIComponent(outlier.id)}`;
         block.appendChild(link);
         result.appendChild(block);
 
@@ -183,5 +183,5 @@ document.getElementById('add-price-range-button').addEventListener('click', () =
 });
 
 document.getElementById('generate-charts-button').addEventListener('click', () => {
-    iscrtajHistogram();
+    displayHistogram();
 });

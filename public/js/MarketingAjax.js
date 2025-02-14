@@ -53,7 +53,7 @@ const MarketingAjax = (() => {
             propertyIDsList = propertyIDsList.filter(e => !Global_PropertyIDsList_Searches.includes(e));
         }
 
-        const url = 'http://localhost:3000/marketing/osvjezi/pretrage';
+        const url = '/marketing/osvjezi/pretrage';
         const data = {
             propertyIDsList: propertyIDsList
         };
@@ -79,7 +79,7 @@ const MarketingAjax = (() => {
             propertyIDsList = propertyIDsList.filter(e => !Global_PropertyIDsList_Clicks.includes(e));
         }
 
-        const url = 'http://localhost:3000/marketing/osvjezi/klikovi';
+        const url = '/marketing/osvjezi/klikovi';
         const data = {
             propertyIDsList: propertyIDsList
         };
@@ -95,7 +95,7 @@ const MarketingAjax = (() => {
         console.log(filteredPropertyIDsList);
         Global_PropertyIDsList_Searches = [-1];
 
-        const url = 'http://localhost:3000/marketing/nekretnine';
+        const url = '/marketing/nekretnine';
         const data = {
             propertyIDsList: filteredPropertyIDsList
         };
@@ -108,7 +108,7 @@ const MarketingAjax = (() => {
         const propertyElement = document.getElementById(`${propertyId}`);
 
         if (propertyElement) {
-            const url = `http://localhost:3000/marketing/nekretnina/${encodeURIComponent(propertyId)}`;
+            const url = `/marketing/nekretnina/${encodeURIComponent(propertyId)}`;
     
             ajaxRequest('POST', url, null, (error, response) => {
                 if (error) {

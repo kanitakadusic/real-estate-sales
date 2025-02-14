@@ -1,26 +1,26 @@
 [
     {
         "id": 1,
-        "ime": "Miki",
-        "prezime": "Maus",
-        "username": "mikimaus",
+        "firstname": "Mickey",
+        "lastname": "Mouse",
+        "username": "mickey.mouse",
         "password": "$2b$10$.RxSX6EaDt2RVLfuCAFvueqv21MFUEVJNtYoZcCU.TPH7TsE6/Emm",
-        "admin": true
+        "isAdmin": true
     },
     {
         "id": 2,
-        "ime": "Paja",
-        "prezime": "Patak",
-        "username": "pajapatak",
+        "firstname": "Donald",
+        "lastname": "Duck",
+        "username": "donald.duck",
         "password": "$2b$10$.RxSX6EaDt2RVLfuCAFvueqv21MFUEVJNtYoZcCU.TPH7TsE6/Emm",
-        "admin": false
+        "isAdmin": false
     },
     {
         "id": 3,
-        "ime": "Mini",
-        "prezime": "Maus",
-        "username": "minimaus",
+        "firstname": "Minnie",
+        "lastname": "Mouse",
+        "username": "minnie.mouse",
         "password": "$2b$10$.RxSX6EaDt2RVLfuCAFvueqv21MFUEVJNtYoZcCU.TPH7TsE6/Emm",
-        "admin": false
+        "isAdmin": false
     }
 ]

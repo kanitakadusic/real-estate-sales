@@ -1,34 +1,34 @@
 ul
     li
-        a#vijestiLink(href="vijesti.html")
-            p Vijesti
-            img(src="../resources/icons/globe.svg", alt="Vijesti ikona")
+        a#news-link(href='news.html')
+            p News
+            img(src='../resources/icons/globe.svg', alt='News icon')
     li
-        a#statistikaLink(href="statistika.html")
-            p Statistika
-            img(src="../resources/icons/chart.svg", alt="Statistika ikona")
+        a#statistics-link(href='statistics.html')
+            p Statistics
+            img(src='../resources/icons/chart.svg', alt='Statistics icon')
     li
-        a#nekretnineLink(href="nekretnine.html")
-            p Nekretnine
-            img(src="../resources/icons/home.svg", alt="Nekretnine ikona")
+        a#properties-link(href='properties.html')
+            p Properties
+            img(src='../resources/icons/home.svg', alt='Properties icon')
     if userLoggedIn
         li
-            a#profilLink(href="profil.html")
-                p Profil
-                img(src="../resources/icons/user.svg", alt="Profil ikona")
+            a#profile-link(href='profile.html')
+                p Profile
+                img(src='../resources/icons/user.svg', alt='Profile icon')
         li
-            a#mojiUpitiLink(href="mojiUpiti.html")
-                p Moji upiti
-                img(src="../resources/icons/archive.svg", alt="Moji upiti ikona")
+            a#my-queries-link(href='myQueries.html')
+                p My queries
+                img(src='../resources/icons/archive.svg', alt='My queries icon')
         li
-            a#odjavaLink(href="#")
-                p Odjava
-                img(src="../resources/icons/logout.svg", alt="Odjava ikona")
+            a#logout-link(href='login.html')
+                p Logout
+                img(src='../resources/icons/logout.svg', alt='Logout icon')
     else
         li
-            a#prijavaLink(href="prijava.html")
-                p Prijava
-                img(src="../resources/icons/login.svg", alt="Prijava ikona")
+            a#login-link(href='login.html')
+                p Login
+                img(src='../resources/icons/login.svg', alt='Login icon')
 
-script(src="/js/PoziviAjax.js")
-script(src="/js/meni.js")
+script(src='/js/PoziviAjax.js')
+script(src='/js/meni.js')

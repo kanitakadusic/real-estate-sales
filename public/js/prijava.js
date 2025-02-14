@@ -4,7 +4,7 @@ document.getElementById('login-button').addEventListener('click', () => {
     const usernameElement = document.getElementById('username');
     const passwordElement = document.getElementById('password');
 
-    PoziviAjax.postLogin(usernameElement.value, passwordElement.value, (error, status) => {
+    PoziviAjax.userLogin(usernameElement.value, passwordElement.value, (error, status) => {
         if (error) {
             console.error('Greška prilikom prijave korisnika:', error);
             showErrorImage(error, loginContainer);
@@ -14,7 +14,7 @@ document.getElementById('login-button').addEventListener('click', () => {
                 feedbackElement.textContent = 'Invalid data.';
                 feedbackElement.style.display = 'block';
             } else {
-                window.location.href = 'http://localhost:3000/nekretnine.html';
+                window.location.href = '/properties.html';
             }
         }
     });
