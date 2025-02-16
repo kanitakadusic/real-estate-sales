@@ -83,13 +83,13 @@ function displayProperties(propertyListingInstance) {
 
 const propertyListing = SpisakNekretnina();
 
-function fnCallback(error, propertiesList) {
+function fnCallback(error, { data: properties }) {
     if (error) {
-        console.error('Greška prilikom dohvatanja nekretnina sa servera:', error);
+        console.error(error);
         propertyListing.init([], []);
         showErrorImage(error, overallPropertiesContainer);
     } else {
-        propertyListing.init(propertiesList, []);
+        propertyListing.init(properties, []);
         displayProperties(propertyListing);
     }
 }
@@ -102,9 +102,9 @@ function getPropertyLocationFromUrl() {
 const propertyLocation = getPropertyLocationFromUrl();
 
 if (!propertyLocation) {
-    PoziviAjax.getAllProperties(fnCallback);
+    ApiService.getAllProperties(fnCallback);
 } else {
-    PoziviAjax.getTopPropertiesByLocation(propertyLocation, fnCallback);
+    ApiService.getTopPropertiesByLocation(propertyLocation, fnCallback);
 }
 
 document.getElementById('filter-button').addEventListener('click', () => {

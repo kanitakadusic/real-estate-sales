@@ -2,10 +2,11 @@ const firstnameElement = document.getElementById('firstname');
 const lastnameElement = document.getElementById('lastname');
 const usernameElement = document.getElementById('username');
 const passwordElement = document.getElementById('password');
+const feedbackElement = document.getElementById('feedback');
 
-PoziviAjax.getLoggedInUser((error, user) => {
+ApiService.getLoggedInUser((error, { data: user }) => {
     if (error) {
-        console.error('Greška prilikom preuzimanja korisničkih podataka:', error);
+        console.error(error);
 
         firstnameElement.placeholder = '?';
         lastnameElement.placeholder = '?';
@@ -25,19 +26,15 @@ document.getElementById('confirm-button').addEventListener('click', () => {
     if (usernameElement.value) user.username = usernameElement.value;
     if (passwordElement.value) user.password = passwordElement.value;
 
-    PoziviAjax.updateLoggedInUser(user, (error, status) => {
-        const feedbackElement = document.getElementById('feedback');
-
+    ApiService.updateLoggedInUser(user, (error, response) => {
         if (error) {
-            console.error('Greška prilikom ažuriranja korisničkih podataka:', error);
+            console.error(error);
 
-            feedbackElement.textContent = 'An error occurred while updating data.';
+            feedbackElement.textContent = error.message;
             feedbackElement.style.display = 'block';
             feedbackElement.style.color = 'var(--error-light)';
         } else {
-            console.log(status.poruka);
-
-            feedbackElement.textContent = 'The data was successfully updated.';
+            feedbackElement.textContent = response.message;
             feedbackElement.style.display = 'block';
             feedbackElement.style.color = 'var(--success-light)';
 

@@ -1,8 +1,8 @@
-PoziviAjax.getUserQueries((error, queries) => {
+ApiService.getUserQueries((error, { data: queries }) => {
     const queriesContainer = document.getElementById('queries-container');
 
     if (error) {
-        console.error('Greška prilikom dohvatanja korisničkih upita sa servera:', error);
+        console.error(error);
         showErrorImage(error, queriesContainer);
         return;
     }
@@ -13,11 +13,11 @@ PoziviAjax.getUserQueries((error, queries) => {
         const queryElement = document.createElement('div');
         queryElement.classList.add('query-container');
 
-        PoziviAjax.getPropertyById(propertyId, (error, property) => {
+        ApiService.getPropertyById(propertyId, (error, { data: property }) => {
             const titleElement = document.createElement('div');
 
             if (error) {
-                console.error('Greška prilikom dohvatanja detalja nekretnine sa servera:', error);
+                console.error(error);
                 titleElement.textContent = propertyId;
             } else {
                 const linkElement = document.createElement('a');

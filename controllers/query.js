@@ -1,4 +1,5 @@
-const { User, Query, Property } = require('../config/database');
+const { User, Query, Property } = require('../config/database.js');
+const locale = require('../locales/en.json');
 
 exports.getPropertyQueriesPaged = async (req, res) => {
     const { propertyId } = req.params;
@@ -6,13 +7,13 @@ exports.getPropertyQueriesPaged = async (req, res) => {
     const { page } = req.query;
 
     try {
-        if (page < 0) {
-            return res.status(404).json([]);
+        if (isNaN(page) || page < 0) {
+            return res.status(400).json({ message: locale['400'] });
         }
 
         const property = await Property.findByPk(propertyId);
         if (!property) {
-            return res.status(400).json({ greska: `Nekretnina sa id-em ${propertyId} ne postoji` });
+            return res.status(404).json({ message: locale['404'] });
         }
 
         const queries = await property.getQueries({
@@ -23,47 +24,45 @@ exports.getPropertyQueriesPaged = async (req, res) => {
             raw: true
         });
 
-        if (!queries.length) {
-            return res.status(404).json([]);
-        }
-
-        res.status(200).json(queries);
+        res.status(200).json({
+            message: locale['200'],
+            data: queries
+        });
     } catch (error) {
-        console.error('Error fetching next queries for property:', error);
-        res.status(500).json({ greska: 'Internal Server Error' });
+        console.error('Error fetching queries for property:', error);
+        res.status(500).json({ message: locale['500'] });
     }
 };
 
 exports.getUserQueries = async (req, res) => {
     if (!req.session.username) {
-        return res.status(401).json({ greska: 'Neautorizovan pristup' });
+        return res.status(401).json({ message: locale['401'] });
     }
 
     try {
         const user = await User.findByUsername(req.session.username);
         if (!user) {
-            return res.status(401).json({ greska: 'Neautorizovan pristup' });
+            return res.status(401).json({ message: locale['401'] });
         }
 
         const queries = await user.getQueries({
             attributes: ['propertyId', 'text'],
             raw: true
         });
-        
-        if (!queries.length) {
-            return res.status(404).json([]);
-        }
 
-        res.status(200).json(queries);
+        res.status(200).json({
+            message: locale['200'],
+            data: queries
+        });
     } catch (error) {
         console.error('Error fetching user queries:', error);
-        res.status(500).json({ greska: 'Internal Server Error' });
+        res.status(500).json({ message: locale['500'] });
     }
 };
 
 exports.createPropertyQuery = async (req, res) => {
     if (!req.session.username) {
-        return res.status(401).json({ greska: 'Neautorizovan pristup' });
+        return res.status(401).json({ message: locale['401'] });
     }
 
     const { propertyId } = req.params;
@@ -71,19 +70,23 @@ exports.createPropertyQuery = async (req, res) => {
     const { text } = req.body;
 
     try {
-        const property = await Property.findByPk(propertyId);
-        if (!property) {
-            return res.status(400).json({ greska: `Nekretnina sa id-em ${propertyId} ne postoji` });
-        }
-
         const user = await User.findByUsername(req.session.username);
         if (!user) {
-            return res.status(401).json({ greska: 'Neautorizovan pristup' });
+            return res.status(401).json({ message: locale['401'] });
+        }
+
+        const property = await Property.findByPk(propertyId);
+        if (!property) {
+            return res.status(404).json({ message: locale['404'] });
+        }
+
+        if (typeof text !== 'string' || !text.trim()) {
+            return res.status(400).json({ message: locale['400'] });
         }
 
         const queryCount = await Query.count({ where: { propertyId, userId: user.id } });
         if (queryCount >= 3) {
-            return res.status(429).json({ greska: 'Previse upita za istu nekretninu.' });
+            return res.status(409).json({ message: locale['409'] });
         }
 
         await Query.create({
@@ -92,9 +95,9 @@ exports.createPropertyQuery = async (req, res) => {
             text
         });
 
-        res.status(200).json({ poruka: 'Upit je uspješno dodan' });
+        res.status(201).json({ message: locale['201'] });
     } catch (error) {
-        console.error('Error processing query:', error);
-        res.status(500).json({ greska: 'Internal Server Error' });
+        console.error('Error creating query:', error);
+        res.status(500).json({ message: locale['500'] });
     }
 };

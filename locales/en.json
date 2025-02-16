@@ -1,0 +1,11 @@
+{
+    "200": "Request successfully completed.",
+    "201": "The resource has been successfully created.",
+    "400": "The request was invalid. Please check the input and try again.",
+    "401": "Please log in to access this resource or check your credentials and try again.",
+    "403": "You are not authorized to access this resource. Please contact support if you believe this is an error.",
+    "404": "Oops! The requested resource could not be found. Please check your request and try again.",
+    "409": "This action cannot be completed due to a conflict with the current state. Please contact support if you believe this is an error.",
+    "429": "Too many failed login attempts. Please wait for 1 minute before trying again.",
+    "500": "An unexpected server error occurred. Please try again later. If the problem persists, contact support."
+}

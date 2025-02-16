@@ -1,6 +1,7 @@
-const { User } = require('../config/database');
+const { User } = require('../config/database.js');
 const bcrypt = require('bcrypt');
-const { addInTxtFile } = require('../utils/file.util');
+const { addInTxtFile } = require('../utils/file.js');
+const locale = require('../locales/en.json');
 
 exports.userLogin = async (req, res) => {
     const { username, password } = req.body;
@@ -15,7 +16,7 @@ exports.userLogin = async (req, res) => {
             if (req.session.blockedUntil) {
                 if (new Date() < new Date(req.session.blockedUntil)) {
                     await logLoginAttempt(username, false);
-                    return res.status(429).json({ greska: 'Previse neuspjesnih pokusaja. Pokusajte ponovo za 1 minutu.' });
+                    return res.status(429).json({ message: locale['429'] });
                 } else {
                     req.session.loginAttempts = 0;
                     req.session.blockedUntil = null;
@@ -28,7 +29,7 @@ exports.userLogin = async (req, res) => {
                 req.session.username = username;
                 req.session.loginAttempts = 0;
                 await logLoginAttempt(username, true);
-                return res.status(200).json({ poruka: 'Uspješna prijava' });
+                return res.status(200).json({ message: locale['200'] });
             }
 
             if (++(req.session.loginAttempts) >= 3) {
@@ -37,37 +38,37 @@ exports.userLogin = async (req, res) => {
         }
 
         await logLoginAttempt(username, false);
-        res.status(200).json({ poruka: 'Neuspješna prijava' });
+        res.status(401).json({ message: locale['401'] });
     } catch (error) {
         console.error('Error during login:', error);
-        res.status(500).json({ greska: 'Internal Server Error' });
+        res.status(500).json({ message: locale['500'] });
     }
 };
 
 exports.userLogout = (req, res) => {
     if (!req.session.username) {
-        return res.status(401).json({ greska: 'Neautorizovan pristup' });
+        return res.status(401).json({ message: locale['401'] });
     }
 
     req.session.destroy((error) => {
         if (error) {
             console.error('Error during logout:', error);
-            res.status(500).json({ greska: 'Internal Server Error' });
+            res.status(500).json({ message: locale['500'] });
         } else {
-            res.status(200).json({ poruka: 'Uspješno ste se odjavili' });
+            res.status(200).json({ message: locale['200'] });
         }
     });
 };
 
 exports.getLoggedInUser = async (req, res) => {
     if (!req.session.username) {
-        return res.status(401).json({ greska: 'Neautorizovan pristup' });
+        return res.status(401).json({ message: locale['401'] });
     }
 
     try {
         const user = await User.findByUsername(req.session.username);
         if (!user) {
-            return res.status(401).json({ greska: 'Neautorizovan pristup' });
+            return res.status(401).json({ message: locale['401'] });
         }
 
         const userPublicData = {
@@ -78,16 +79,19 @@ exports.getLoggedInUser = async (req, res) => {
             isAdmin: user.isAdmin
         };
 
-        res.status(200).json(userPublicData);
+        res.status(200).json({
+            message: locale['200'],
+            data: userPublicData
+        });
     } catch (error) {
         console.error('Error fetching user data:', error);
-        res.status(500).json({ greska: 'Internal Server Error' });
+        res.status(500).json({ message: locale['500'] });
     }
 };
 
 exports.updateLoggedInUser = async (req, res) => {
     if (!req.session.username) {
-        return res.status(401).json({ greska: 'Neautorizovan pristup' });
+        return res.status(401).json({ message: locale['401'] });
     }
 
     const { firstname, lastname, username, password } = req.body;
@@ -102,26 +106,22 @@ exports.updateLoggedInUser = async (req, res) => {
             const hashedPassword = await bcrypt.hash(password, 10);
             user.password = hashedPassword;
         }
-
-        const [updated] = await User.update(user, { where: { username: req.session.username } });
-
-        if (updated > 0) {
-            if (username) req.session.username = username;
-            res.status(200).json({ poruka: 'Podaci su uspješno ažurirani' });
-        } else {
-            res.status(401).json({ greska: 'Neautorizovan pristup' });
-        }
+        
+        await User.update(user, { where: { username: req.session.username } });
+        if (username) req.session.username = username;
+        
+        res.status(200).json({ message: locale['200'] });
     } catch (error) {
         console.error('Error updating user data:', error);
-        res.status(500).json({ greska: 'Internal Server Error' });
+        res.status(500).json({ message: locale['500'] });
     }
 };
 
 async function logLoginAttempt(username, success) {
     const currently = new Date().toISOString();
-    const log = `[${currently}]-username:\"${username}\"-success:\"${success}\"\n`;
+    const log = `[${currently}]-username:\'${username}\'-success:\'${success}\'\n`;
     try {
-        await addInTxtFile('login.log', log);
+        await addInTxtFile('logins', log);
     } catch (error) {
         console.error(`Error logging login attempt for ${username}:`, error);
         throw error;

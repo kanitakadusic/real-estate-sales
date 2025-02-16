@@ -3,9 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (logoutLink) {
         logoutLink.addEventListener('click', () => {
-            PoziviAjax.userLogout((error, status) => {
+            ApiService.userLogout((error, response) => {
                 if (error) {
-                    console.error('Greška prilikom odjavljivanja:', error);
+                    console.error(error);
+                    window.alert(error.message);
                 }
             });
         });
@@ -14,16 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function showErrorImage(error, containerElement) {
     let image = 'question-mark';
-    let alternative = error;
+    let alternative = '?';
 
-    switch (error) {
-        case 'Bad Request': image = '400'; break;
-        case 'Not Found': image = '404'; break;
-        case 'Too Many Requests': image = '429'; break;
-        case 'Internal Server Error': image = '500'; break;
-        default: alternative = 'Question Mark';
+    if (error) {
+        image = error.statusCode;
+        alternative = error.statusText;
     }
-
+    
     const imageElement = document.createElement('img');
     imageElement.src = `../resources/images/${image}.svg`;
     imageElement.alt = alternative;

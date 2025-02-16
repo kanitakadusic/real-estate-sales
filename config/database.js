@@ -11,13 +11,13 @@ const database = {};
 database.Sequelize = Sequelize;
 database.sequelize = sequelize;
 
-database.User = require('../models/user.model')(sequelize, Sequelize.DataTypes);
-database.Query = require('../models/query.model')(sequelize, Sequelize.DataTypes);
-database.Request = require('../models/request.model')(sequelize, Sequelize.DataTypes);
-database.Offer = require('../models/offer.model')(sequelize, Sequelize.DataTypes);
-database.Property = require('../models/property.model')(sequelize, Sequelize.DataTypes);
+database.User = require('../models/user.js')(sequelize, Sequelize.DataTypes);
+database.Query = require('../models/query.js')(sequelize, Sequelize.DataTypes);
+database.Request = require('../models/request.js')(sequelize, Sequelize.DataTypes);
+database.Offer = require('../models/offer.js')(sequelize, Sequelize.DataTypes);
+database.Property = require('../models/property.js')(sequelize, Sequelize.DataTypes);
 
-require('../models/associations')(database);
+require('../models/associations.js')(database);
 
 (async () => {
     try {
@@ -37,7 +37,7 @@ require('../models/associations')(database);
 module.exports = database;
 
 async function insertTestData() {
-    const { readJsonFile } = require('../utils/file.util');
+    const { readJsonFile } = require('../utils/file.js');
 
     const insertWithDelay = async (model, data) => {
         for (const item of data) {
@@ -47,19 +47,19 @@ async function insertTestData() {
     };
 
     try {
-        const users = await readJsonFile('users.data');
+        const users = await readJsonFile('users');
         await insertWithDelay(database.User, users);
 
-        const properties = await readJsonFile('properties.data');
+        const properties = await readJsonFile('properties');
         await insertWithDelay(database.Property, properties);
 
-        const queries = await readJsonFile('queries.data');
+        const queries = await readJsonFile('queries');
         await insertWithDelay(database.Query, queries);
 
-        const requests = await readJsonFile('requests.data');
+        const requests = await readJsonFile('requests');
         await insertWithDelay(database.Request, requests);
 
-        const offers = await readJsonFile('offers.data');
+        const offers = await readJsonFile('offers');
         await insertWithDelay(database.Offer, offers);
     } catch (error) {
         console.error('Error inserting test data:', error);

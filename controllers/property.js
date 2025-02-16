@@ -1,22 +1,22 @@
-const { User, Query, Property } = require('../config/database');
+const { User, Property } = require('../config/database.js');
+const locale = require('../locales/en.json');
 
 exports.getAllProperties = async (req, res) => {
     try {
         const properties = await Property.findAll({ raw: true });
 
-        if (!properties.length) {
-            return res.status(404).json({ greska: 'Nema nekretnina' });
-        }
-
-        res.status(200).json(properties);
+        res.status(200).json({
+            message: locale['200'],
+            data: properties
+        });
     } catch (error) {
         console.error('Error fetching properties data:', error);
-        res.status(500).json({ greska: 'Internal Server Error' });
+        res.status(500).json({ message: locale['500'] });
     }
 };
 
 exports.getTopPropertiesByLocation = async (req, res) => {
-    const { location } = req.query;
+    const { location } = req.query; 
 
     try {
         const properties = await Property.findAll({
@@ -26,14 +26,13 @@ exports.getTopPropertiesByLocation = async (req, res) => {
             raw: true
         });
 
-        if (!properties.length) {
-            return res.status(404).json({ greska: 'Nema nekretnina' });
-        }
-
-        res.status(200).json(properties);
+        res.status(200).json({
+            message: locale['200'],
+            data: properties
+        });
     } catch (error) {
         console.error('Error fetching top 5 properties:', error);
-        res.status(500).json({ greska: 'Internal Server Error' });
+        res.status(500).json({ message: locale['500'] });
     }
 };
 
@@ -43,13 +42,16 @@ exports.getPropertyById = async (req, res) => {
     try {
         const property = await Property.findByPk(id, { raw: true });
         if (!property) {
-            return res.status(400).json({ greska: `Nekretnina sa id-em ${id} ne postoji` });
+            return res.status(404).json({ message: locale['404'] });
         }
         
-        res.status(200).json(property);
+        res.status(200).json({
+            message: locale['200'],
+            data: property
+        });
     } catch (error) {
         console.error('Error fetching property details:', error);
-        res.status(500).json({ greska: 'Internal Server Error' });
+        res.status(500).json({ message: locale['500'] });
     }
 };
 
@@ -59,7 +61,7 @@ exports.getPropertyInterests = async (req, res) => {
     try {
         const property = await Property.findByPk(id);
         if (!property) {
-            return res.status(404).json({ greska: `Nekretnina sa id-em ${id} ne postoji` });
+            return res.status(404).json({ message: locale['404'] });
         }
 
         const queries = await property.getQueries({ attributes: ['id', 'text'] });
@@ -83,7 +85,6 @@ exports.getPropertyInterests = async (req, res) => {
 
                     for (const offer of offers) {
                         const rootOffer = await offer.getRootOffer();
-
                         if (rootOffer.userId != user.id) {
                             offer.price = undefined;
                         }
@@ -100,15 +101,21 @@ exports.getPropertyInterests = async (req, res) => {
                     });
                 }
 
-                return res.status(200).json({ queries, requests, offers });
+                return res.status(200).json({
+                    message: locale['200'],
+                    data: { queries, requests, offers }
+                });
             }
         }
 
         const offers = await property.getOffers({ attributes: ['id', 'text', 'isRejected'] });
 
-        res.status(200).json({ queries, requests: [], offers });
+        res.status(200).json({
+            message: locale['200'],
+            data: { queries, requests: [], offers }
+        });
     } catch (error) {
         console.error('Error fetching property details:', error);
-        res.status(500).json({ greska: 'Internal Server Error' });
+        res.status(500).json({ message: locale['500'] });
     }
 };

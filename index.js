@@ -1,4 +1,4 @@
-require('./config/database');
+require('./config/database.js');
 
 const express = require('express');
 const session = require('express-session');
@@ -6,13 +6,13 @@ const path = require('path');
 const fs = require('fs').promises;
 const pug = require('pug');
 
-const propertyController = require('./controllers/property.controller');
-const userController = require('./controllers/user.controller');
-const queryController = require('./controllers/query.controller');
-const requestController = require('./controllers/request.controller');
-const offerController = require('./controllers/offer.controller');
+const propertyController = require('./controllers/property.js');
+const userController = require('./controllers/user.js');
+const queryController = require('./controllers/query.js');
+const requestController = require('./controllers/request.js');
+const offerController = require('./controllers/offer.js');
 
-const { readJsonFile, saveJsonFile } = require('./utils/file.util');
+const { readJsonFile, saveJsonFile } = require('./utils/file.js');
 
 const PORT = 3001;
 const app = express();
@@ -36,7 +36,7 @@ async function serveHTMLFile(req, res, fileName) {
         const content = await fs.readFile(htmlPath, 'utf-8');
 
         const userLoggedIn = req.session.username ? true : false;
-        const navigationHtml = pug.renderFile(path.join(__dirname, 'views', 'meni.pug'), { userLoggedIn });
+        const navigationHtml = pug.renderFile(path.join(__dirname, 'views', 'navigation.pug'), { userLoggedIn });
         
         const finalContent = content.replace('<!-- Navigation placeholder (DO NOT EDIT) -->', navigationHtml);
 
@@ -48,13 +48,13 @@ async function serveHTMLFile(req, res, fileName) {
 }
 
 const routes = [
-    { route: '/details.html', file: 'detalji.html', authRequired: false },
-    { route: '/myQueries.html', file: 'mojiUpiti.html', authRequired: true },
-    { route: '/properties.html', file: 'nekretnine.html', authRequired: false },
-    { route: '/login.html', file: 'prijava.html', authRequired: false },
-    { route: '/profile.html', file: 'profil.html', authRequired: true },
-    { route: '/statistics.html', file: 'statistika.html', authRequired: false },
-    { route: '/news.html', file: 'vijesti.html', authRequired: false }
+    { route: '/details.html', file: 'details.html', authRequired: false },
+    { route: '/myQueries.html', file: 'myQueries.html', authRequired: true },
+    { route: '/properties.html', file: 'properties.html', authRequired: false },
+    { route: '/login.html', file: 'login.html', authRequired: false },
+    { route: '/profile.html', file: 'profile.html', authRequired: true },
+    { route: '/statistics.html', file: 'statistics.html', authRequired: false },
+    { route: '/news.html', file: 'news.html', authRequired: false }
 ];
 
 routes.forEach(({ route, file, authRequired }) => {

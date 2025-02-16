@@ -5,13 +5,13 @@ const priceRanges = [];
 
 const statistics = StatistikaNekretnina();
 
-PoziviAjax.getAllProperties((error, propertiesList) => {
+ApiService.getAllProperties((error, { data: properties }) => {
     if (error) {
-        console.error('Greška prilikom dohvatanja nekretnina sa servera:', error);
+        console.error(error);
         statistics.init([], []);
         showErrorImage(error, document.getElementById('statistics-container'));
     } else {
-        statistics.init(propertiesList, []);
+        statistics.init(properties, []);
     }
 });
 

@@ -21,9 +21,9 @@ const sendButton = document.getElementById('send');
 if (!propertyId) {
     showErrorImage(null, contentContainer);
 } else {
-    PoziviAjax.getPropertyById(propertyId, (error, property) => {
+    ApiService.getPropertyById(propertyId, (error, { data: property }) => {
         if (error) {
-            console.error('Greška prilikom dohvatanja detalja nekretnine sa servera:', error);
+            console.error(error);
             showErrorImage(error, contentContainer);
         } else {
             document.getElementById('property-title').textContent = property.name;
@@ -42,9 +42,9 @@ if (!propertyId) {
         }
     });
 
-    PoziviAjax.getLoggedInUser((error, user) => {
+    ApiService.getLoggedInUser((error, { data: user }) => {
         if (error) {
-            console.error('Greška prilikom preuzimanja korisničkih podataka:', error);
+            console.error(error);
 
             requestDateInput.disabled = true;
             relatedOffersSelect.disabled = true;
@@ -57,9 +57,9 @@ if (!propertyId) {
         }
     });
 
-    PoziviAjax.getPropertyInterests(propertyId, (error, interests) => {
+    ApiService.getPropertyInterests(propertyId, (error, { data: interests }) => {
         if (error) {
-            console.error('Greška prilikom preuzimanja interesovanja za nekretninu:', error);
+            console.error(error);
         } else {
             if (isAdmin) {
                 interests.requests.forEach((request) => {
@@ -162,15 +162,15 @@ sendButton.addEventListener('click', () => {
         feedbackElement.style.display = 'none';
     }
 
-    const feedbackHandler = (error, status) => {
+    const feedbackHandler = (error, response) => {
         if (error) {
-            console.error('Greška prilikom postavljanja interesovanja:', error);
+            console.error(error);
 
-            feedbackElement.textContent = `Error: ${error}.`;
+            feedbackElement.textContent = error.message;
             feedbackElement.style.color = 'var(--error-light)';
             feedbackElement.style.display = 'block';
         } else {
-            feedbackElement.textContent = 'The interest was successfully sent.';
+            feedbackElement.textContent = response.message;
             feedbackElement.style.color = 'var(--success-light)';
             feedbackElement.style.display = 'block';
         }
@@ -178,7 +178,7 @@ sendButton.addEventListener('click', () => {
 
     if (interestsSelectionElement.value === 'query') {
         if (interestTextInput.value) {
-            PoziviAjax.createPropertyQuery(
+            ApiService.createPropertyQuery(
                 propertyId,
                 interestTextInput.value,
                 feedbackHandler
@@ -189,7 +189,7 @@ sendButton.addEventListener('click', () => {
     } else if (interestsSelectionElement.value === 'request') {
         if (!isAdmin) {
             if (requestDateInput.value) {
-                PoziviAjax.createPropertyRequest(
+                ApiService.createPropertyRequest(
                     propertyId,
                     interestTextInput.value,
                     requestDateInput.value,
@@ -201,7 +201,7 @@ sendButton.addEventListener('click', () => {
             }
         } else {
             if (relatedRequestsSelect.value && (requestApprovalCheckbox.checked || interestTextInput.value)) {
-                PoziviAjax.updateRequestStatusByAdmin(
+                ApiService.updateRequestStatusByAdmin(
                     propertyId,
                     relatedRequestsSelect.value,
                     requestApprovalCheckbox.checked,
@@ -215,10 +215,10 @@ sendButton.addEventListener('click', () => {
         }
     } else if (interestsSelectionElement.value === 'offer') {
         if (offerPriceInput.value || offerRejectionCheckbox.checked) {
-            PoziviAjax.createPropertyOffer(
+            ApiService.createPropertyOffer(
                 propertyId,
                 interestTextInput.value,
-                offerPriceInput.value,
+                offerPriceInput.valueAsNumber,
                 offerRejectionCheckbox.checked,
                 relatedOffersSelect.value === 'initial' ? null : relatedOffersSelect.value,
                 feedbackHandler
