@@ -2,17 +2,17 @@
     margin: 15px;
     display: grid;
     grid-template-areas: 
-        'v1 v1 v1 v1'
-        'v1 v1 v1 v1'
-        'v2 v3 v5 v7'
-        'v2 v4 v6 v7'
-        'v8 v10 v12 v13'
-        'v9 v11 v12 v13';
+        'news-1 news-1 news-1 news-1'
+        'news-1 news-1 news-1 news-1'
+        'news-2 news-3 news-5 news-7'
+        'news-2 news-4 news-6 news-7'
+        'news-8 news-10 news-12 news-13'
+        'news-9 news-11 news-12 news-13';
 }
 
-#news .glavna,
-#news .visoka,
-#news .kvadratna {
+#news .large,
+#news .medium,
+#news .small {
     border-radius: 10px;
     box-sizing: border-box;
     overflow-y: auto;
@@ -21,24 +21,24 @@
     background-color: var(--surface-primary-light);
 }
 
-#news .glavna {
+#news .large {
     aspect-ratio: 2 / 1;
 }
 
-#news .visoka {
+#news .medium {
     aspect-ratio: 1 / 2;
 }
 
-#news .kvadratna {
+#news .small {
     aspect-ratio: 1;
 }
 
-#news .naslov {
+#news .title {
     font-size: var(--title-size);
     font-weight: bold;
 }
 
-#news .tekst {
+#news .content {
     font-size: var(--content-size);
     margin-top: 30px;
 }
@@ -56,19 +56,19 @@
 @media (max-width: 800px) {
     #news {
         grid-template-areas: 
-            'v1 v1'
-            'v1 v1'
-            'v2 v3'
-            'v2 v4'
-            'v5 v7'
-            'v6 v7'
-            'v8 v10'
-            'v9 v11'
-            'v12 v13'
-            'v12 v13';
+            'news-1 news-1'
+            'news-1 news-1'
+            'news-2 news-3'
+            'news-2 news-4'
+            'news-5 news-7'
+            'news-6 news-7'
+            'news-8 news-10'
+            'news-9 news-11'
+            'news-12 news-13'
+            'news-12 news-13';
     }
 
-    #news .glavna {
+    #news .large {
         aspect-ratio: 1;
     }
 
@@ -80,19 +80,19 @@
     }
 }
 
-#v1 { grid-area: v1; }
-#v2 { grid-area: v2; }
-#v3 { grid-area: v3; }
-#v4 { grid-area: v4; }
-#v5 { grid-area: v5; }
-#v6 { grid-area: v6; }
-#v7 { grid-area: v7; }
-#v8 { grid-area: v8; }
-#v9 { grid-area: v9; }
-#v10 { grid-area: v10; }
-#v11 { grid-area: v11; }
-#v12 { grid-area: v12; }
-#v13 { grid-area: v13; }
+#news-1 { grid-area: news-1; }
+#news-2 { grid-area: news-2; }
+#news-3 { grid-area: news-3; }
+#news-4 { grid-area: news-4; }
+#news-5 { grid-area: news-5; }
+#news-6 { grid-area: news-6; }
+#news-7 { grid-area: news-7; }
+#news-8 { grid-area: news-8; }
+#news-9 { grid-area: news-9; }
+#news-10 { grid-area: news-10; }
+#news-11 { grid-area: news-11; }
+#news-12 { grid-area: news-12; }
+#news-13 { grid-area: news-13; }
 
 #news ::-webkit-scrollbar {
     width: 8px;
