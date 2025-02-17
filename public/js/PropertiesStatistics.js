@@ -1,23 +1,18 @@
-let StatistikaNekretnina = function () {
+let PropertiesStatistics = function () {
 
-    let propertyListing = SpisakNekretnina();
+    let propertyListing = PropertiesListing();
 
     let genericProperty = null;
-    let genericUser = null;
 
-    let init = function (properties, users) {
-        propertyListing.init(properties, users);
+    const init = function (properties) {
+        propertyListing.set(properties);
 
         if (properties.length) {
             genericProperty = extractKeys(properties[0]);
         }
-
-        if (users.length) {
-            genericUser = extractKeys(users[0]);
-        }
     };
 
-    let averageSquareFootage = function (criteria) {
+    const averageSquareFootage = function (criteria) {
         if (genericProperty === null) {
             throw new Error('No properties are available.');
         }
@@ -30,7 +25,7 @@ let StatistikaNekretnina = function () {
             throw new Error('Filtering by the given criteria is not possible.');
         }
 
-        let filteredProperties = propertyListing.filterProperties(criteria);
+        let filteredProperties = propertyListing.filter(criteria);
         if (!filteredProperties.length) {
             throw new Error('Not a single property meets the given criteria.');
         }
@@ -38,7 +33,7 @@ let StatistikaNekretnina = function () {
         return getAverage(filteredProperties, (e) => e['squareFootage']);
     };
 
-    let outlier = function (criteria, propertyName) {
+    const outlier = function (criteria, propertyName) {
         if (genericProperty === null) {
             throw new Error('No properties are available.');
         }
@@ -59,13 +54,13 @@ let StatistikaNekretnina = function () {
             throw new Error('Finding outlier for the given deviation key is not possible.');
         }
 
-        let filteredProperties = propertyListing.filterProperties(criteria);
+        let filteredProperties = propertyListing.filter(criteria);
         if (!filteredProperties.length) {
             throw new Error('Not a single property meets the given criteria.');
         }
 
         let average = getAverage(
-            propertyListing.filterProperties({}),
+            filteredProperties,
             (e) => e[propertyName]
         );
 
@@ -76,8 +71,8 @@ let StatistikaNekretnina = function () {
     };
 
     // {start: a, end: b} <=> [a, b]
-    let priceHistogram = function (yearRanges, priceRanges) {
-        let properties = propertyListing.filterProperties({});
+    const priceHistogram = function (yearRanges, priceRanges) {
+        let properties = propertyListing.filter({});
         let histogram = [];
 
         for (let i = 0; i < yearRanges.length; i++) {

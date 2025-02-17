@@ -1,5 +1,5 @@
 function mergeProperties(propertiesContainer, module, propertyType) {
-    const propertiesList = module.filterProperties({ type: propertyType });
+    const propertiesList = module.filter({ type: propertyType });
     propertiesContainer.innerHTML = '';
 
     if (!propertiesList.length) {
@@ -81,15 +81,15 @@ function displayProperties(propertyListingInstance) {
     mergeProperties(workspacesElement, propertyListingInstance, 'workspace');
 }
 
-const propertyListing = SpisakNekretnina();
+const propertyListing = PropertiesListing();
 
 function fnCallback(error, { data: properties }) {
     if (error) {
         console.error(error);
-        propertyListing.init([], []);
+        propertyListing.set([]);
         showErrorImage(error, overallPropertiesContainer);
     } else {
-        propertyListing.init(properties, []);
+        propertyListing.set(properties);
         displayProperties(propertyListing);
     }
 }
@@ -115,13 +115,13 @@ document.getElementById('filter-button').addEventListener('click', () => {
         maxSquareFootage: parseFloat(document.getElementById('max-square-footage').value) || Infinity
     };
 
-    const filteredPropertiesList = propertyListing.filterProperties(criteria);
+    const filteredPropertiesList = propertyListing.filter(criteria);
 
     // Increases the number of searches for each of the filtered properties by one
     MarketingAjax.novoFiltriranje(filteredPropertiesList.map(property => property.id));
 
-    const temporaryPropertyListing = SpisakNekretnina();
-    temporaryPropertyListing.init(filteredPropertiesList, []);    
+    const temporaryPropertyListing = PropertiesListing();
+    temporaryPropertyListing.set(filteredPropertiesList);    
     displayProperties(temporaryPropertyListing);
 });
 

@@ -3,15 +3,15 @@ Chart.defaults.font.size = 16;
 const yearRanges = [];
 const priceRanges = [];
 
-const statistics = StatistikaNekretnina();
+const statistics = PropertiesStatistics();
 
 ApiService.getAllProperties((error, { data: properties }) => {
     if (error) {
         console.error(error);
-        statistics.init([], []);
+        statistics.init([]);
         showErrorImage(error, document.getElementById('statistics-container'));
     } else {
-        statistics.init(properties, []);
+        statistics.init(properties);
     }
 });
 

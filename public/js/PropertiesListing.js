@@ -1,15 +1,13 @@
-let SpisakNekretnina = function () {
+let PropertiesListing = function () {
 
     let propertiesList = [];
-    let usersList = [];
 
-    let init = function (propertiesList, usersList) {
-        this.propertiesList = propertiesList;
-        this.usersList = usersList;
+    const set = function (properties) {
+        propertiesList = properties;
     };
 
-    let filterProperties = function (criteria) {
-        return this.propertiesList.filter((property) => {
+    const filter = function (criteria) {
+        return propertiesList.filter((property) => {
             if (criteria.type && property.type !== criteria.type) {
                 return false;
             }
@@ -35,7 +33,7 @@ let SpisakNekretnina = function () {
     };
 
     return {
-        init,
-        filterProperties
+        set,
+        filter
     }
 };
