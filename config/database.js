@@ -1,8 +1,9 @@
 const { Sequelize } = require('sequelize');
 
 const sequelize = new Sequelize('real_estate', 'root', 'password', {
-    host: 'localhost',
+    host: 'mysql-db',
     dialect: 'mysql',
+    port: 3306,
     logging: false
 });
 
@@ -27,8 +28,12 @@ require('../models/associations.js')(database);
         await sequelize.sync({ force: false });
         console.log('Tables successfully synchronized');
 
-        //await insertTestData();
-        console.log('Test data successfully inserted');
+        try {
+            await insertTestData();
+            console.log('Test data successfully inserted');
+        } catch (_) {
+            console.log('Test data already inserted');
+        }
     } catch (error) {
         console.error('Error during database setup:', error);
     }
@@ -46,22 +51,18 @@ async function insertTestData() {
         }
     };
 
-    try {
-        const users = await readJsonFile('users');
-        await insertWithDelay(database.User, users);
+    const users = await readJsonFile('users');
+    await insertWithDelay(database.User, users);
 
-        const properties = await readJsonFile('properties');
-        await insertWithDelay(database.Property, properties);
+    const properties = await readJsonFile('properties');
+    await insertWithDelay(database.Property, properties);
 
-        const queries = await readJsonFile('queries');
-        await insertWithDelay(database.Query, queries);
+    const queries = await readJsonFile('queries');
+    await insertWithDelay(database.Query, queries);
 
-        const requests = await readJsonFile('requests');
-        await insertWithDelay(database.Request, requests);
+    const requests = await readJsonFile('requests');
+    await insertWithDelay(database.Request, requests);
 
-        const offers = await readJsonFile('offers');
-        await insertWithDelay(database.Offer, offers);
-    } catch (error) {
-        console.error('Error inserting test data:', error);
-    }
+    const offers = await readJsonFile('offers');
+    await insertWithDelay(database.Offer, offers);
 }

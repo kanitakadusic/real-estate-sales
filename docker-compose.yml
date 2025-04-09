@@ -1,0 +1,22 @@
+services:
+  mysql-db:
+    image: mysql:latest
+    container_name: mysql-db
+    networks:
+      - real-estate-net
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=real_estate
+  nodejs-app:
+    image: kkadusic2/arm-zadaca:nodejs-app
+    container_name: nodejs-app
+    ports:
+      - "3001:3001"
+    networks:
+      - real-estate-net
+    depends_on:
+      - mysql-db
+    command: sh -c "sleep 45 && node index.js"
+networks:
+  real-estate-net:
+    driver: bridge
