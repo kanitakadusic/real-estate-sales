@@ -14,13 +14,13 @@ stages:
   <<: *docker
   script:
     - echo "Building image..."
-    - docker build -t $REPOSITORY_URL/nodejs-app:$CI_COMMIT_SHORT_SHA .
+    - docker build -t $REPOSITORY_URL:$CI_COMMIT_SHORT_SHA .
     - echo "Tagging image..."
-    - docker tag $REPOSITORY_URL/nodejs-app:$CI_COMMIT_SHORT_SHA $REPOSITORY_URL/nodejs-app:latest
+    - docker tag $REPOSITORY_URL:$CI_COMMIT_SHORT_SHA $REPOSITORY_URL:latest
   after_script:
     - echo "Pushing image..."
-    - docker push $REPOSITORY_URL/nodejs-app:$CI_COMMIT_SHORT_SHA
-    - docker push $REPOSITORY_URL/nodejs-app:latest
+    - docker push $REPOSITORY_URL:$CI_COMMIT_SHORT_SHA
+    - docker push $REPOSITORY_URL:latest
 
 .deploy_ecs_script: &deploy_ecs_script
   image: ${CI_TEMPLATE_REGISTRY_HOST}/gitlab-org/cloud-deploy/aws-ecs:latest
