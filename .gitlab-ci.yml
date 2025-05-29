@@ -14,13 +14,13 @@ stages:
   <<: *docker
   script:
     - echo "Building image..."
-    - docker build -t $REPOSITORY_URL:$CI_COMMIT_SHORT_SHA .
+    - docker build -t $REPOSITORY_URL/nodejs-app:$CI_COMMIT_SHORT_SHA .
     - echo "Tagging image..."
-    - docker tag $REPOSITORY_URL:$CI_COMMIT_SHORT_SHA $REPOSITORY_URL:latest
+    - docker tag $REPOSITORY_URL/nodejs-app:$CI_COMMIT_SHORT_SHA $REPOSITORY_URL/nodejs-app:latest
   after_script:
     - echo "Pushing image..."
-    - docker push $REPOSITORY_URL:$CI_COMMIT_SHORT_SHA
-    - docker push $REPOSITORY_URL:latest
+    - docker push $REPOSITORY_URL/nodejs-app:$CI_COMMIT_SHORT_SHA
+    - docker push $REPOSITORY_URL/nodejs-app:latest
 
 .deploy_ecs_script: &deploy_ecs_script
   image: ${CI_TEMPLATE_REGISTRY_HOST}/gitlab-org/cloud-deploy/aws-ecs:latest
@@ -36,7 +36,7 @@ build_frontend:
   <<: *build_docker_script
   stage: build
   variables:
-    REPOSITORY_URL: kkadusic2/real-estate-sales:nodejs-app
+    REPOSITORY_URL: kkadusic2/real-estate-sales
 
 deploy_frontend:
   before_script:
@@ -46,7 +46,7 @@ deploy_frontend:
   <<: *deploy_ecs_script
   stage: deploy
   variables:
-    REPOSITORY_URL: kkadusic2/real-estate-sales:nodejs-app
+    REPOSITORY_URL: kkadusic2/real-estate-sales
     CI_AWS_ECS_CLUSTER: khm_ecs_cluster
     CI_AWS_SERVICE: frontend-service
     CI_AWS_ECS_TASK_DEFINITION_FILE: frontend-task.json
