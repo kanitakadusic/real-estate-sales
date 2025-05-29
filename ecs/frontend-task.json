@@ -55,8 +55,8 @@
   ],
   "tags": [
     {
-      "Key": "Name",
-      "Value": "khm_ecs_task_definition_frontend"
+      "key": "Name",
+      "value": "khm_ecs_task_definition_frontend"
     }
   ]
 }
