@@ -1,5 +1,5 @@
 {
-  "container_definitions": [
+  "containerDefinitions": [
     {
       "command": [],
       "cpu": 256,
@@ -7,7 +7,7 @@
       "environment": [
         {
           "name": "DB_NAME",
-          "value": "${DB_NAME}"
+          "value": "real_estate"
         },
         {
           "name": "DB_USER",
@@ -23,7 +23,7 @@
         },
         {
           "name": "DB_PORT",
-          "value": "${DB_PORT}"
+          "value": "3306"
         }
       ],
       "essential": true,
@@ -41,13 +41,13 @@
       "volumesFrom": []
     }
   ],
-  "execution_role_arn": "${CI_AWS_TASK_EXECUTION_ROLE}",
+  "executionRoleArn": "${CI_AWS_TASK_EXECUTION_ROLE}",
   "family": "frontend-task",
-  "requires_compatibilities": [
+  "requiresCompatibilities": [
     "EC2"
   ],
-  "task_role_arn": "${CI_AWS_TASK_EXECUTION_ROLE}",
-  "placement_constraints": [
+  "taskRoleArn": "${CI_AWS_TASK_EXECUTION_ROLE}",
+  "placementConstraints": [
     {
       "expression": "attribute:ecs.subnet-id in [${PUBLIC_SUBNET_ID}]",
       "type": "memberOf"

@@ -1,5 +1,5 @@
 {
-  "container_definitions": [
+  "containerDefinitions": [
     {
       "command": [],
       "cpu": 256,
@@ -7,7 +7,7 @@
       "environment": [
         {
           "name": "MYSQL_DATABASE",
-          "value": "${MYSQL_DATABASE}"
+          "value": "real_estate"
         },
         {
           "name": "MYSQL_ROOT_PASSWORD",
@@ -35,19 +35,21 @@
       "volumesFrom": []
     }
   ],
-  "volume": [
+  "volumes": [
     {
       "name": "mysql-data",
-      "host_path": "/mnt/mysql-data"
+      "host": {
+        "sourcePath": "/mnt/mysql-data"
+      }
     }
   ],
-  "execution_role_arn": "${CI_AWS_TASK_EXECUTION_ROLE}",
+  "executionRoleArn": "${CI_AWS_TASK_EXECUTION_ROLE}",
   "family": "database-task",
-  "requires_compatibilities": [
+  "requiresCompatibilities": [
     "EC2"
   ],
-  "task_role_arn": "${CI_AWS_TASK_EXECUTION_ROLE}",
-  "placement_constraints": [
+  "taskRoleArn": "${CI_AWS_TASK_EXECUTION_ROLE}",
+  "placementConstraints": [
     {
       "expression": "attribute:ecs.subnet-id in [${PRIVATE_SUBNET_ID}]",
       "type": "memberOf"
