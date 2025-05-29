@@ -53,7 +53,10 @@
       "type": "memberOf"
     }
   ],
-  "tags": {
-    "Name": "khm_ecs_task_definition_frontend"
-  }
+  "tags": [
+    {
+      "Key": "Name",
+      "Value": "khm_ecs_task_definition_frontend"
+    }
+  ]
 }
