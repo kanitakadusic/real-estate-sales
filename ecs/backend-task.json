@@ -1,0 +1,59 @@
+{
+  "container_definitions": [
+    {
+      "command": [],
+      "cpu": 256,
+      "entryPoint": [],
+      "environment": [
+        {
+          "name": "MYSQL_DATABASE",
+          "value": "${MYSQL_DATABASE}"
+        },
+        {
+          "name": "MYSQL_ROOT_PASSWORD",
+          "value": "${MYSQL_ROOT_PASSWORD}"
+        }
+      ],
+      "essential": true,
+      "image": "mysql:latest",
+      "memory": 512,
+      "mountPoints": [
+        {
+          "sourceVolume": "mysql-data",
+          "containerPath": "/var/lib/mysql",
+          "readOnly": false
+        }
+      ],
+      "name": "mysql-db",
+      "portMappings": [
+        {
+          "containerPort": 3306,
+          "hostPort": 3306,
+          "protocol": "tcp"
+        }
+      ],
+      "volumesFrom": []
+    }
+  ],
+  "volume": [
+    {
+      "name": "mysql-data",
+      "host_path": "/mnt/mysql-data"
+    }
+  ],
+  "execution_role_arn": "${CI_AWS_TASK_EXECUTION_ROLE}",
+  "family": "database-task",
+  "requires_compatibilities": [
+    "EC2"
+  ],
+  "task_role_arn": "${CI_AWS_TASK_EXECUTION_ROLE}",
+  "placement_constraints": [
+    {
+      "expression": "attribute:ecs.subnet-id in [${PRIVATE_SUBNET_ID}]",
+      "type": "memberOf"
+    }
+  ],
+  "tags": {
+    "Name": "khm_ecs_task_definition_database"
+  }
+}
