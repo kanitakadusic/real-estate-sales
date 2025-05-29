@@ -1,0 +1,46 @@
+#statistics-container .input-container {
+    background-color: var(--surface-primary-light);
+    padding: 0 30px 30px 30px;
+    margin: 30px;
+    border-radius: 10px;
+}
+
+#statistics-container .heading {
+    font-weight: bold;
+    font-size: var(--heading-size);
+    margin: 30px 0 15px 0;
+    display: inline-block;
+}
+
+#statistics-container input {
+    margin: 15px 0;
+}
+
+#statistics-container button {
+    margin-top: 15px;
+}
+
+#statistics-container .block {
+    display: block;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    border: 2px solid var(--secondary-light);
+    padding: 12px 18px;
+    margin-top: 15px;
+    text-align: center;
+}
+
+#statistics-container .feedback {
+    display: none;
+    margin-top: 30px;
+    color: var(--error-light);
+}
+
+#statistics-container .chart {
+    margin-top: 60px;
+}
+
+#statistics-container #generate-charts-button {
+    margin-top: 30px;
+}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>Properties</title>
+
+        <link rel="stylesheet" href="../css/navigation.css">
+        <link rel="stylesheet" href="../css/properties.css">
+    </head>
+    <body>
+        <div id="navigation-container">
+            <!-- Navigation placeholder (DO NOT EDIT) -->
+        </div>
+
+        <div id="filter-container">
+            Price:
+            <div class="input-container">
+                <input type="number" id="min-price" name="min-price" placeholder="From">
+                <input type="number" id="max-price" name="max-price" placeholder="To">
+            </div>
+            
+            Square footage:
+            <div class="input-container">
+                <input type="number" id="min-square-footage" name="min-square-footage" placeholder="From">
+                <input type="number" id="max-square-footage" name="max-square-footage" placeholder="To">
+            </div>
+
+            <button id="filter-button">Filter</button>
+        </div>
+
+        <div id="properties-container">
+            <div class="heading">Apartments</div>
+            <div id="apartments"></div>
+            
+            <div class="heading">Houses</div>
+            <div id="houses"></div>
+            
+            <div class="heading">Workspaces</div>
+            <div id="workspaces"></div>
+        </div>
+        
+        <script src="../js/MarketingAjax.js"></script>
+        <script src="../js/PropertiesListing.js"></script>
+        <script src="../js/properties.js"></script>
+        <!-- 'ApiService.js' script is included via the navigation -->
+    </body>
+</html>

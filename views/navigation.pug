@@ -1,0 +1,34 @@
+ul
+    li
+        a#news-link(href='news.html')
+            p News
+            img(src='../resources/icons/globe.svg', alt='News icon')
+    li
+        a#statistics-link(href='statistics.html')
+            p Statistics
+            img(src='../resources/icons/chart.svg', alt='Statistics icon')
+    li
+        a#properties-link(href='properties.html')
+            p Properties
+            img(src='../resources/icons/home.svg', alt='Properties icon')
+    if userLoggedIn
+        li
+            a#profile-link(href='profile.html')
+                p Profile
+                img(src='../resources/icons/user.svg', alt='Profile icon')
+        li
+            a#my-queries-link(href='myQueries.html')
+                p My queries
+                img(src='../resources/icons/archive.svg', alt='My queries icon')
+        li
+            a#logout-link(href='login.html')
+                p Logout
+                img(src='../resources/icons/logout.svg', alt='Logout icon')
+    else
+        li
+            a#login-link(href='login.html')
+                p Login
+                img(src='../resources/icons/login.svg', alt='Login icon')
+
+script(src='/js/ApiService.js')
+script(src='/js/navigation.js')

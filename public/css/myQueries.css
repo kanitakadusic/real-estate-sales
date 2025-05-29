@@ -1,0 +1,14 @@
+#queries-container .query-container {
+    background-color: var(--surface-primary-light);
+    padding: 30px;
+    border-radius: 10px;
+    margin: 30px;
+}
+
+#queries-container a {
+    font-size: var(--title-size);
+}
+
+#queries-container p {
+    margin: 30px 0 0 0;
+}

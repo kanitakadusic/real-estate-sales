@@ -1,0 +1,72 @@
+[
+    {
+        "id": 1,
+        "propertyId": 1,
+        "userId": 2,
+        "text": "offer-1",
+        "price": 100
+    },
+    {
+        "id": 2,
+        "propertyId": 1,
+        "userId": 2,
+        "text": "offer-2",
+        "price": 200,
+        "parentId": 1
+    },
+    {
+        "id": 3,
+        "propertyId": 1,
+        "userId": 2,
+        "text": "offer-3",
+        "price": 300,
+        "parentId": 1
+    },
+    {
+        "id": 4,
+        "propertyId": 1,
+        "userId": 1,
+        "text": "offer-4",
+        "price": 400,
+        "parentId": 1
+    },
+    {
+        "id": 5,
+        "propertyId": 1,
+        "userId": 1,
+        "text": "offer-5",
+        "price": 500,
+        "parentId": 2
+    },
+    {
+        "id": 6,
+        "propertyId": 1,
+        "userId": 2,
+        "text": "offer-6",
+        "price": 600,
+        "parentId": 4
+    },
+    {
+        "id": 7,
+        "propertyId": 1,
+        "userId": 1,
+        "text": "offer-7",
+        "price": 700,
+        "parentId": 4
+    },
+    {
+        "id": 8,
+        "propertyId": 1,
+        "userId": 1,
+        "text": "offer-8",
+        "price": 800
+    },
+    {
+        "id": 9,
+        "propertyId": 1,
+        "userId": 1,
+        "text": "offer-9",
+        "price": 900,
+        "parentId": 8
+    }
+]
