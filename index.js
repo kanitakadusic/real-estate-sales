@@ -1,4 +1,4 @@
-require('./config/database.js');
+const { initDatabase } = require('./config/database.js');
 
 const express = require('express');
 const session = require('express-session');
@@ -14,7 +14,7 @@ const offerController = require('./controllers/offer.js');
 
 const { readJsonFile, saveJsonFile } = require('./utils/file.js');
 
-const PORT = 3001;
+const PORT = 3000;
 const app = express();
 
 app.use(session({
@@ -37,7 +37,7 @@ async function serveHTMLFile(req, res, fileName) {
 
         const userLoggedIn = req.session.username ? true : false;
         const navigationHtml = pug.renderFile(path.join(__dirname, 'views', 'navigation.pug'), { userLoggedIn });
-        
+
         const finalContent = content.replace('<!-- Navigation placeholder (DO NOT EDIT) -->', navigationHtml);
 
         res.send(finalContent);
@@ -233,6 +233,11 @@ app.post('/marketing/osvjezi/klikovi', async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+initDatabase().then(() => {
+    app.listen(PORT, () => {
+        console.log(`Application is running on port ${PORT}`);
+    });
+}).catch((err) => {
+    console.error('Failed to initialize database:', err);
+    process.exit(1);
 });
