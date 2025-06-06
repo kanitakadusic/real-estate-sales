@@ -1,0 +1,62 @@
+{
+  "containerDefinitions": [
+    {
+      "command": [],
+      "cpu": 256,
+      "entryPoint": [],
+      "environment": [
+        {
+          "name": "DB_NAME",
+          "value": "real_estate"
+        },
+        {
+          "name": "DB_USER",
+          "value": "${DB_USER}"
+        },
+        {
+          "name": "DB_PASSWORD",
+          "value": "${DB_PASSWORD}"
+        },
+        {
+          "name": "DB_HOST",
+          "value": "${DB_HOST}"
+        },
+        {
+          "name": "DB_PORT",
+          "value": "3306"
+        }
+      ],
+      "essential": true,
+      "image": "${REPOSITORY_URL}",
+      "memory": 512,
+      "mountPoints": [],
+      "name": "nodejs-app",
+      "portMappings": [
+        {
+          "containerPort": 3000,
+          "hostPort": 3000,
+          "protocol": "tcp"
+        }
+      ],
+      "volumesFrom": []
+    }
+  ],
+  "executionRoleArn": "${CI_AWS_TASK_EXECUTION_ROLE}",
+  "family": "frontend-task",
+  "requiresCompatibilities": [
+    "EC2"
+  ],
+  "taskRoleArn": "${CI_AWS_TASK_EXECUTION_ROLE}",
+  "placementConstraints": [
+    {
+      "expression": "attribute:ecs.subnet-id in [${PUBLIC_SUBNET_ID}]",
+      "type": "memberOf"
+    }
+  ],
+  "tags": [
+    {
+      "key": "Name",
+      "value": "khm_ecs_task_definition_frontend"
+    }
+  ]
+}

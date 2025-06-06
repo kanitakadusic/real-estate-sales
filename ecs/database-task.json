@@ -1,0 +1,64 @@
+{
+  "containerDefinitions": [
+    {
+      "command": [],
+      "cpu": 256,
+      "entryPoint": [],
+      "environment": [
+        {
+          "name": "MYSQL_DATABASE",
+          "value": "real_estate"
+        },
+        {
+          "name": "MYSQL_ROOT_PASSWORD",
+          "value": "${MYSQL_ROOT_PASSWORD}"
+        }
+      ],
+      "essential": true,
+      "image": "mysql:latest",
+      "memory": 512,
+      "mountPoints": [
+        {
+          "sourceVolume": "mysql-data",
+          "containerPath": "/var/lib/mysql",
+          "readOnly": false
+        }
+      ],
+      "name": "mysql-db",
+      "portMappings": [
+        {
+          "containerPort": 3306,
+          "hostPort": 3306,
+          "protocol": "tcp"
+        }
+      ],
+      "volumesFrom": []
+    }
+  ],
+  "volumes": [
+    {
+      "name": "mysql-data",
+      "host": {
+        "sourcePath": "/mnt/mysql-data"
+      }
+    }
+  ],
+  "executionRoleArn": "${CI_AWS_TASK_EXECUTION_ROLE}",
+  "family": "database-task",
+  "requiresCompatibilities": [
+    "EC2"
+  ],
+  "taskRoleArn": "${CI_AWS_TASK_EXECUTION_ROLE}",
+  "placementConstraints": [
+    {
+      "expression": "attribute:ecs.subnet-id in [${PRIVATE_SUBNET_ID}]",
+      "type": "memberOf"
+    }
+  ],
+  "tags": [
+    {
+      "key": "Name",
+      "value": "khm_ecs_task_definition_database"
+    }
+  ]
+}

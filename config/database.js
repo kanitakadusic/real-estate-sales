@@ -1,10 +1,16 @@
 const { Sequelize } = require('sequelize');
 
-const sequelize = new Sequelize('real_estate', 'root', 'password', {
-    host: 'localhost',
-    dialect: 'mysql',
-    logging: false
-});
+const sequelize = new Sequelize(
+    process.env.DB_NAME,
+    process.env.DB_USER,
+    process.env.DB_PASSWORD,
+    {
+        host: process.env.DB_HOST,
+        dialect: 'mysql',
+        port: process.env.DB_PORT,
+        logging: false
+    }
+);
 
 const database = {};
 
@@ -19,49 +25,64 @@ database.Property = require('../models/property.js')(sequelize, Sequelize.DataTy
 
 require('../models/associations.js')(database);
 
-(async () => {
-    try {
-        await sequelize.authenticate();
-        console.log('Successfully connected to the database');
+async function initDatabase() {
+    let isConnected = false;
 
-        await sequelize.sync({ force: false });
-        console.log('Tables successfully synchronized');
-
-        //await insertTestData();
-        console.log('Test data successfully inserted');
-    } catch (error) {
-        console.error('Error during database setup:', error);
+    for (let i = 0; i < 10; i++) {
+        try {
+            await sequelize.authenticate();
+            console.log('Successfully connected to the database');
+            isConnected = true;
+            break;
+        } catch (_) {
+            console.log('- database not ready, retrying...');
+            await new Promise(res => setTimeout(res, 3000));
+        }
     }
-})();
 
-module.exports = database;
+    if (!isConnected) {
+        console.error('Failed to connect to the database');
+        process.exit(1);
+    }
+
+    await sequelize.sync({ force: false });
+    console.log('Tables successfully synchronized');
+
+    try {
+        await insertTestData();
+        console.log('Test data successfully inserted');
+    } catch (_) {
+        console.log('Test data already inserted');
+    }
+}
+
+module.exports = { ...database, initDatabase };
 
 async function insertTestData() {
     const { readJsonFile } = require('../utils/file.js');
 
-    const insertWithDelay = async (model, data) => {
-        for (const item of data) {
-            await model.create(item);
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-        }
-    };
+    const users = await readJsonFile('users');
+    for (const item of users) {
+        await database.User.create(item);
+    }
 
-    try {
-        const users = await readJsonFile('users');
-        await insertWithDelay(database.User, users);
+    const properties = await readJsonFile('properties');
+    for (const item of properties) {
+        await database.Property.create(item);
+    }
 
-        const properties = await readJsonFile('properties');
-        await insertWithDelay(database.Property, properties);
+    const queries = await readJsonFile('queries');
+    for (const item of queries) {
+        await database.Query.create(item);
+    }
 
-        const queries = await readJsonFile('queries');
-        await insertWithDelay(database.Query, queries);
+    const requests = await readJsonFile('requests');
+    for (const item of requests) {
+        await database.Request.create(item);
+    }
 
-        const requests = await readJsonFile('requests');
-        await insertWithDelay(database.Request, requests);
-
-        const offers = await readJsonFile('offers');
-        await insertWithDelay(database.Offer, offers);
-    } catch (error) {
-        console.error('Error inserting test data:', error);
+    const offers = await readJsonFile('offers');
+    for (const item of offers) {
+        await database.Offer.create(item);
     }
 }
